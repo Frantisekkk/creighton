@@ -4,10 +4,12 @@ import 'pages/day.dart';
 import 'pages/table.dart';
 
 void main() {
-  runApp(MyApp());
+  runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {
+  const MyApp({super.key});
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -30,7 +32,7 @@ class _MainScreenState extends State<MainScreen> {
   // Dummy widget for different pages
   static final List<Widget> _pages = <Widget>[
    TablePage(),
-   HomePage(),
+   HomePage(userName: 'Monika',),
    DayPage(),
    
    
