@@ -19,33 +19,33 @@ class HomePage extends StatelessWidget {
     final double screenHeightWithoutBottomNav = screenHeight - kBottomNavigationBarHeight;
 
     return Scaffold(
-      backgroundColor: Colors.grey.shade200,
+      backgroundColor: Colors.grey.shade50,
       body: Stack(
         children: [
           // Background circle peeking out from bottom and side
-          Positioned(
-            // bottom: -100,
-            bottom: -screenHeight /1.45 ,
-            left: -screenHeight/1.5,
-            child: Container(
-              width: screenHeight ,
-              height: screenHeight ,
-              decoration: BoxDecoration(
-                color: const Color.fromARGB(255, 196, 93, 8).withOpacity(1),
-                shape: BoxShape.circle,
-              ),
-            ),
-          ),
+          // Positioned(
+          //   // bottom: -100,
+          //   bottom: -screenHeight /1.45 ,
+          //   left: -screenHeight/1.5,
+          //   child: Container(
+          //     width: screenHeight ,
+          //     height: screenHeight ,
+          //     decoration: BoxDecoration(
+          //       color: const Color.fromARGB(255, 227, 47, 77).withOpacity(1),
+          //       shape: BoxShape.circle,
+          //     ),
+          //   ),
+          // ),
           SingleChildScrollView(
             child: Column(
               children: [
                 // First row: One-fourth of half screen height
                 Container(
-                  color: Colors.grey,
+                  color: Colors.grey.shade300,
                   height: (screenHeightWithoutBottomNav / 2) * 0.4,
                   alignment: Alignment.bottomLeft, // Center vertically, left align horizontally
                   child: Padding(
-                    padding: const EdgeInsets.only(left: 16.0, bottom: 8.0), // Adjust padding as needed
+                    padding: const EdgeInsets.only(left: 30.0, ), // Adjust padding as needed
                     child: Text(
                       'Ahoj $userName 👋',
                       style: TextStyle(
@@ -57,8 +57,8 @@ class HomePage extends StatelessWidget {
                 ),
                 // Second row: Three-quarters of half screen height (our developed container)
                 Container(
-                  decoration: const BoxDecoration(
-                    color: Colors.grey,
+                  decoration: BoxDecoration(
+                  color: Colors.grey.shade300,
                     borderRadius: const BorderRadius.only(
                       bottomLeft: Radius.circular(30),
                       bottomRight: Radius.circular(30),
@@ -68,7 +68,7 @@ class HomePage extends StatelessWidget {
                   height: (screenHeightWithoutBottomNav / 2) * 0.75,
                   child: Container(
                     clipBehavior: Clip.none,
-                    padding: const EdgeInsets.only(top: 16.0, bottom: 16.0),
+                    padding: const EdgeInsets.only(top: 16.0, bottom: 16.0, right: 16.0),
                     decoration: BoxDecoration(
                       color: Colors.white,
                       borderRadius: BorderRadius.circular(30),
@@ -89,8 +89,9 @@ class HomePage extends StatelessWidget {
                               width: 38,
                               height: 50,
                               decoration: BoxDecoration(
-                                color: Colors.green, // Placeholder for the picture
+                                color: const Color.fromARGB(0, 255, 255, 255), // Placeholder for the picture
                                 borderRadius: BorderRadius.circular(10),
+                                border: Border.all(color: Colors.grey, width: 0.4),
                               ),
                             ),
                           ),
@@ -128,11 +129,9 @@ class HomePage extends StatelessWidget {
                 ),
                 // Third row: Calendar representation for the last 7 days
                 Container(
-                  margin:const EdgeInsets.only(top: 20),
+                  margin:const EdgeInsets.only(top: 20, bottom: 10, right: 30, left: 30),
                   // color: Colors.lightGreen,
                   height: screenHeightWithoutBottomNav / 8,
-                  child: Padding(
-                    padding: const EdgeInsets.only(right: 30, left: 30),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: List.generate(7, (index) {
@@ -141,7 +140,7 @@ class HomePage extends StatelessWidget {
                           child: Container(
                             margin: const EdgeInsets.symmetric(horizontal: 3.0),
                             decoration: BoxDecoration(
-                              color: const Color.fromARGB(184, 248, 10, 42),
+                              color: Colors.white.withOpacity(1),
                               borderRadius: BorderRadius.circular(19),
                               border: Border.all(color: Colors.grey, width: 0.8),
                               boxShadow: const [
@@ -153,14 +152,15 @@ class HomePage extends StatelessWidget {
                               ],
                             ),
                             child: Column(
-                              mainAxisAlignment: MainAxisAlignment.start,
+                              mainAxisAlignment: MainAxisAlignment.center,
                               children: [
-                                const SizedBox(height: 10),
+                                // const SizedBox(height: 10),
                                 Text(
                                   DateFormat('E').format(date),
                                   style: const TextStyle(
                                     fontSize: 14,
                                     fontWeight: FontWeight.bold,
+                                    color: Colors.black54,
                                   ),
                                 ),
                                 Text(
@@ -168,6 +168,7 @@ class HomePage extends StatelessWidget {
                                   style: const TextStyle(
                                     fontSize: 16,
                                     fontWeight: FontWeight.bold,
+                                    color: Colors.black54,
                                   ),
                                 ),
                               ],
@@ -176,7 +177,6 @@ class HomePage extends StatelessWidget {
                         );
                       }),
                     ),
-                  ),
                 ),
                 // Fourth row: Three-quarters of half screen height
                 Container(
@@ -188,7 +188,7 @@ class HomePage extends StatelessWidget {
                       children: [
                         CustomPaint(
                           painter: CustomCircularProgress(value: 0.75), // Assuming 75% completion
-                          size: Size(200, 100), // Increased the size of the graph
+                          size: const Size(200, 100), // Increased the size of the graph
                         ),
                         Positioned(
                           bottom: 0, // Positioning the text towards the bottom of the graph
@@ -197,6 +197,7 @@ class HomePage extends StatelessWidget {
                             style: const TextStyle(
                               fontSize: 30,
                               fontWeight: FontWeight.w400,
+                              fontFamily: 'Arial',
                               color: Colors.black87,
                             ),
                           ),
@@ -226,6 +227,7 @@ class CustomCircularProgress extends CustomPainter {
     final double arcHeight = size.height;
     final double arcWidth = size.width;
     final center = Offset(arcWidth / 2, arcHeight);
+    const double strokeWidth = 28;
 
     // Draw the background arc (semi-circle)
     canvas.drawArc(
@@ -237,7 +239,7 @@ class CustomCircularProgress extends CustomPainter {
         ..style = PaintingStyle.stroke
         ..color = Colors.black12
         ..strokeCap = StrokeCap.round
-        ..strokeWidth = 25,
+        ..strokeWidth = strokeWidth,
     );
 
     // Draw the progress arc (semi-circle)
@@ -255,7 +257,7 @@ class CustomCircularProgress extends CustomPainter {
       ..style = PaintingStyle.stroke
       ..strokeCap = StrokeCap.round
       ..shader = gradient.createShader(Rect.fromLTWH(0.0, 0.0, arcWidth, arcHeight * 2))
-      ..strokeWidth = 25;
+      ..strokeWidth = strokeWidth;
 
     canvas.drawArc(
       Rect.fromCenter(center: center, width: arcWidth, height: arcHeight * 2),

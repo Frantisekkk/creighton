@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'pages/home.dart';
 import 'pages/day.dart';
 import 'pages/table.dart';
+import 'user_list_page.dart';
 
 void main() {
   runApp(const MyApp());
@@ -15,6 +16,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       home: MainScreen(),
       theme: ThemeData(
+        // fontFamily: 'Arial',
         scaffoldBackgroundColor: Colors.white,
       ),
     );
@@ -33,7 +35,7 @@ class _MainScreenState extends State<MainScreen> {
   static final List<Widget> _pages = <Widget>[
    TablePage(),
    HomePage(userName: 'Monika',),
-   DayPage(),
+   UserListPage(),
    
    
    //  Center(child: Text('Page 1', style: TextStyle(fontSize: 24))),
@@ -51,24 +53,36 @@ class _MainScreenState extends State<MainScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: _pages[_selectedIndex],
-      bottomNavigationBar: BottomNavigationBar(
-        items: const <BottomNavigationBarItem>[
-          BottomNavigationBarItem(
-            icon: Icon(Icons.table_chart),
-            label: 'Table',
+      bottomNavigationBar: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 5.0), // Space on left, right, and bottom
+        child: ClipRRect(
+          borderRadius: BorderRadius.circular(30), // Rounded corners
+          child: BottomNavigationBar(
+            items: const <BottomNavigationBarItem>[
+              BottomNavigationBarItem(
+                icon: Icon(Icons.table_chart),
+                label: 'Table',
+              ),
+              BottomNavigationBarItem(
+                icon: Icon(Icons.home),
+                label: 'Home',
+              ),
+              BottomNavigationBarItem(
+                icon: Icon(Icons.hdr_plus),
+                label: 'Day',
+              ),
+            ],
+            currentIndex: _selectedIndex,
+            onTap: _onItemTapped,
+            backgroundColor: Colors.grey.shade400, // Background color for the bar
+            selectedItemColor: Colors.blueAccent, // Color of selected item
+            unselectedItemColor: Colors.grey, // Color of unselected items
+            showUnselectedLabels: false, // Hides labels for unselected items for a minimal look
+            type: BottomNavigationBarType.fixed, // Prevents shifting animation
           ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.home),
-            label: 'Home',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.hdr_plus),
-            label: 'Day',
-          ),
-        ],
-        currentIndex: _selectedIndex,
-        onTap: _onItemTapped,
+        ),
       ),
     );
   }
+
 }
