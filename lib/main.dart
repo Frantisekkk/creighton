@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'pages/home.dart';
 import 'pages/day.dart';
 import 'pages/table.dart';
-import 'user_list_page.dart';
+import 'pages/user_list_page.dart';
 
 void main() {
   runApp(const MyApp());
@@ -34,8 +34,9 @@ class _MainScreenState extends State<MainScreen> {
   // Dummy widget for different pages
   static final List<Widget> _pages = <Widget>[
    TablePage(),
-   HomePage(userName: 'Monika',),
-   UserListPage(),
+   HomePage(userName: 'Stanislav',userId: 1),
+   // UserListPage(),
+   DayPage()
    
    
    //  Center(child: Text('Page 1', style: TextStyle(fontSize: 24))),

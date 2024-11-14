@@ -1,7 +1,7 @@
 // lib/user_list_page.dart
 import 'package:flutter/material.dart';
-import 'api_service.dart';
-import 'user.dart';
+import '../api_services/api_service.dart';
+import '../api_services/user.dart';
 
 class UserListPage extends StatefulWidget {
   @override
