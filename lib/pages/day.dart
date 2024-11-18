@@ -1,13 +1,22 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'dart:ui';
+
+const Color backgroundColor = Color.fromARGB(255, 228, 228, 228);
+const Color textColor = Colors.white;
+const Color textColorDark = Colors.black;
+const Color headerContainerBackgroundColor = Color.fromARGB(255, 37, 37, 37);
+const Color buttbackroundColor = Color.fromARGB(255, 100, 100, 100);
+const Color buttonTextColor = Colors.white;
 
 class DayPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     String dayName = DateFormat('EEEE').format(DateTime.now());
-    String date = DateFormat('yMMMMd').format(DateTime.now());
+    String date = DateFormat('yMMMd').format(DateTime.now());
 
     return Scaffold(
+      backgroundColor: backgroundColor,
       // appBar: AppBar(
       //   title: Text('Day Page'),
       // ),
@@ -15,10 +24,10 @@ class DayPage extends StatelessWidget {
         child: Column(
           children: [
             Container(
-              margin: const EdgeInsets.all(8.0),
+              margin: const EdgeInsets.only(left: 8.0, right: 8.0, top: 50),
               padding: const EdgeInsets.all(16.0),
               decoration: BoxDecoration(
-                color: Colors.blueAccent.withOpacity(0.1),
+                //color: headerContainerBackgroundColor,
                 borderRadius: BorderRadius.circular(10.0),
               ),
               child: Column(
@@ -26,7 +35,7 @@ class DayPage extends StatelessWidget {
                 children: [
                   Text(
                     '$dayName, $date',
-                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                    style: const TextStyle(fontSize: 35, fontWeight: FontWeight.bold, color: textColorDark),
                   ),
                   // Add your code here for Section 1
                 ],
@@ -35,10 +44,10 @@ class DayPage extends StatelessWidget {
             Container(
               margin: EdgeInsets.all(8.0),
               padding: EdgeInsets.all(16.0),
-              decoration: BoxDecoration(
-                color: Colors.blueAccent.withOpacity(0.2),
-                borderRadius: BorderRadius.circular(10.0),
-              ),
+              // decoration: BoxDecoration(
+              //   color: headerContainerBackgroundColor.withOpacity(0.2),
+              //   borderRadius: BorderRadius.circular(10.0),
+              // ),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
@@ -47,13 +56,13 @@ class DayPage extends StatelessWidget {
                       Expanded(
                         flex: 1,
                         child: Container(
-                          padding: EdgeInsets.all(8.0),
+                          // padding: EdgeInsets.all(8.0),
                           height: 150,
                           color: Colors.grey.withOpacity(0.3),
                           child: Center(
                             child: Text(
                               'Picture Placeholder',
-                              style: TextStyle(fontSize: 16),
+                              style: TextStyle(fontSize: 16, color: textColorDark),
                             ),
                           ),
                         ),
@@ -63,21 +72,33 @@ class DayPage extends StatelessWidget {
                         child: Column(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            DropdownButton<String>(
-                              hint: Text('Select Temperature'),
-                              items: <String>['Low', 'Medium', 'High']
-                                  .map((String value) {
-                                return DropdownMenuItem<String>(
-                                  value: value,
-                                  child: Text(value),
+                            GestureDetector(
+                              onTap: () {
+                                showDialog(
+                                  context: context,
+                                  builder: (context) => TemperaturePickerDialog(),
                                 );
-                              }).toList(),
-                              onChanged: (String? newValue) {},
+                              },
+                              child: Container(
+                                padding: EdgeInsets.all(16.0),
+                                decoration: BoxDecoration(
+                                  color:  buttbackroundColor.withOpacity(0.1),
+                                  borderRadius: BorderRadius.circular(10),
+                                ),
+                                child: Text(
+                                  'Teplota: 36.0°C',
+                                  style: TextStyle(fontSize: 18, color: textColorDark),
+                                ),
+                              ),
                             ),
                             SizedBox(height: 20),
                             ElevatedButton(
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor:  buttbackroundColor,
+                                foregroundColor: buttonTextColor,
+                              ),
                               onPressed: () {},
-                              child: Text('Submit'),
+                              child: Text('AP'),
                             ),
                           ],
                         ),
@@ -90,8 +111,8 @@ class DayPage extends StatelessWidget {
             Container(
               margin: EdgeInsets.only(top: 8.0, bottom: 8.0),
               padding: EdgeInsets.only(top: 5.0, bottom: 5, left: 20),
-              decoration: BoxDecoration(
-                color: Colors.blueAccent.withOpacity(0.3),
+              decoration: const BoxDecoration(
+                color: headerContainerBackgroundColor,
                 //borderRadius: BorderRadius.circular(10.0),
               ),
               child: const Column(
@@ -99,32 +120,29 @@ class DayPage extends StatelessWidget {
                 children: [
                   Text(
                     '🩸 Krvácanie',
-                    style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
+                    style: TextStyle(
+                      color: textColor,
+                      fontSize: 15, 
+                      fontWeight: FontWeight.bold
+                      ),
                   ),
                   // Add your code here for Section 3
                 ],
               ),
             ),
             Container(
-              margin: EdgeInsets.all(8.0),
+              // margin: EdgeInsets.all(8.0),
               padding: EdgeInsets.all(16.0),
-              decoration: BoxDecoration(
-                color: Colors.blueAccent.withOpacity(0.4),
-                borderRadius: BorderRadius.circular(10.0),
-              ),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
-                  // Text(
-                  //   'Section 4',
-                  //   style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-                  // ),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
-                      // Oval Button 1
                       ElevatedButton(
                         style: ElevatedButton.styleFrom(
+                          backgroundColor:  buttbackroundColor,
+                          foregroundColor: buttonTextColor,
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(30.0),
                           ),
@@ -133,9 +151,10 @@ class DayPage extends StatelessWidget {
                         onPressed: () {},
                         child: Text('VL'),
                       ),
-                      // Oval Button 2
                       ElevatedButton(
                         style: ElevatedButton.styleFrom(
+                          backgroundColor:  buttbackroundColor,
+                          foregroundColor: buttonTextColor,
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(30.0),
                           ),
@@ -144,9 +163,10 @@ class DayPage extends StatelessWidget {
                         onPressed: () {},
                         child: Text('L'),
                       ),
-                      // Oval Button 3
                       ElevatedButton(
                         style: ElevatedButton.styleFrom(
+                          backgroundColor:  buttbackroundColor,
+                          foregroundColor: buttonTextColor,
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(30.0),
                           ),
@@ -155,9 +175,10 @@ class DayPage extends StatelessWidget {
                         onPressed: () {},
                         child: Text('M'),
                       ),
-                      // Oval Button 4
                       ElevatedButton(
                         style: ElevatedButton.styleFrom(
+                          backgroundColor:  buttbackroundColor,
+                          foregroundColor: buttonTextColor,
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(30.0),
                           ),
@@ -174,8 +195,8 @@ class DayPage extends StatelessWidget {
             Container(
               margin: EdgeInsets.only(top: 8.0, bottom: 8.0),
               padding: EdgeInsets.only(top: 5.0, bottom: 5, left: 20),
-              decoration: BoxDecoration(
-                color: Colors.blueAccent.withOpacity(0.3),
+              decoration: const BoxDecoration(
+                color: headerContainerBackgroundColor,
                 //borderRadius: BorderRadius.circular(10.0),
               ),
               child: const Column(
@@ -183,35 +204,35 @@ class DayPage extends StatelessWidget {
                 children: [
                   Text(
                     '       Popis',
-                    style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
+                    style: TextStyle(
+                      color: textColor,
+                      fontSize: 15, 
+                      fontWeight: FontWeight.bold
+                    ),
                   ),
                   // Add your code here for Section 5
                 ],
               ),
             ),
             Container(
-              margin: EdgeInsets.all(8.0),
+              //margin: EdgeInsets.all(8.0),
               padding: EdgeInsets.all(16.0),
               decoration: BoxDecoration(
-                color: Colors.blueAccent.withOpacity(0.6),
-                borderRadius: BorderRadius.circular(10.0),
+                // color: headerContainerBackgroundColor.withOpacity(0.6),
               ),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
-                  // Text(
-                  //   'Section 6',
-                  //   style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-                  // ),
                   Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      // First Row with 4 Buttons
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                         children: [
                           ElevatedButton(
                             style: ElevatedButton.styleFrom(
+                              backgroundColor:  buttbackroundColor,
+                              foregroundColor: buttonTextColor,
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(30.0),
                               ),
@@ -222,6 +243,8 @@ class DayPage extends StatelessWidget {
                           ),
                           ElevatedButton(
                             style: ElevatedButton.styleFrom(
+                              backgroundColor:  buttbackroundColor,
+                              foregroundColor: buttonTextColor,
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(30.0),
                               ),
@@ -232,6 +255,8 @@ class DayPage extends StatelessWidget {
                           ),
                           ElevatedButton(
                             style: ElevatedButton.styleFrom(
+                              backgroundColor:  buttbackroundColor,
+                              foregroundColor: buttonTextColor,
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(30.0),
                               ),
@@ -242,6 +267,8 @@ class DayPage extends StatelessWidget {
                           ),
                           ElevatedButton(
                             style: ElevatedButton.styleFrom(
+                              backgroundColor:  buttbackroundColor,
+                              foregroundColor: buttonTextColor,
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(30.0),
                               ),
@@ -253,12 +280,13 @@ class DayPage extends StatelessWidget {
                         ],
                       ),
                       SizedBox(height: 20),
-                      // Second Row with 3 Buttons
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                         children: [
                           ElevatedButton(
                             style: ElevatedButton.styleFrom(
+                              backgroundColor:  buttbackroundColor,
+                              foregroundColor: buttonTextColor,
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(30.0),
                               ),
@@ -269,6 +297,8 @@ class DayPage extends StatelessWidget {
                           ),
                           ElevatedButton(
                             style: ElevatedButton.styleFrom(
+                              backgroundColor:  buttbackroundColor,
+                              foregroundColor: buttonTextColor,
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(30.0),
                               ),
@@ -279,6 +309,8 @@ class DayPage extends StatelessWidget {
                           ),
                           ElevatedButton(
                             style: ElevatedButton.styleFrom(
+                              backgroundColor:  buttbackroundColor,
+                              foregroundColor: buttonTextColor,
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(30.0),
                               ),
@@ -290,12 +322,13 @@ class DayPage extends StatelessWidget {
                         ],
                       ),
                       SizedBox(height: 20),
-                      // Third Row with 3 Buttons
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                         children: [
                           ElevatedButton(
                             style: ElevatedButton.styleFrom(
+                              backgroundColor:  buttbackroundColor,
+                              foregroundColor: buttonTextColor,
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(30.0),
                               ),
@@ -306,6 +339,8 @@ class DayPage extends StatelessWidget {
                           ),
                           ElevatedButton(
                             style: ElevatedButton.styleFrom(
+                              backgroundColor:  buttbackroundColor,
+                              foregroundColor: buttonTextColor,
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(30.0),
                               ),
@@ -316,6 +351,8 @@ class DayPage extends StatelessWidget {
                           ),
                           ElevatedButton(
                             style: ElevatedButton.styleFrom(
+                              backgroundColor:  buttbackroundColor,
+                              foregroundColor: buttonTextColor,
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(30.0),
                               ),
@@ -335,7 +372,7 @@ class DayPage extends StatelessWidget {
               margin: EdgeInsets.only(top: 8.0, bottom: 8.0),
               padding: EdgeInsets.only(top: 5.0, bottom: 5, left: 20),
               decoration: BoxDecoration(
-                color: Colors.blueAccent.withOpacity(0.3),
+                color: headerContainerBackgroundColor,
                 //borderRadius: BorderRadius.circular(10.0),
               ),
               child: const Column(
@@ -343,32 +380,29 @@ class DayPage extends StatelessWidget {
                 children: [
                   Text(
                     '       Plodnosť',
-                    style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
+                    style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold, color:  textColor),
                   ),
                   // Add your code here for Section 7
                 ],
               ),
             ),
             Container(
-              margin: EdgeInsets.all(8.0),
+              //margin: EdgeInsets.all(8.0),
               padding: EdgeInsets.all(16.0),
               decoration: BoxDecoration(
-                color: Colors.blueAccent.withOpacity(0.4),
-                borderRadius: BorderRadius.circular(10.0),
+                // color: headerContainerBackgroundColor.withOpacity(0.4),
+                //borderRadius: BorderRadius.circular(10.0),
               ),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
-                  // Text(
-                  //   'Section 4',
-                  //   style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-                  // ),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
-                      // Oval Button 1
                       ElevatedButton(
                         style: ElevatedButton.styleFrom(
+                          backgroundColor:  buttbackroundColor,
+                          foregroundColor: buttonTextColor,
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(30.0),
                           ),
@@ -377,9 +411,10 @@ class DayPage extends StatelessWidget {
                         onPressed: () {},
                         child: Text('X1'),
                       ),
-                      // Oval Button 2
                       ElevatedButton(
                         style: ElevatedButton.styleFrom(
+                          backgroundColor:  buttbackroundColor,
+                          foregroundColor: buttonTextColor,
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(30.0),
                           ),
@@ -388,9 +423,10 @@ class DayPage extends StatelessWidget {
                         onPressed: () {},
                         child: Text('X2'),
                       ),
-                      // Oval Button 3
                       ElevatedButton(
                         style: ElevatedButton.styleFrom(
+                          backgroundColor:  buttbackroundColor,
+                          foregroundColor: buttonTextColor,
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(30.0),
                           ),
@@ -399,9 +435,10 @@ class DayPage extends StatelessWidget {
                         onPressed: () {},
                         child: Text('X3'),
                       ),
-                      // Oval Button 4
                       ElevatedButton(
                         style: ElevatedButton.styleFrom(
+                          backgroundColor:  buttbackroundColor,
+                          foregroundColor: buttonTextColor,
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(30.0),
                           ),
@@ -416,6 +453,82 @@ class DayPage extends StatelessWidget {
               ),
             ),
           ],
+        ),
+      ),
+    );
+  }
+}
+
+class TemperaturePickerDialog extends StatefulWidget {
+  @override
+  _TemperaturePickerDialogState createState() => _TemperaturePickerDialogState();
+}
+
+class _TemperaturePickerDialogState extends State<TemperaturePickerDialog> {
+  double currentTemperature = 36.0;
+
+  @override
+  Widget build(BuildContext context) {
+    return Dialog(
+      backgroundColor: Colors.transparent,
+      child: BackdropFilter(
+        filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
+        child: Container(
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(20.0),
+          ),
+          padding: EdgeInsets.all(16.0),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text(
+                'Select Temperature',
+                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: textColor),
+              ),
+              SizedBox(height: 20),
+              SizedBox(
+                height: 200,
+                child: ListWheelScrollView.useDelegate(
+                  physics: FixedExtentScrollPhysics(),
+                  itemExtent: 50,
+                  onSelectedItemChanged: (index) {
+                    setState(() {
+                      currentTemperature = 35.0 + index * 0.1;
+                    });
+                  },
+                  childDelegate: ListWheelChildBuilderDelegate(
+                    builder: (context, index) {
+                      return Center(
+                        child: Text(
+                          (35.0 + index * 0.1).toStringAsFixed(1) + '°C',
+                          style: TextStyle(
+                            fontSize: 24,
+                            fontWeight: currentTemperature == (35.0 + index * 0.1)
+                                ? FontWeight.bold
+                                : FontWeight.normal,
+                            color: textColorDark,
+                          ),
+                        ),
+                      );
+                    },
+                    childCount: 50,
+                  ),
+                ),
+              ),
+              SizedBox(height: 20),
+              ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  backgroundColor:  buttbackroundColor,
+                  foregroundColor: buttonTextColor,
+                ),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+                child: Text('Done'),
+              ),
+            ],
+          ),
         ),
       ),
     );
