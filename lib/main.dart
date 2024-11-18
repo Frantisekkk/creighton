@@ -34,7 +34,7 @@ class _MainScreenState extends State<MainScreen> {
   // Dummy widget for different pages
   static final List<Widget> _pages = <Widget>[
    TablePage(),
-   HomePage(userName: 'Stanislav',userId: 1),
+   HomePage(userName: 'Stanislav'),
    // UserListPage(),
    DayPage()
    

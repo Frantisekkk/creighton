@@ -2,9 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:vector_math/vector_math.dart' as vmath;
 import 'dart:math' as math;
-import '../api_services/user.dart';
-import '../api_services/api_service.dart';
-import '../api_services/day_data.dart';
 
 // (232, 51, 139, 1)
 // (193, 57, 121, 1)
@@ -13,147 +10,123 @@ import '../api_services/day_data.dart';
 
 class HomePage extends StatelessWidget {
   final String userName;
-  final int userId;
-  final ApiService apiService = ApiService();
 
-  HomePage({required this.userName, required this.userId});
-
-Color _getColorFromString(String colorString) {
-    switch (colorString.toLowerCase()) {
-      case 'red':
-        return Colors.red;
-      case 'green':
-        return Colors.green;
-      case 'yellow':
-        return Colors.yellow;
-      case 'blue':
-        return Colors.blue;
-      case 'purple':
-        return Colors.purple;
-      default:
-        return Colors.grey; // Default color if no match found
-    }
-  }
+  HomePage({required this.userName});
 
   @override
   Widget build(BuildContext context) {
     final double screenHeight = MediaQuery.of(context).size.height;
     final double screenHeightWithoutBottomNav = screenHeight - kBottomNavigationBarHeight;
 
-    return FutureBuilder<DayData>(
-      future: apiService.fetchDayData(
-        date: DateFormat('yyyy-MM-dd').format(DateTime.now()), // Today's date
-        userId: userId,
-      ),
-      builder: (context, snapshot) {
-        if (snapshot.connectionState == ConnectionState.waiting) {
-          return Center(child: CircularProgressIndicator());
-        } else if (snapshot.hasError) {
-          return Center(child: Text('Error: ${snapshot.error}'));
-        } else if (!snapshot.hasData) {
-          return Center(child: Text('No data found for today'));
-        } else {
-          final DayData dayData = snapshot.data!;
-          final Color boxColor = _getColorFromString(dayData.color);
-
-          // For debugging
-          print('Day color from API: ${dayData.color}');
-          print('Parsed Color: $boxColor');
-
-          return Scaffold(
-            backgroundColor: Colors.grey.shade50,
-            body: Stack(
+    return Scaffold(
+      backgroundColor: Colors.grey.shade50,
+      body: Stack(
+        children: [
+          // Background circle peeking out from bottom and side
+          // Positioned(
+          //   // bottom: -100,
+          //   bottom: -screenHeight /1.45 ,
+          //   left: -screenHeight/1.5,
+          //   child: Container(
+          //     width: screenHeight ,
+          //     height: screenHeight ,
+          //     decoration: BoxDecoration(
+          //       color: const Color.fromARGB(255, 227, 47, 77).withOpacity(1),
+          //       shape: BoxShape.circle,
+          //     ),
+          //   ),
+          // ),
+          SingleChildScrollView(
+            child: Column(
               children: [
-                SingleChildScrollView(
-                  child: Column(
-                    children: [
-                      // First row: Greeting
-                      Container(
-                        color: const Color.fromARGB(255, 247, 28, 64),
-                        height: (screenHeightWithoutBottomNav / 2) * 0.4,
-                        alignment: Alignment.bottomLeft,
-                        child: Padding(
-                          padding: const EdgeInsets.only(left: 30.0),
-                          child: Text(
-                            'Ahoj $userName 👋',
-                            style: TextStyle(
-                              fontSize: screenHeightWithoutBottomNav / 16,
-                              fontWeight: FontWeight.bold,
+                // First row: One-fourth of half screen height
+                Container(
+                  color: Colors.grey.shade300,
+                  height: (screenHeightWithoutBottomNav / 2) * 0.4,
+                  alignment: Alignment.bottomLeft, // Center vertically, left align horizontally
+                  child: Padding(
+                    padding: const EdgeInsets.only(left: 30.0, ), // Adjust padding as needed
+                    child: Text(
+                      'Ahoj $userName 👋',
+                      style: TextStyle(
+                        fontSize: screenHeightWithoutBottomNav / 16, // Responsive font size
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
+                ),
+                // Second row: Three-quarters of half screen height (our developed container)
+                Container(
+                  decoration: BoxDecoration(
+                  color: Colors.grey.shade300,
+                    borderRadius: const BorderRadius.only(
+                      bottomLeft: Radius.circular(30),
+                      bottomRight: Radius.circular(30),
+                    ),  
+                  ),
+                  padding: const EdgeInsets.all(30),
+                  height: (screenHeightWithoutBottomNav / 2) * 0.75,
+                  child: Container(
+                    clipBehavior: Clip.none,
+                    padding: const EdgeInsets.only(top: 16.0, bottom: 16.0, right: 16.0),
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(30),
+                      boxShadow: const [
+                        BoxShadow(
+                          color: Colors.black12,
+                          blurRadius: 10.0,
+                          offset: Offset(3, 10),
+                        ),
+                      ],
+                    ),
+                    child: Row(
+                      children: [
+                        Expanded(
+                          child: FittedBox(
+                            fit: BoxFit.contain,
+                            child: Container(
+                              width: 38,
+                              height: 50,
+                              decoration: BoxDecoration(
+                                color: const Color.fromARGB(0, 255, 255, 255), // Placeholder for the picture
+                                borderRadius: BorderRadius.circular(10),
+                                border: Border.all(color: Colors.grey, width: 0.4),
+                              ),
                             ),
                           ),
                         ),
-                      ),
-                      // Second row: Main container with color
-                      Container(
-                        decoration: const BoxDecoration(
-                          color: Color.fromARGB(255, 247, 28, 64),
-                          borderRadius: BorderRadius.only(
-                            bottomLeft: Radius.circular(30),
-                            bottomRight: Radius.circular(30),
-                          ),
-                        ),
-                        padding: const EdgeInsets.all(30),
-                        height: (screenHeightWithoutBottomNav / 2) * 0.75,
-                        child: Container(
-                          padding: const EdgeInsets.only(top: 16.0, bottom: 16.0, right: 16.0),
-                          decoration: BoxDecoration(
-                            color: Colors.white,
-                            borderRadius: BorderRadius.circular(30),
-                            boxShadow: const [
-                              BoxShadow(
-                                color: Colors.black12,
-                                blurRadius: 10.0,
-                                offset: Offset(3, 10),
-                              ),
-                            ],
-                          ),
-                          child: Row(
+                        const SizedBox(width: 20),
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Expanded(
-                                child: FittedBox(
-                                  fit: BoxFit.contain,
-                                  child: Container(
-                                    width: 38,
-                                    height: 50,
-                                    decoration: BoxDecoration(
-                                      // color: boxColor,
-                                    color: Colors.green,
-                                      borderRadius: BorderRadius.circular(10),
-                                      border: Border.all(color: Colors.grey, width: 0.4),
-                                    ),
-                                  ),
-                                ),
+                              Text(
+                                DateFormat('E dd.MM').format(DateTime.now()),
+                                style: const TextStyle(fontSize: 22),
                               ),
-                              const SizedBox(width: 20),
-                              Expanded(
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                      DateFormat('E dd.MM').format(DateTime.now()),
-                                      style: const TextStyle(fontSize: 22),
-                                    ),
-                                    const Divider(
-                                      color: Colors.grey,
-                                      thickness: 1,
-                                    ),
-                                    const SizedBox(height: 10),
-                                    Text(
-                                      'Baby: ${dayData.baby ? 'Yes' : 'No'}',
-                                      style: const TextStyle(fontSize: 16),
-                                    ),
-                                    Text(
-                                      'Temperature: ${dayData.temperature ?? 'N/A'}',
-                                      style: const TextStyle(fontSize: 16),
-                                    ),
-                                    // Add more fields as needed
-                                  ],
-                                ),
+                              const Divider(
+                                color: Colors.grey,
+                                thickness: 1,
+                              ),
+                              const SizedBox(height: 10),
+                              const Text(
+                                'Some additional',
+                                style: TextStyle(fontSize: 16),
+                                textAlign: TextAlign.left,
+                              ),
+                              const Text(
+                                'text here',
+                                style: TextStyle(fontSize: 16),
+                                textAlign: TextAlign.left,
                               ),
                             ],
                           ),
                         ),
-                      ),
+                      ],
+                    ),
+                  ),
+                ),
                 // Third row: Calendar representation for the last 7 days
                 Container(
                   margin:const EdgeInsets.only(top: 20, bottom: 10, right: 30, left: 30),
@@ -233,14 +206,11 @@ Color _getColorFromString(String colorString) {
                     ),
                   ),
                 ),
-                    ],
-                  ),
-                ),
               ],
             ),
-          );
-        }
-      },
+          ),
+        ],
+      ),
     );
   }
 }
