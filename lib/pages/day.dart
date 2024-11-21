@@ -2,18 +2,18 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'dart:ui';
 
-const Color backgroundColor = Color.fromARGB(255, 228, 228, 228);
+const Color backgroundColor = Color.fromARGB(255, 255, 255, 255);
 const Color textColor = Colors.white;
 const Color textColorDark = Colors.black;
-const Color headerContainerBackgroundColor = Color.fromARGB(255, 37, 37, 37);
-const Color buttbackroundColor = Color.fromARGB(255, 100, 100, 100);
+const Color headerContainerBackgroundColor = Color.fromRGBO( 169, 15, 159, 0.75);
+const Color buttbackroundColor = Color.fromARGB(255, 154, 135, 157);
 const Color buttonTextColor = Colors.white;
 
 class DayPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     String dayName = DateFormat('EEEE').format(DateTime.now());
-    String date = DateFormat('yMMMd').format(DateTime.now());
+    String date = DateFormat('yMd').format(DateTime.now());
 
     return Scaffold(
       backgroundColor: backgroundColor,
@@ -139,6 +139,18 @@ class DayPage extends StatelessWidget {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
+                       ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor:  buttbackroundColor,
+                          foregroundColor: buttonTextColor,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(30.0),
+                          ),
+                          padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                        ),
+                        onPressed: () {},
+                        child: Text('B'),
+                      ),
                       ElevatedButton(
                         style: ElevatedButton.styleFrom(
                           backgroundColor:  buttbackroundColor,
