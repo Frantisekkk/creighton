@@ -35,32 +35,42 @@ class ColorDisplayContainer extends StatelessWidget {
   }
 
   Widget _buildColorDisplayContainer(Color color) {
-    return Container(
-      padding: const EdgeInsets.all(16.0),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(30),
-        boxShadow: const [
-          BoxShadow(
-            color: Colors.black12,
-            blurRadius: 10.0,
-            offset: Offset(3, 10),
-          ),
-        ],
-      ),
-      child: Row(
-        children: [
-          Container(
-            width: 38,
-            height: 50,
-            decoration: BoxDecoration(
-              color: color,
-              borderRadius: BorderRadius.circular(10),
-              border: Border.all(color: Colors.grey, width: 0.4),
+  return Container(
+    padding: const EdgeInsets.all(16.0),
+    decoration: BoxDecoration(
+      color: Colors.white,
+      borderRadius: BorderRadius.circular(30),
+      boxShadow: const [
+        BoxShadow(
+          color: Colors.black12,
+          blurRadius: 10.0,
+          offset: Offset(3, 10),
+        ),
+      ],
+    ),
+    child: Row(
+      children: [
+        // First Half: Rectangle (centered with aspect ratio)
+        Flexible(
+          flex: 1, // Takes half the row
+          child: Center(
+            child: AspectRatio(
+              aspectRatio: 3.7 / 5, // Height-to-width ratio
+              child: Container(
+                decoration: BoxDecoration(
+                  color: color,
+                  borderRadius: BorderRadius.circular(20),
+                  border: Border.all(color: Colors.grey, width: 0.4),
+                ),
+              ),
             ),
           ),
-          const SizedBox(width: 20),
-          Column(
+        ),
+        const SizedBox(width: 20), // Space between the two parts
+        // Second Half: Text
+        Flexible(
+          flex: 1, // Takes the other half of the row
+          child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
@@ -79,8 +89,10 @@ class ColorDisplayContainer extends StatelessWidget {
               ),
             ],
           ),
-        ],
-      ),
-    );
-  }
+        ),
+      ],
+    ),
+  );
+}
+
 }
