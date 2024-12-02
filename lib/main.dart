@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'pages/home.dart';
 import 'pages/day.dart';
-import 'pages/table.dart';
+// import 'pages/table.dart';
 import 'pages/StickerDisplay.dart';
-import 'pages/user_list_page.dart';
+// import 'pages/user_list_page.dart';
 
 void main() {
   runApp(const MyApp());
@@ -36,7 +36,7 @@ class _MainScreenState extends State<MainScreen> {
   static final List<Widget> _pages = <Widget>[
   StickerDisplay(),
    // TablePage(),
-   HomePage(userName: 'Stanislav'),
+   HomePage(userName: 'Monika'),
    // UserListPage(),
    DayPage()
    
@@ -63,7 +63,7 @@ class _MainScreenState extends State<MainScreen> {
           child: BottomNavigationBar(
             items: const <BottomNavigationBarItem>[
               BottomNavigationBarItem(
-                icon: Icon(Icons.table_chart),
+                icon: Icon(Icons.table_rows),
                 label: 'Table',
               ),
               BottomNavigationBarItem(
@@ -71,7 +71,7 @@ class _MainScreenState extends State<MainScreen> {
                 label: 'Home',
               ),
               BottomNavigationBarItem(
-                icon: Icon(Icons.hdr_plus),
+                icon: Icon(Icons.access_alarm),
                 label: 'Day',
               ),
             ],

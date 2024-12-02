@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+// import '../assets/font/Borel-Regular.ttf';
+
 
 class Greeting extends StatelessWidget {
   final String userName;
@@ -23,6 +25,8 @@ class Greeting extends StatelessWidget {
           style: TextStyle(
             fontSize: height / 4,
             fontWeight: FontWeight.bold,
+            fontFamily: 'Borel',
+            color: Colors.white,
           ),
         ),
       ),
