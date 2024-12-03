@@ -71,6 +71,56 @@ class ApiService {
     throw Exception('Error fetching stickers: $e');
   }
 }
+// Update bleeding
+  Future<void> updateBleeding(String date, String bleeding) async {
+    final url = Uri.parse('$baseUrl/day/bleeding');
+    try {
+      final response = await http.post(
+        url,
+        headers: {"Content-Type": "application/json"},
+        body: json.encode({'date': date, 'bleeding': bleeding}),
+      );
+      if (response.statusCode != 200) {
+        throw Exception('Failed to update bleeding');
+      }
+    } catch (error) {
+      throw Exception('Error updating bleeding: $error');
+    }
+  }
+
+  // Update mucus
+  Future<void> updateMucus(String date, String mucus) async {
+    final url = Uri.parse('$baseUrl/day/mucus');
+    try {
+      final response = await http.post(
+        url,
+        headers: {"Content-Type": "application/json"},
+        body: json.encode({'date': date, 'mucus': mucus}),
+      );
+      if (response.statusCode != 200) {
+        throw Exception('Failed to update mucus');
+      }
+    } catch (error) {
+      throw Exception('Error updating mucus: $error');
+    }
+  }
+
+  // Update fertility
+  Future<void> updateFertility(String date, String fertility) async {
+    final url = Uri.parse('$baseUrl/day/fertility');
+    try {
+      final response = await http.post(
+        url,
+        headers: {"Content-Type": "application/json"},
+        body: json.encode({'date': date, 'fertility': fertility}),
+      );
+      if (response.statusCode != 200) {
+        throw Exception('Failed to update fertility');
+      }
+    } catch (error) {
+      throw Exception('Error updating fertility: $error');
+    }
+  }
 
 
 
