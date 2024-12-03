@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import '../api_services/stickerService.dart';
+import '../../api_services/stickerService.dart';
 
 class ColorDisplayContainer extends StatelessWidget {
   final double height;

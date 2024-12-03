@@ -10,7 +10,6 @@ class ApiService {
   // Fetch sticker (color) by date
   Future<List<String>> fetchStickerByDate(String date) async {
     final url = Uri.parse('$baseUrl/day?date=$date');
-    print("url is: $baseUrl/day?date=$date");
     try {
       final response = await http.get(url);
       if (response.statusCode == 200) {
@@ -21,6 +20,21 @@ class ApiService {
       }
     } catch (error) {
       throw Exception('Error fetching data: $error');
+    }
+  }
+
+  // Fetch day data by date (for day page)
+  Future<Map<String, dynamic>> fetchDayData(String date) async {
+    final url = Uri.parse('$baseUrl/day?date=$date');
+    try {
+      final response = await http.get(url);
+      if (response.statusCode == 200) {
+        return json.decode(response.body); // Return the full day's data
+      } else {
+        throw Exception('Failed to fetch day data');
+      }
+    } catch (error) {
+      throw Exception('Error fetching day data: $error');
     }
   }
 

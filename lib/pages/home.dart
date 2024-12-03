@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import '../widgets/greeting.dart';
-import '../widgets/ColorDisplayContainer.dart';
-import '../widgets/week.dart';
-import '../widgets/graph.dart';
+import '../widgets/home_page_components/greeting.dart';
+import '../widgets/home_page_components/ColorDisplayContainer.dart';
+import '../widgets/home_page_components/week.dart';
+import '../widgets/home_page_components/graph.dart';
 
 
 class HomePage extends StatelessWidget {

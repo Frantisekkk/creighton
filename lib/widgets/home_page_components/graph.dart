@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../services/graph_calculation.dart';
+import '../../services/graph_calculation.dart';
 
 class CircularProgressIndicatorSection extends StatelessWidget {
   final double height;
