@@ -1,9 +1,8 @@
 import 'dart:ui';
-
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import '../widgets/day_page_components/ButtonSection.dart'; // Import ButtonSection component
-import '../api_services/api_service.dart'; // Import ApiService
+import '../widgets/day_page_components/ButtonSection.dart';
+import '../api_services/api_service.dart';
 
 const Color backgroundColor = Color.fromARGB(255, 255, 255, 255);
 const Color textColorDark = Colors.black;
@@ -42,39 +41,21 @@ class _DayPageState extends State<DayPage> {
     }
   }
 
-  void _updateBleeding(String value) async {
+  void _updateDayData(String field, String value) async {
     final today = DateFormat('yyyy-MM-dd').format(DateTime.now());
     try {
-      await apiService.updateBleeding(today, value);
+      await apiService.updateDayData(today, {field: value});
       setState(() {
-        _selectedBleeding = value;
+        if (field == 'bleeding') {
+          _selectedBleeding = value;
+        } else if (field == 'mucus') {
+          _selectedMucus = value;
+        } else if (field == 'fertility') {
+          _selectedFertility = value;
+        }
       });
     } catch (e) {
-      print('Error updating bleeding: $e');
-    }
-  }
-
-  void _updateMucus(String value) async {
-    final today = DateFormat('yyyy-MM-dd').format(DateTime.now());
-    try {
-      await apiService.updateMucus(today, value);
-      setState(() {
-        _selectedMucus = value;
-      });
-    } catch (e) {
-      print('Error updating mucus: $e');
-    }
-  }
-
-  void _updateFertility(String value) async {
-    final today = DateFormat('yyyy-MM-dd').format(DateTime.now());
-    try {
-      await apiService.updateFertility(today, value);
-      setState(() {
-        _selectedFertility = value;
-      });
-    } catch (e) {
-      print('Error updating fertility: $e');
+      print('Error updating $field: $e');
     }
   }
 
@@ -99,8 +80,9 @@ class _DayPageState extends State<DayPage> {
                   Text(
                     '$dayName, $date',
                     style: const TextStyle(
-                      fontSize: 35,
+                      fontSize: 25,
                       fontWeight: FontWeight.bold,
+                      fontFamily: 'Borel',
                       color: textColorDark,
                     ),
                   ),
@@ -110,23 +92,38 @@ class _DayPageState extends State<DayPage> {
 
             // Picture Placeholder Section
             Container(
-              margin: EdgeInsets.all(8.0),
+              margin: const EdgeInsets.only(left: 30.0, right: 30.0, bottom: 1),
+              height: 160,
               padding: EdgeInsets.all(16.0),
+              decoration: BoxDecoration(
+              color: headerContainerBackgroundColor.withOpacity(0.4),
+              borderRadius: BorderRadius.circular(30),
+                boxShadow: const [
+                  BoxShadow(
+                    color: Colors.black12,
+                    blurRadius: 10.0,
+                    offset: Offset(3, 10),
+                  ),
+                ],
+              ),
               child: Row(
                 children: [
-                  Expanded(
-                    flex: 1,
-                    child: Container(
-                      height: 150,
-                      color: Colors.grey.withOpacity(0.3),
-                      child: Center(
-                        child: Text(
-                          'Picture Placeholder',
-                          style: TextStyle(fontSize: 16, color: textColorDark),
+                  Flexible(
+                    flex: 1, // Takes half the row
+                    child: Center(
+                      child: AspectRatio(
+                        aspectRatio: 3.7 / 5, // Height-to-width ratio
+                        child: Container(
+                          decoration: BoxDecoration(
+                            color: Colors.red,
+                            borderRadius: BorderRadius.circular(20),
+                            border: Border.all(color: Colors.grey, width: 0.4),
+                          ),
                         ),
                       ),
                     ),
                   ),
+                  const SizedBox(width: 20),
                   Expanded(
                     flex: 1,
                     child: Column(
@@ -142,11 +139,11 @@ class _DayPageState extends State<DayPage> {
                           child: Container(
                             padding: EdgeInsets.all(16.0),
                             decoration: BoxDecoration(
-                              color: const Color.fromARGB(255, 154, 135, 157).withOpacity(0.1),
+                              color: Colors.white.withOpacity(0.8),
                               borderRadius: BorderRadius.circular(10),
                             ),
                             child: Text(
-                              'Teplota: 36.0°C',
+                              '36.0°C',
                               style: TextStyle(fontSize: 18, color: textColorDark),
                             ),
                           ),
@@ -166,36 +163,89 @@ class _DayPageState extends State<DayPage> {
                 ],
               ),
             ),
+            
 
             // Bleeding Section
             _buildSection(
               buttonSection: ButtonSection(
                 title: '🩸 Krvácanie',
-                options: ['B', 'VL', 'L', 'M', 'H'],
+                options: [['B', 'VL', 'L', 'M', 'H']],
                 selectedValue: _selectedBleeding,
-                onPressed: _updateBleeding,
+                onPressed: (value, isToggled) {
+                print('$value is ${isToggled ? "toggled on" : "toggled off"}');
+                _updateDayData('mucus', value);
+              },
               ),
             ),
 
             // Description Section
-            _buildSection(
-              buttonSection: ButtonSection(
+            ButtonSection(
               title: 'Popis',
-                options: ['0', '2', '2W', '4', '6', '8', '10'],
-                selectedValue: _selectedMucus,
-                onPressed: _updateMucus,
-              ),
+              options: [
+                ['0', '2', '2W', '4'],  // First row
+                ['6', '8', '10'],       // Second row
+                ['10DL', '10SL', '10WL'] // Third row
+              ],
+              selectedValue: '',
+              onPressed: (value, isToggled) {
+                print('$value is ${isToggled ? "toggled on" : "toggled off"}');
+                _updateDayData('mucus', value);
+              },
             ),
+
 
             // Fertility Section
             _buildSection(
               buttonSection: ButtonSection(
-              title: 'Plodnosť',
-                options: ['X1', 'X2', 'X3', 'AD'],
+                title: 'Plodnosť',
+                options: [['X1', 'X2', 'X3', 'AD']],
                 selectedValue: _selectedFertility,
-                onPressed: _updateFertility,
+                onPressed: (value, isToggled) {
+                print('$value is ${isToggled ? "toggled on" : "toggled off"}');
+                _updateDayData('mucus', value);
+              },
               ),
             ),
+            // Add "Popis" Section
+            Container(
+              margin: const EdgeInsets.all(20.0),
+              padding: const EdgeInsets.all(16.0),
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(10),
+                // boxShadow: const [
+                //   BoxShadow(
+                //     color: Colors.black12,
+                //     blurRadius: 4.0,
+                //     offset: Offset(0, 4),
+                //   ),
+                // ],
+              ),
+              child: const Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const Text(
+                    'Vlastný popis',
+                    style: TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                      color: textColorDark,
+                    ),
+                  ),
+                  const SizedBox(height: 10),
+                  TextField(
+                    maxLines: 4,
+                    decoration: const InputDecoration(
+                      border: OutlineInputBorder(),
+                      hintText: 'Enter text here...',
+                    ),
+                  ),
+                ],
+              ),
+            ),
+
+
+
           ],
         ),
       ),
@@ -203,36 +253,14 @@ class _DayPageState extends State<DayPage> {
   }
 
   Widget _buildSection({
-    // required String title,
     required Widget buttonSection,
   }) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.stretch,
-      children: [
-        // Container(
-        //   margin: EdgeInsets.only(top: 8.0, bottom: 8.0),
-        //   padding: EdgeInsets.only(top: 5.0, bottom: 5, left: 20),
-        //   decoration: BoxDecoration(
-        //     color: headerContainerBackgroundColor,
-        //   ),
-        //   child: Text(
-        //     title,
-        //     style: TextStyle(
-        //       color: buttonTextColor,
-        //       fontSize: 15,
-        //       fontWeight: FontWeight.bold,
-        //     ),
-        //   ),
-        // ),
-        Padding(
-          padding: EdgeInsets.all(0.0),
-          child: buttonSection,
-        ),
-      ],
+    return Padding(
+      padding: EdgeInsets.all(0.0),
+      child: buttonSection,
     );
   }
 }
-
 class TemperaturePickerDialog extends StatefulWidget {
   @override
   _TemperaturePickerDialogState createState() => _TemperaturePickerDialogState();
@@ -258,11 +286,7 @@ class _TemperaturePickerDialogState extends State<TemperaturePickerDialog> {
             children: [
               Text(
                 'Select Temperature',
-                style: TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.bold,
-                  color: textColorDark,
-                ),
+                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.black),
               ),
               SizedBox(height: 20),
               SizedBox(
@@ -297,7 +321,7 @@ class _TemperaturePickerDialogState extends State<TemperaturePickerDialog> {
               SizedBox(height: 20),
               ElevatedButton(
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: const Color.fromARGB(255, 154, 135, 157),
+                  backgroundColor:  buttbackroundColor,
                   foregroundColor: buttonTextColor,
                 ),
                 onPressed: () {

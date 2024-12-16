@@ -10,13 +10,13 @@ class StickerDisplay extends StatefulWidget {
 
 class _StickerDisplayState extends State<StickerDisplay> {
   final ApiService _apiService = ApiService();
-  late Future<List<String>> _stickers;
+  late Future<Map<String, dynamic>> _dayData;
   final String selectedDate = '2024-11-19'; // Example date, replace as needed
 
   @override
   void initState() {
     super.initState();
-    _stickers = _apiService.fetchStickerByDate(selectedDate);
+    _dayData = _apiService.fetchDayData(selectedDate);
   }
 
   @override
@@ -25,25 +25,39 @@ class _StickerDisplayState extends State<StickerDisplay> {
       appBar: AppBar(
         title: const Text('Sticker Display'),
       ),
-      body: FutureBuilder<List<String>>(
-        future: _stickers,
+      body: FutureBuilder<Map<String, dynamic>>(
+        future: _dayData,
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return const Center(child: CircularProgressIndicator());
           } else if (snapshot.hasError) {
             return Center(child: Text('Error: ${snapshot.error}'));
           } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-            return const Center(child: Text('No stickers found for the selected date'));
+            return const Center(child: Text('No data found for the selected date'));
           } else {
-            final stickers = snapshot.data!;
-            return ListView.builder(
-              itemCount: stickers.length,
-              itemBuilder: (context, index) {
-                return ListTile(
-                  title: Text(stickers[index], style: const TextStyle(fontSize: 18)),
-                  leading: Icon(Icons.circle, color: _getColor(stickers[index])),
-                );
-              },
+            final dayData = snapshot.data!;
+            final sticker = dayData['sticker'] ?? 'unknown'; // Replace with the sticker column
+            return Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(
+                    'Sticker for $selectedDate:',
+                    style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                  ),
+                  const SizedBox(height: 20),
+                  Icon(
+                    Icons.circle,
+                    color: _getColor(sticker),
+                    size: 80,
+                  ),
+                  const SizedBox(height: 20),
+                  Text(
+                    sticker,
+                    style: const TextStyle(fontSize: 18),
+                  ),
+                ],
+              ),
             );
           }
         },

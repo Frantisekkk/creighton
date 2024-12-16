@@ -1,27 +1,10 @@
 import 'dart:convert';
-// import 'dart:math';
 import 'package:http/http.dart' as http;
 import 'dart:async';
 import 'package:intl/intl.dart';
 
 class ApiService {
   final String baseUrl = 'http://172.18.211.73:3000/api';
-
-  // Fetch sticker (color) by date
-  Future<List<String>> fetchStickerByDate(String date) async {
-    final url = Uri.parse('$baseUrl/day?date=$date');
-    try {
-      final response = await http.get(url);
-      if (response.statusCode == 200) {
-        List<dynamic> data = json.decode(response.body);
-        return data.map((item) => item['color'] as String).toList();
-      } else {
-        throw Exception('Failed to fetch sticker data');
-      }
-    } catch (error) {
-      throw Exception('Error fetching data: $error');
-    }
-  }
 
   // Fetch day data by date (for day page)
   Future<Map<String, dynamic>> fetchDayData(String date) async {
@@ -38,32 +21,24 @@ class ApiService {
     }
   }
 
-   // Fetch stickers for the last 7 days from the database
+  // Fetch stickers for the last 7 days from the database
   Future<List<Map<String, String>>> fetchStickersForLastWeek() async {
-  try {
-    List<Map<String, String>> stickerData = [];
-    for (int i = 6; i >= 0; i--) {
-      print("Fetching data for day offset: $i");
-      DateTime date = DateTime.now().subtract(Duration(days: i));
-      String formattedDate = DateFormat('yyyy-MM-dd').format(date);
-      print("Formatted date: $formattedDate");
+    try {
+      List<Map<String, String>> stickerData = [];
+      for (int i = 6; i >= 0; i--) {
+        DateTime date = DateTime.now().subtract(Duration(days: i));
+        String formattedDate = DateFormat('yyyy-MM-dd').format(date);
 
-      // Fetch sticker for the specific date
-      final url = Uri.parse('$baseUrl/day?date=$formattedDate');
-      print("Requesting URL: $url");
+        // Fetch day data for the specific date
+        final url = Uri.parse('$baseUrl/day?date=$formattedDate');
 
-      try {
-        final response = await http.get(url);
-        print("Response status: ${response.statusCode}");
-
-        if (response.statusCode == 200) {
-          List<dynamic> data = json.decode(response.body);
-          print("Received data: $data");
-
-          if (data.isNotEmpty) {
+        try {
+          final response = await http.get(url);
+          if (response.statusCode == 200) {
+            Map<String, dynamic> data = json.decode(response.body);
             stickerData.add({
               'date': formattedDate,
-              'color': data[0]['color'] ?? 'unknown', // Fallback for null values
+              'color': data['sticker'] ?? 'unknown', // Use 'sticker' column for color
             });
           } else {
             stickerData.add({
@@ -71,76 +46,33 @@ class ApiService {
               'color': 'no data',
             });
           }
-        } else {
-          print("Error fetching data for $formattedDate: ${response.reasonPhrase}");
+        } catch (e) {
+          stickerData.add({
+            'date': formattedDate,
+            'color': 'error',
+          });
         }
-      } catch (e) {
-        print("HTTP request failed for $formattedDate: $e");
       }
+      return stickerData;
+    } catch (e) {
+      throw Exception('Error fetching stickers for last week: $e');
     }
-    print("Final sticker data: $stickerData");
-    return stickerData;
-  } catch (e) {
-    print("Error in fetchStickersForLastWeek: $e");
-    throw Exception('Error fetching stickers: $e');
+  }
+
+  // Update day data (generic update method)
+  Future<void> updateDayData(String date, Map<String, dynamic> updates) async {
+    final url = Uri.parse('$baseUrl/day/update');
+    try {
+      final response = await http.post(
+        url,
+        headers: {"Content-Type": "application/json"},
+        body: json.encode({'date': date, 'updates': updates}),
+      );
+      if (response.statusCode != 200) {
+        throw Exception('Failed to update day data');
+      }
+    } catch (error) {
+      throw Exception('Error updating day data: $error');
+    }
   }
 }
-// Update bleeding
-  Future<void> updateBleeding(String date, String bleeding) async {
-    final url = Uri.parse('$baseUrl/day/bleeding');
-    try {
-      final response = await http.post(
-        url,
-        headers: {"Content-Type": "application/json"},
-        body: json.encode({'date': date, 'bleeding': bleeding}),
-      );
-      if (response.statusCode != 200) {
-        throw Exception('Failed to update bleeding');
-      }
-    } catch (error) {
-      throw Exception('Error updating bleeding: $error');
-    }
-  }
-
-  // Update mucus
-  Future<void> updateMucus(String date, String mucus) async {
-    final url = Uri.parse('$baseUrl/day/mucus');
-    try {
-      final response = await http.post(
-        url,
-        headers: {"Content-Type": "application/json"},
-        body: json.encode({'date': date, 'mucus': mucus}),
-      );
-      if (response.statusCode != 200) {
-        throw Exception('Failed to update mucus');
-      }
-    } catch (error) {
-      throw Exception('Error updating mucus: $error');
-    }
-  }
-
-  // Update fertility
-  Future<void> updateFertility(String date, String fertility) async {
-    final url = Uri.parse('$baseUrl/day/fertility');
-    try {
-      final response = await http.post(
-        url,
-        headers: {"Content-Type": "application/json"},
-        body: json.encode({'date': date, 'fertility': fertility}),
-      );
-      if (response.statusCode != 200) {
-        throw Exception('Failed to update fertility');
-      }
-    } catch (error) {
-      throw Exception('Error updating fertility: $error');
-    }
-  }
-
-
-
-
-
-
-}
-
-

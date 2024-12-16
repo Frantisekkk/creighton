@@ -6,12 +6,16 @@ class StickerService {
 
   Future<Color> fetchColorByDate(String date) async {
     try {
-      final List<String> colors = await _apiService.fetchStickerByDate(date);
-      if (colors.isNotEmpty) {
-        return _getColor(colors[0]);
+      // Fetch day data
+      final Map<String, dynamic> dayData = await _apiService.fetchDayData(date);
+
+      // Extract the color field (assumed to be in 'sticker')
+      final String? colorName = dayData['sticker'] as String?;
+      if (colorName != null && colorName.isNotEmpty) {
+        return _getColor(colorName);
       } else {
-        print('Error: No colors found for date $date');
-        return Colors.grey; // Default to gray if no colors are found
+        print('Error: No color found for date $date');
+        return Colors.grey; // Default to gray if no color is found
       }
     } catch (e) {
       print('Error fetching color for date $date: $e');
@@ -21,11 +25,14 @@ class StickerService {
 
   Future<List<Color>> fetchColorsForLastWeek() async {
     try {
+      // Fetch sticker data for the last week
       final List<Map<String, String>> stickerData =
           await _apiService.fetchStickersForLastWeek();
+
+      // Map the colors and return as a list
       return stickerData.map((data) {
-        final color = data['color'];
-        return color != null ? _getColor(color) : Colors.grey;
+        final String? colorName = data['color'];
+        return colorName != null ? _getColor(colorName) : Colors.grey;
       }).toList();
     } catch (e) {
       print('Error fetching colors for the last week: $e');
