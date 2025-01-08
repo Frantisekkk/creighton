@@ -9,7 +9,7 @@ class ApiService {
   // Fetch day data by date (for day page)
   Future<Map<String, dynamic>> fetchDayData(String date) async {
     final url = Uri.parse('$baseUrl/day?date=$date');
-    // print(url);
+    print(url);
     try {
       final response = await http.get(url);
       if (response.statusCode == 200) {
