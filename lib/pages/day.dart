@@ -20,6 +20,8 @@ class _DayPageState extends State<DayPage> {
   String _selectedBleeding = '';
   String _selectedMucus = '';
   String _selectedFertility = '';
+  double _selectedTemperature =
+      36.0; // Add a state variable to store temperature and set default to 36 celsius
 
   @override
   void initState() {
@@ -96,8 +98,8 @@ class _DayPageState extends State<DayPage> {
               height: 160,
               padding: EdgeInsets.all(16.0),
               decoration: BoxDecoration(
-              color: headerContainerBackgroundColor.withOpacity(0.4),
-              borderRadius: BorderRadius.circular(30),
+                color: headerContainerBackgroundColor.withOpacity(0.4),
+                borderRadius: BorderRadius.circular(30),
                 boxShadow: const [
                   BoxShadow(
                     color: Colors.black12,
@@ -130,11 +132,27 @@ class _DayPageState extends State<DayPage> {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         GestureDetector(
-                          onTap: () {
-                            showDialog(
+                          onTap: () async {
+                            double? selectedTemp = await showDialog<double>(
                               context: context,
-                              builder: (context) => TemperaturePickerDialog(),
+                              builder: (context) => TemperaturePickerDialog(
+                                initialTemperature: _selectedTemperature,
+                              ),
                             );
+
+                            if (selectedTemp != null) {
+                              final today = DateFormat('yyyy-MM-dd')
+                                  .format(DateTime.now());
+                              try {
+                                await apiService.updateTemperature(
+                                    today, selectedTemp);
+                                setState(() {
+                                  _selectedTemperature = selectedTemp;
+                                });
+                              } catch (e) {
+                                print('Error updating temperature: $e');
+                              }
+                            }
                           },
                           child: Container(
                             padding: EdgeInsets.all(16.0),
@@ -143,15 +161,17 @@ class _DayPageState extends State<DayPage> {
                               borderRadius: BorderRadius.circular(10),
                             ),
                             child: Text(
-                              '36.0°C',
-                              style: TextStyle(fontSize: 18, color: textColorDark),
+                              '${_selectedTemperature.toStringAsFixed(1)}°C',
+                              style:
+                                  TextStyle(fontSize: 18, color: textColorDark),
                             ),
                           ),
                         ),
                         SizedBox(height: 20),
                         ElevatedButton(
                           style: ElevatedButton.styleFrom(
-                            backgroundColor: const Color.fromARGB(255, 154, 135, 157),
+                            backgroundColor:
+                                const Color.fromARGB(255, 154, 135, 157),
                             foregroundColor: buttonTextColor,
                           ),
                           onPressed: () {},
@@ -163,18 +183,20 @@ class _DayPageState extends State<DayPage> {
                 ],
               ),
             ),
-            
 
             // Bleeding Section
             _buildSection(
               buttonSection: ButtonSection(
                 title: '🩸 Krvácanie',
-                options: [['B', 'VL', 'L', 'M', 'H']],
+                options: [
+                  ['B', 'VL', 'L', 'M', 'H']
+                ],
                 selectedValue: _selectedBleeding,
                 onPressed: (value, isToggled) {
-                print('$value is ${isToggled ? "toggled on" : "toggled off"}');
-                _updateDayData('mucus', value);
-              },
+                  print(
+                      '$value is ${isToggled ? "toggled on" : "toggled off"}');
+                  _updateDayData('mucus', value);
+                },
               ),
             ),
 
@@ -182,8 +204,8 @@ class _DayPageState extends State<DayPage> {
             ButtonSection(
               title: 'Popis',
               options: [
-                ['0', '2', '2W', '4'],  // First row
-                ['6', '8', '10'],       // Second row
+                ['0', '2', '2W', '4'], // First row
+                ['6', '8', '10'], // Second row
                 ['10DL', '10SL', '10WL'] // Third row
               ],
               selectedValue: '',
@@ -193,17 +215,19 @@ class _DayPageState extends State<DayPage> {
               },
             ),
 
-
             // Fertility Section
             _buildSection(
               buttonSection: ButtonSection(
                 title: 'Plodnosť',
-                options: [['X1', 'X2', 'X3', 'AD']],
+                options: [
+                  ['X1', 'X2', 'X3', 'AD']
+                ],
                 selectedValue: _selectedFertility,
                 onPressed: (value, isToggled) {
-                print('$value is ${isToggled ? "toggled on" : "toggled off"}');
-                _updateDayData('mucus', value);
-              },
+                  print(
+                      '$value is ${isToggled ? "toggled on" : "toggled off"}');
+                  _updateDayData('mucus', value);
+                },
               ),
             ),
             // Add "Popis" Section
@@ -243,9 +267,6 @@ class _DayPageState extends State<DayPage> {
                 ],
               ),
             ),
-
-
-
           ],
         ),
       ),
@@ -261,13 +282,26 @@ class _DayPageState extends State<DayPage> {
     );
   }
 }
+
 class TemperaturePickerDialog extends StatefulWidget {
+  final double initialTemperature;
+
+  TemperaturePickerDialog({required this.initialTemperature});
+
   @override
-  _TemperaturePickerDialogState createState() => _TemperaturePickerDialogState();
+  _TemperaturePickerDialogState createState() =>
+      _TemperaturePickerDialogState();
 }
 
 class _TemperaturePickerDialogState extends State<TemperaturePickerDialog> {
   double currentTemperature = 36.0;
+
+  @override
+  void initState() {
+    super.initState();
+    currentTemperature =
+        widget.initialTemperature; // Initialize with the initial value
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -286,7 +320,11 @@ class _TemperaturePickerDialogState extends State<TemperaturePickerDialog> {
             children: [
               Text(
                 'Select Temperature',
-                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.black),
+                style: TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.black,
+                ),
               ),
               SizedBox(height: 20),
               SizedBox(
@@ -306,9 +344,10 @@ class _TemperaturePickerDialogState extends State<TemperaturePickerDialog> {
                           (35.0 + index * 0.1).toStringAsFixed(1) + '°C',
                           style: TextStyle(
                             fontSize: 24,
-                            fontWeight: currentTemperature == (35.0 + index * 0.1)
-                                ? FontWeight.bold
-                                : FontWeight.normal,
+                            fontWeight:
+                                currentTemperature == (35.0 + index * 0.1)
+                                    ? FontWeight.bold
+                                    : FontWeight.normal,
                             color: textColorDark,
                           ),
                         ),
@@ -321,11 +360,11 @@ class _TemperaturePickerDialogState extends State<TemperaturePickerDialog> {
               SizedBox(height: 20),
               ElevatedButton(
                 style: ElevatedButton.styleFrom(
-                  backgroundColor:  buttbackroundColor,
+                  backgroundColor: buttbackroundColor,
                   foregroundColor: buttonTextColor,
                 ),
                 onPressed: () {
-                  Navigator.of(context).pop();
+                  Navigator.of(context).pop(currentTemperature);
                 },
                 child: Text('Done'),
               ),

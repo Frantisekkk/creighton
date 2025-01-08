@@ -1,72 +1,135 @@
 import 'package:flutter/material.dart';
-import '../api_services/api_service.dart';
 
-class StickerDisplay extends StatefulWidget {
-  const StickerDisplay({Key? key}) : super(key: key);
-
-  @override
-  _StickerDisplayState createState() => _StickerDisplayState();
-}
-
-class _StickerDisplayState extends State<StickerDisplay> {
-  final ApiService _apiService = ApiService();
-  late Future<Map<String, dynamic>> _dayData;
-  final String selectedDate = '2024-11-19'; // Example date, replace as needed
-
-  @override
-  void initState() {
-    super.initState();
-    _dayData = _apiService.fetchDayData(selectedDate);
-  }
+class CycleTablePage extends StatelessWidget {
+  const CycleTablePage({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    // Example data
+    final List<Map<String, String>> cycleData = List.generate(30, (index) {
+      return {
+        "day": (index + 1).toString(),
+        "sticker": [
+          "red",
+          "green",
+          "yellow",
+          "blue",
+          "purple",
+          "white"
+        ][index % 6], // Example stickers
+        "date": "25-11-${(index + 1).toString().padLeft(2, '0')}",
+        "bleeding": index % 2 == 0 ? "Yes" : "No",
+        "mucus": index % 3 == 0 ? "Yes" : "No",
+        "fertility": index % 4 == 0 ? "Yes" : "No",
+      };
+    });
+
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Sticker Display'),
+        title: const Text('Cycle Table Display'),
       ),
-      body: FutureBuilder<Map<String, dynamic>>(
-        future: _dayData,
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return const Center(child: CircularProgressIndicator());
-          } else if (snapshot.hasError) {
-            return Center(child: Text('Error: ${snapshot.error}'));
-          } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-            return const Center(child: Text('No data found for the selected date'));
-          } else {
-            final dayData = snapshot.data!;
-            final sticker = dayData['sticker'] ?? 'unknown'; // Replace with the sticker column
-            return Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text(
-                    'Sticker for $selectedDate:',
-                    style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-                  ),
-                  const SizedBox(height: 20),
-                  Icon(
+      body: LayoutBuilder(
+        builder: (context, constraints) {
+          return SingleChildScrollView(
+            scrollDirection: Axis.horizontal,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                _buildRowHeader(
+                  "Day",
+                  cycleData,
+                  (data) => data['day']!,
+                  height: 30,
+                ),
+                _buildRowHeader(
+                  "Sticker",
+                  cycleData,
+                  (data) => '',
+                  height: 70,
+                  iconBuilder: (data) => Icon(
                     Icons.circle,
-                    color: _getColor(sticker),
-                    size: 80,
+                    color: _getColor(data['sticker']!),
                   ),
-                  const SizedBox(height: 20),
-                  Text(
-                    sticker,
-                    style: const TextStyle(fontSize: 18),
-                  ),
-                ],
-              ),
-            );
-          }
+                ),
+                _buildRowHeader(
+                  "Date",
+                  cycleData,
+                  (data) => data['date']!,
+                  height: 30,
+                ),
+                _buildRowHeader(
+                  "Bleeding",
+                  cycleData,
+                  (data) => data['bleeding']!,
+                  height: 50,
+                ),
+                _buildRowHeader(
+                  "Mucus",
+                  cycleData,
+                  (data) => data['mucus']!,
+                  height: 50,
+                ),
+                _buildRowHeader(
+                  "Fertility",
+                  cycleData,
+                  (data) => data['fertility']!,
+                  height: 30,
+                ),
+              ],
+            ),
+          );
         },
       ),
     );
   }
 
+  // Builds a row for the table with header and dynamic content
+  Widget _buildRowHeader(
+    String header,
+    List<Map<String, String>> cycleData,
+    String Function(Map<String, String>) dataExtractor, {
+    Widget Function(Map<String, String>)? iconBuilder,
+    double height = 50, // Default row height
+  }) {
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: [
+        Container(
+          width: 80,
+          height: height,
+          alignment: Alignment.center,
+          decoration: BoxDecoration(
+            border: Border.all(color: Colors.black, width: 1),
+          ),
+          child: Text(
+            header,
+            style: const TextStyle(fontWeight: FontWeight.bold),
+          ),
+        ),
+        Row(
+          children: cycleData.map((data) {
+            return Container(
+              width: 80,
+              height: height,
+              alignment: Alignment.center,
+              decoration: BoxDecoration(
+                border: Border.all(color: Colors.black, width: 1),
+              ),
+              child: iconBuilder != null
+                  ? iconBuilder(data)
+                  : Text(
+                      dataExtractor(data),
+                      textAlign: TextAlign.center,
+                    ),
+            );
+          }).toList(),
+        ),
+      ],
+    );
+  }
+
   // Helper function to map sticker colors
-  Color _getColor(String sticker) {
+  static Color _getColor(String sticker) {
     switch (sticker.toLowerCase()) {
       case 'red':
         return Colors.red;

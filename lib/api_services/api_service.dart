@@ -4,11 +4,12 @@ import 'dart:async';
 import 'package:intl/intl.dart';
 
 class ApiService {
-  final String baseUrl = 'http://172.18.211.73:3000/api';
+  final String baseUrl = 'http://192.168.0.75:3000/api';
 
   // Fetch day data by date (for day page)
   Future<Map<String, dynamic>> fetchDayData(String date) async {
     final url = Uri.parse('$baseUrl/day?date=$date');
+    // print(url);
     try {
       final response = await http.get(url);
       if (response.statusCode == 200) {
@@ -38,7 +39,8 @@ class ApiService {
             Map<String, dynamic> data = json.decode(response.body);
             stickerData.add({
               'date': formattedDate,
-              'color': data['sticker'] ?? 'unknown', // Use 'sticker' column for color
+              'color': data['sticker'] ??
+                  'unknown', // Use 'sticker' column for color
             });
           } else {
             stickerData.add({
@@ -73,6 +75,27 @@ class ApiService {
       }
     } catch (error) {
       throw Exception('Error updating day data: $error');
+    }
+  }
+
+  // Update temperature in the database
+  Future<void> updateTemperature(String date, double temperature) async {
+    final url = Uri.parse('$baseUrl/day/update');
+    print("this is url for posting temperature and it is called:" + '$url');
+    try {
+      final response = await http.post(
+        url,
+        headers: {"Content-Type": "application/json"},
+        body: json.encode({
+          'date': date,
+          'updates': {'temperature': temperature},
+        }),
+      );
+      if (response.statusCode != 200) {
+        throw Exception('Failed to update temperature');
+      }
+    } catch (error) {
+      throw Exception('Error updating temperature: $error');
     }
   }
 }

@@ -29,7 +29,8 @@ class _ButtonSectionState extends State<ButtonSection> {
       children: [
         // Title Bar
         SizedBox(
-          width: double.infinity, // Makes the container stretch across the screen
+          width:
+              double.infinity, // Makes the container stretch across the screen
           child: Container(
             margin: EdgeInsets.symmetric(vertical: 8.0),
             padding: EdgeInsets.all(8.0),
@@ -51,33 +52,41 @@ class _ButtonSectionState extends State<ButtonSection> {
           children: widget.options.map((row) {
             return Padding(
               padding: const EdgeInsets.symmetric(vertical: 4.0),
-              child: Wrap(
-                alignment: WrapAlignment.center,
-                spacing: 8.0,
-                runSpacing: 8.0,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment
+                    .spaceEvenly, // Equal spacing between buttons
                 children: row.map((option) {
                   final isToggled = _toggledButtons.contains(option);
-                  return ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor:
-                          isToggled ? Colors.green : buttbackroundColor,
-                      foregroundColor: buttonTextColor,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(30.0),
+                  return Flexible(
+                    flex: 1, // Each button gets equal space
+                    child: Container(
+                      margin: const EdgeInsets.symmetric(
+                          horizontal: 8.0), // Spacing around buttons
+                      child: ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor:
+                              isToggled ? Colors.green : buttbackroundColor,
+                          foregroundColor: buttonTextColor,
+                          shape: RoundedRectangleBorder(
+                            borderRadius:
+                                BorderRadius.circular(30.0), // Rounded corners
+                          ),
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 25, vertical: 12),
+                        ),
+                        onPressed: () {
+                          setState(() {
+                            if (isToggled) {
+                              _toggledButtons.remove(option);
+                            } else {
+                              _toggledButtons.add(option);
+                            }
+                          });
+                          widget.onPressed(option, !isToggled);
+                        },
+                        child: Text(option),
                       ),
-                      padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
                     ),
-                    onPressed: () {
-                      setState(() {
-                        if (isToggled) {
-                          _toggledButtons.remove(option);
-                        } else {
-                          _toggledButtons.add(option);
-                        }
-                      });
-                      widget.onPressed(option, !isToggled);
-                    },
-                    child: Text(option),
                   );
                 }).toList(),
               ),
