@@ -22,6 +22,7 @@ class _DayPageState extends State<DayPage> {
   String _selectedFertility = '';
   double _selectedTemperature =
       36.0; // Add a state variable to store temperature and set default to 36 celsius
+  bool _selectedAbdominalPain = false; // Default to false
 
   @override
   void initState() {
@@ -37,6 +38,9 @@ class _DayPageState extends State<DayPage> {
         _selectedBleeding = data['bleeding'] ?? '';
         _selectedMucus = data['mucus'] ?? '';
         _selectedFertility = data['fertility'] ?? '';
+        _selectedAbdominalPain = data['ab'] ?? false;
+        _selectedTemperature = double.tryParse(data['temperature'] ?? '36.0') ??
+            36.0; // Parse to double
       });
     } catch (e) {
       print('Error loading day state: $e');
@@ -167,15 +171,41 @@ class _DayPageState extends State<DayPage> {
                             ),
                           ),
                         ),
-                        SizedBox(height: 20),
+                        const SizedBox(height: 20),
                         ElevatedButton(
                           style: ElevatedButton.styleFrom(
                             backgroundColor:
                                 const Color.fromARGB(255, 154, 135, 157),
                             foregroundColor: buttonTextColor,
                           ),
-                          onPressed: () {},
-                          child: Text('AP'),
+                          onPressed: () async {
+                            final today =
+                                DateFormat('yyyy-MM-dd').format(DateTime.now());
+                            final newValue =
+                                !_selectedAbdominalPain; // Toggle the current state
+                            try {
+                              await apiService.updateAbdominalPain(
+                                  today, newValue); // Call the API
+                              setState(() {
+                                _selectedAbdominalPain =
+                                    newValue; // Update the UI state
+                              });
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(
+                                    content: Text(
+                                        'Abdominal Pain set to ${newValue ? "true" : "false"}')),
+                              );
+                            } catch (e) {
+                              print('Error updating abdominal pain: $e');
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(
+                                    content: Text(
+                                        'Failed to update abdominal pain')),
+                              );
+                            }
+                          },
+                          child: Text(
+                              'AP (${_selectedAbdominalPain ? "ON" : "OFF"})'),
                         ),
                       ],
                     ),
@@ -187,15 +217,23 @@ class _DayPageState extends State<DayPage> {
             // Bleeding Section
             _buildSection(
               buttonSection: ButtonSection(
-                title: '🩸 Krvácanie',
-                options: [
+                title: '🩸 Bleeding',
+                options: const [
                   ['B', 'VL', 'L', 'M', 'H']
                 ],
-                selectedValue: _selectedBleeding,
-                onPressed: (value, isToggled) {
-                  print(
-                      '$value is ${isToggled ? "toggled on" : "toggled off"}');
-                  _updateDayData('mucus', value);
+                selectedValue: _selectedBleeding, // Current state from database
+                onPressed: (value) async {
+                  print('$value selected');
+                  final today = DateFormat('yyyy-MM-dd').format(DateTime.now());
+                  try {
+                    await apiService.updateBleeding(
+                        today, value); // Update backend
+                    setState(() {
+                      _selectedBleeding = value; // Update UI state
+                    });
+                  } catch (e) {
+                    print('Error updating bleeding: $e');
+                  }
                 },
               ),
             ),
@@ -203,15 +241,23 @@ class _DayPageState extends State<DayPage> {
             // Description Section
             ButtonSection(
               title: 'Popis',
-              options: [
+              options: const [
                 ['0', '2', '2W', '4'], // First row
                 ['6', '8', '10'], // Second row
                 ['10DL', '10SL', '10WL'] // Third row
               ],
-              selectedValue: '',
-              onPressed: (value, isToggled) {
-                print('$value is ${isToggled ? "toggled on" : "toggled off"}');
-                _updateDayData('mucus', value);
+              selectedValue: _selectedMucus, // Reflect current selection
+              onPressed: (value) async {
+                print('$value selected"}');
+                final today = DateFormat('yyyy-MM-dd').format(DateTime.now());
+                try {
+                  await apiService.updateMucus(today, value); // Update backend
+                  setState(() {
+                    _selectedMucus = value; // Update UI state
+                  });
+                } catch (e) {
+                  print('Error updating mucus: $e');
+                }
               },
             ),
 
@@ -219,14 +265,22 @@ class _DayPageState extends State<DayPage> {
             _buildSection(
               buttonSection: ButtonSection(
                 title: 'Plodnosť',
-                options: [
+                options: const [
                   ['X1', 'X2', 'X3', 'AD']
                 ],
                 selectedValue: _selectedFertility,
-                onPressed: (value, isToggled) {
-                  print(
-                      '$value is ${isToggled ? "toggled on" : "toggled off"}');
-                  _updateDayData('mucus', value);
+                onPressed: (value) async {
+                  print('$value selected"}');
+                  final today = DateFormat('yyyy-MM-dd').format(DateTime.now());
+                  try {
+                    await apiService.updateFertility(
+                        today, value); // Call the correct API
+                    setState(() {
+                      _selectedFertility = value;
+                    });
+                  } catch (e) {
+                    print('Error updating fertility: $e');
+                  }
                 },
               ),
             ),

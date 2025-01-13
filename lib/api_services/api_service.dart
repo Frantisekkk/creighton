@@ -61,6 +61,33 @@ class ApiService {
     }
   }
 
+  // Fetch all cycle data
+  Future<List<List<Map<String, dynamic>>>> fetchCycleData() async {
+    final url = Uri.parse('$baseUrl/cycles');
+    try {
+      final response = await http.get(url);
+      if (response.statusCode == 200) {
+        List<dynamic> data = json.decode(response.body);
+
+        // Group data by cycle_id
+        Map<int, List<Map<String, dynamic>>> groupedByCycle = {};
+        for (var day in data) {
+          int cycleId = day['cycle_id'];
+          if (!groupedByCycle.containsKey(cycleId)) {
+            groupedByCycle[cycleId] = [];
+          }
+          groupedByCycle[cycleId]!.add(day);
+        }
+
+        return groupedByCycle.values.toList();
+      } else {
+        throw Exception('Failed to fetch cycle data');
+      }
+    } catch (error) {
+      throw Exception('Error fetching cycle data: $error');
+    }
+  }
+
   // Update day data (generic update method)
   Future<void> updateDayData(String date, Map<String, dynamic> updates) async {
     final url = Uri.parse('$baseUrl/day/update');
@@ -78,24 +105,70 @@ class ApiService {
     }
   }
 
+  // Update Bleeding
+  Future<void> updateBleeding(String date, String bleeding) async {
+    final url = Uri.parse('$baseUrl/day/bleeding');
+    await http.post(
+      url,
+      headers: {"Content-Type": "application/json"},
+      body: json.encode({'date': date, 'bleeding': bleeding}),
+    );
+  }
+
+  // Update Mucus
+  Future<void> updateMucus(String date, String mucus) async {
+    final url = Uri.parse('$baseUrl/day/mucus');
+    await http.post(
+      url,
+      headers: {"Content-Type": "application/json"},
+      body: json.encode({'date': date, 'mucus': mucus}),
+    );
+  }
+
+  // Update Fertility
+  Future<void> updateFertility(String date, String fertility) async {
+    final url = Uri.parse('$baseUrl/day/fertility');
+    await http.post(
+      url,
+      headers: {"Content-Type": "application/json"},
+      body: json.encode({'date': date, 'fertility': fertility}),
+    );
+  }
+
   // Update temperature in the database
   Future<void> updateTemperature(String date, double temperature) async {
-    final url = Uri.parse('$baseUrl/day/update');
-    print("this is url for posting temperature and it is called:" + '$url');
+    // Correct the URL by adding "/day" before "/temperature"
+    final url = Uri.parse('$baseUrl/day/temperature');
+    print("POSTing temperature to: $url");
+
     try {
       final response = await http.post(
         url,
         headers: {"Content-Type": "application/json"},
-        body: json.encode({
-          'date': date,
-          'updates': {'temperature': temperature},
-        }),
+        body: json.encode({'date': date, 'temperature': temperature}),
       );
       if (response.statusCode != 200) {
         throw Exception('Failed to update temperature');
       }
     } catch (error) {
       throw Exception('Error updating temperature: $error');
+    }
+  }
+
+  // Update Abdominal Pain
+  Future<void> updateAbdominalPain(String date, bool abdominalPain) async {
+    final url = Uri.parse('$baseUrl/day/abdominal_pain');
+    try {
+      final response = await http.post(
+        url,
+        headers: {"Content-Type": "application/json"},
+        body: json.encode({'date': date, 'abdominalPain': abdominalPain}),
+      );
+      if (response.statusCode != 200) {
+        throw Exception('Failed to update abdominal pain');
+      }
+    } catch (error) {
+      throw Exception('Error updating abdominal pain: $error');
     }
   }
 }
