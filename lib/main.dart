@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_application_1/pages/login_page.dart';
+import 'package:flutter_application_1/pages/signup_page.dart';
 import 'pages/home.dart';
 import 'pages/day.dart';
 // import 'pages/table.dart';
@@ -31,18 +33,12 @@ class MainScreen extends StatefulWidget {
 
 class _MainScreenState extends State<MainScreen> {
   int _selectedIndex = 0;
+  bool _isAuthenticated = false; // Default authentication state
 
-  // Dummy widget for different pages
   static final List<Widget> _pages = <Widget>[
     TablePage(),
-    // TablePage(),
     HomePage(userName: 'Monika'),
-    // UserListPage(),
-    DayPage()
-
-    //  Center(child: Text('Page 1', style: TextStyle(fontSize: 24))),
-    //  Center(child: Text('Page 2', style: TextStyle(fontSize: 24))),
-    //  Center(child: Text('Page 3', style: TextStyle(fontSize: 24))),
+    DayPage(),
   ];
 
   void _onItemTapped(int index) {
@@ -53,6 +49,17 @@ class _MainScreenState extends State<MainScreen> {
 
   @override
   Widget build(BuildContext context) {
+    if (!_isAuthenticated) {
+      // Show the LoginPage if not authenticated
+      return LoginPage(
+        onLoginSuccess: () {
+          setState(() {
+            _isAuthenticated = true; // Update authentication state
+          });
+        },
+      );
+    }
+
     return Scaffold(
       body: _pages[_selectedIndex],
       bottomNavigationBar: Padding(

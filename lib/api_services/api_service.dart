@@ -171,4 +171,52 @@ class ApiService {
       throw Exception('Error updating abdominal pain: $error');
     }
   }
+
+  // ---------------- LOGIN APIs ----------------------
+
+  // 1. login api
+  Future<bool> loginUser(String email, String password) async {
+    final url = Uri.parse('$baseUrl/login');
+    try {
+      final response = await http.post(
+        url,
+        headers: {"Content-Type": "application/json"},
+        body: json.encode({'email': email, 'password': password}),
+      );
+
+      if (response.statusCode == 200) {
+        // Save authentication state (e.g., JWT token if applicable)
+        return true;
+      } else {
+        return false;
+      }
+    } catch (e) {
+      throw Exception('Error during login: $e');
+    }
+  }
+
+  // 2. register api
+  Future<void> registerUser(
+      String firstName, String lastName, String email, String password) async {
+    final url = Uri.parse('$baseUrl/register');
+    try {
+      final response = await http.post(
+        url,
+        headers: {"Content-Type": "application/json"},
+        body: json.encode({
+          'first_name': firstName,
+          'last_name': lastName,
+          'email': email,
+          'password': password,
+        }),
+      );
+
+      if (response.statusCode != 201) {
+        throw Exception(
+            'Failed to register user. Status code: ${response.statusCode}');
+      }
+    } catch (e) {
+      throw Exception('Error registering user: $e');
+    }
+  }
 }
