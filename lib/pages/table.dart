@@ -50,7 +50,7 @@ class _CycleTableState extends State<TablePage> {
                   scrollDirection: Axis.vertical,
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
-                    children: cycleData!.map((cycle) {
+                    children: cycleData!.reversed.map((cycle) {
                       return Padding(
                         padding: const EdgeInsets.symmetric(vertical: 20),
                         child: SingleChildScrollView(

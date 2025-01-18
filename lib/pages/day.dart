@@ -1,5 +1,6 @@
 import 'dart:ui';
 import 'package:flutter/material.dart';
+import 'package:flutter_application_1/api_services/stickerService.dart';
 import 'package:intl/intl.dart';
 import '../widgets/day_page_components/ButtonSection.dart';
 import '../api_services/api_service.dart';
@@ -16,6 +17,8 @@ class DayPage extends StatefulWidget {
 
 class _DayPageState extends State<DayPage> {
   final ApiService apiService = ApiService();
+  final StickerService _stickerService = StickerService();
+  Color _stickerColor = Colors.grey; // Default color
 
   String _selectedBleeding = '';
   String _selectedMucus = '';
@@ -34,6 +37,7 @@ class _DayPageState extends State<DayPage> {
     final today = DateFormat('yyyy-MM-dd').format(DateTime.now());
     try {
       final data = await apiService.fetchDayData(today);
+      final color = await _stickerService.fetchColorByDate(today);
       setState(() {
         _selectedBleeding = data['bleeding'] ?? '';
         _selectedMucus = data['mucus'] ?? '';
@@ -41,6 +45,7 @@ class _DayPageState extends State<DayPage> {
         _selectedAbdominalPain = data['ab'] ?? false;
         _selectedTemperature = double.tryParse(data['temperature'] ?? '36.0') ??
             36.0; // Parse to double
+        _stickerColor = color; // Set the sticker color
       });
     } catch (e) {
       print('Error loading day state: $e');
@@ -121,7 +126,7 @@ class _DayPageState extends State<DayPage> {
                         aspectRatio: 3.7 / 5, // Height-to-width ratio
                         child: Container(
                           decoration: BoxDecoration(
-                            color: Colors.red,
+                            color: _stickerColor,
                             borderRadius: BorderRadius.circular(20),
                             border: Border.all(color: Colors.grey, width: 0.4),
                           ),
