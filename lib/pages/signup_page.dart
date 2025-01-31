@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../api_services/api_service.dart'; // Import the ApiService
+import 'login_page.dart'; // Import the LoginPage
 
 class SignUpPage extends StatefulWidget {
   @override
@@ -32,7 +33,11 @@ class _SignUpPageState extends State<SignUpPage> {
     try {
       await ApiService().registerUser(firstName, lastName, email, password);
       // On success, navigate to the login page
-      Navigator.pushReplacementNamed(context, '/login');
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(
+            builder: (context) => LoginPage(onLoginSuccess: () {})),
+      );
     } catch (e) {
       setState(() {
         errorMessage = 'Error registering user: $e';
@@ -79,6 +84,18 @@ class _SignUpPageState extends State<SignUpPage> {
                   style: TextStyle(color: Colors.red),
                 ),
               ),
+            SizedBox(height: 10),
+            TextButton(
+              onPressed: () {
+                // Navigate to Login page
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => LoginPage(onLoginSuccess: () {})),
+                );
+              },
+              child: Text("Already have an account? Login"),
+            ),
           ],
         ),
       ),
