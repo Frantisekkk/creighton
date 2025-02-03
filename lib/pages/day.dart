@@ -23,9 +23,10 @@ class _DayPageState extends State<DayPage> {
   String _selectedBleeding = '';
   String _selectedMucus = '';
   String _selectedFertility = '';
-  double _selectedTemperature =
-      36.0; // Add a state variable to store temperature and set default to 36 celsius
-  bool _selectedAbdominalPain = false; // Default to false
+  double _selectedTemperature = 36.0;
+  bool _selectedAbdominalPain = false;
+
+  DateTime _selectedDate = DateTime.now(); // Track selected date
 
   @override
   void initState() {
@@ -34,46 +35,46 @@ class _DayPageState extends State<DayPage> {
   }
 
   void _loadDayState() async {
-    final today = DateFormat('yyyy-MM-dd').format(DateTime.now());
+    final selectedDateStr = DateFormat('yyyy-MM-dd').format(_selectedDate);
     try {
-      final data = await apiService.fetchDayData(today);
-      final color = await _stickerService.fetchColorByDate(today);
+      final data = await apiService.fetchDayData(selectedDateStr);
+      final color = await _stickerService.fetchColorByDate(selectedDateStr);
       setState(() {
         _selectedBleeding = data['bleeding'] ?? '';
         _selectedMucus = data['mucus'] ?? '';
         _selectedFertility = data['fertility'] ?? '';
         _selectedAbdominalPain = data['ab'] ?? false;
-        _selectedTemperature = double.tryParse(data['temperature'] ?? '36.0') ??
-            36.0; // Parse to double
-        _stickerColor = color; // Set the sticker color
+        _selectedTemperature =
+            double.tryParse(data['temperature'] ?? '36.0') ?? 36.0;
+        _stickerColor = color;
       });
     } catch (e) {
       print('Error loading day state: $e');
     }
   }
 
-  void _updateDayData(String field, String value) async {
-    final today = DateFormat('yyyy-MM-dd').format(DateTime.now());
-    try {
-      await apiService.updateDayData(today, {field: value});
+  // Open date picker when user taps on the date
+  Future<void> _selectDate(BuildContext context) async {
+    DateTime? picked = await showDatePicker(
+      context: context,
+      initialDate: _selectedDate,
+      firstDate: DateTime.now()
+          .subtract(const Duration(days: 365)), // Allow up to 1 year back
+      lastDate: DateTime.now(),
+    );
+
+    if (picked != null && picked != _selectedDate) {
       setState(() {
-        if (field == 'bleeding') {
-          _selectedBleeding = value;
-        } else if (field == 'mucus') {
-          _selectedMucus = value;
-        } else if (field == 'fertility') {
-          _selectedFertility = value;
-        }
+        _selectedDate = picked;
       });
-    } catch (e) {
-      print('Error updating $field: $e');
+      _loadDayState(); // Reload data for the new date
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    String dayName = DateFormat('EEEE').format(DateTime.now());
-    String date = DateFormat('yMd').format(DateTime.now());
+    String dayName = DateFormat('EEEE').format(_selectedDate);
+    String date = DateFormat('d. M. y').format(_selectedDate);
 
     return Scaffold(
       backgroundColor: backgroundColor,
@@ -81,20 +82,25 @@ class _DayPageState extends State<DayPage> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            // Header Section
+            // Header Section with Clickable Date
             Container(
               margin: const EdgeInsets.only(left: 8.0, right: 8.0, top: 50),
               padding: const EdgeInsets.all(16.0),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
-                  Text(
-                    '$dayName, $date',
-                    style: const TextStyle(
-                      fontSize: 25,
-                      fontWeight: FontWeight.bold,
-                      fontFamily: 'Borel',
-                      color: textColorDark,
+                  GestureDetector(
+                    onTap: () =>
+                        _selectDate(context), // Open date picker when tapped
+                    child: Text(
+                      '$dayName, $date',
+                      textAlign: TextAlign.left,
+                      style: const TextStyle(
+                        fontSize: 25,
+                        fontWeight: FontWeight.bold,
+                        fontFamily: 'Borel',
+                        color: textColorDark,
+                      ),
                     ),
                   ),
                 ],
