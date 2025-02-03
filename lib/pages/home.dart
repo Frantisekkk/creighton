@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_application_1/main.dart';
 import 'package:flutter_application_1/pages/day.dart';
 import 'package:flutter_application_1/services/graph_calculation.dart';
 import 'package:intl/intl.dart';
@@ -88,12 +89,15 @@ class HomePage extends StatelessWidget {
                 flex: 40,
                 child: GestureDetector(
                   onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => DayPage(),
-                      ),
-                    );
+                    mainScreenKey.currentState
+                        ?.onItemTapped(2, date: DateTime.now());
+                    // Navigator.push(
+                    //   context,
+                    //   MaterialPageRoute(
+                    //     builder: (context) =>
+                    //         DayPage(selectedDate: DateTime.now()), //
+                    //   ),
+                    // );
                   },
                   child: Container(
                     padding: const EdgeInsets.all(30),
@@ -188,7 +192,6 @@ class HomePage extends StatelessWidget {
                 child: Container(
                   margin:
                       const EdgeInsets.symmetric(horizontal: 30, vertical: 10),
-                  // height: screenHeightWithoutBottomNav / 8,
                   child: FutureBuilder<List<Color>>(
                     future: _stickerService.fetchColorsForLastWeek(),
                     builder: (context, snapshot) {
@@ -200,48 +203,61 @@ class HomePage extends StatelessWidget {
                       return Row(
                         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                         children: List.generate(7, (index) {
-                          // e.g. from 6 days ago to "today"
-                          DateTime date = DateTime.now().subtract(
-                            Duration(days: 6 - index),
-                          );
+                          DateTime date = DateTime.now()
+                              .subtract(Duration(days: 6 - index));
                           final color = colors[index].withOpacity(0.7);
+
                           return Expanded(
-                            child: Container(
-                              margin:
-                                  const EdgeInsets.symmetric(horizontal: 3.0),
-                              decoration: BoxDecoration(
-                                color: color,
-                                borderRadius: BorderRadius.circular(19),
-                                border:
-                                    Border.all(color: Colors.grey, width: 0.8),
-                                boxShadow: const [
-                                  BoxShadow(
-                                    color: Colors.black12,
-                                    blurRadius: 10.0,
-                                    offset: Offset(3, 10),
-                                  ),
-                                ],
-                              ),
-                              child: Column(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  Text(
-                                    DateFormat('E').format(date),
-                                    style: const TextStyle(
-                                      fontSize: 14,
-                                      fontWeight: FontWeight.bold,
-                                      color: Colors.black54,
+                            child: GestureDetector(
+                              onTap: () {
+                                // Navigate to DayPage with the selected date
+                                mainScreenKey.currentState
+                                    ?.onItemTapped(2, date: date);
+                                // Navigator.push(
+                                //   context,
+                                //   MaterialPageRoute(
+                                //     builder: (context) =>
+                                //         DayPage(selectedDate: date), //
+                                //   ),
+                                // );
+                              },
+                              child: Container(
+                                margin:
+                                    const EdgeInsets.symmetric(horizontal: 3.0),
+                                decoration: BoxDecoration(
+                                  color: color,
+                                  borderRadius: BorderRadius.circular(19),
+                                  border: Border.all(
+                                      color: Colors.grey, width: 0.8),
+                                  boxShadow: const [
+                                    BoxShadow(
+                                      color: Colors.black12,
+                                      blurRadius: 10.0,
+                                      offset: Offset(3, 10),
                                     ),
-                                  ),
-                                  Text(
-                                    DateFormat('dd').format(date),
-                                    style: const TextStyle(
-                                      fontSize: 16,
-                                      fontWeight: FontWeight.bold,
-                                      color: Colors.black54,
+                                  ],
+                                ),
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Text(
+                                      DateFormat('E').format(date),
+                                      style: const TextStyle(
+                                        fontSize: 14,
+                                        fontWeight: FontWeight.bold,
+                                        color: Colors.black54,
+                                      ),
                                     ),
-                                  ),
-                                ],
+                                    Text(
+                                      DateFormat('dd').format(date),
+                                      style: const TextStyle(
+                                        fontSize: 16,
+                                        fontWeight: FontWeight.bold,
+                                        color: Colors.black54,
+                                      ),
+                                    ),
+                                  ],
+                                ),
                               ),
                             ),
                           );

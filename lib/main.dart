@@ -18,6 +18,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      debugShowCheckedModeBanner: false,
       home: MainScreen(),
       theme: ThemeData(
         scaffoldBackgroundColor: Colors.white,
@@ -35,18 +36,21 @@ class MainScreen extends StatefulWidget {
 
 class _MainScreenState extends State<MainScreen> {
   int _selectedIndex = 0;
+  DateTime _selectedDate = DateTime.now(); // Track selected date
   bool _isAuthenticated = true; // Default authentication state
   final PageController _pageController = PageController();
 
-  static final List<Widget> _pages = <Widget>[
-    TablePage(),
-    HomePage(userName: 'Monika'),
-    DayPage(),
-  ];
-
-  void _onItemTapped(int index) {
-    _pageController
-        .jumpToPage(index); // Instant page change for smoother experience
+  // Method to switch tabs while optionally updating selected date for DayPage
+  void onItemTapped(int index, {DateTime? date}) {
+    if (index == 2 && date != null) {
+      setState(() {
+        _selectedDate = date;
+      });
+    }
+    _pageController.jumpToPage(index);
+    setState(() {
+      _selectedIndex = index;
+    });
   }
 
   void _onPageChanged(int index) {
@@ -72,13 +76,19 @@ class _MainScreenState extends State<MainScreen> {
       );
     }
 
+    List<Widget> _pages = [
+      TablePage(),
+      HomePage(userName: 'Monika'),
+      DayPage(selectedDate: _selectedDate), // Update DayPage dynamically
+    ];
+
     return Scaffold(
       body: PageView(
         controller: _pageController,
         children: _pages,
         onPageChanged: _onPageChanged,
         physics:
-            const ClampingScrollPhysics(), // Disables overscroll bounce for a tighter feel
+            const ClampingScrollPhysics(), // Disables overscroll bounce for a smoother experience
       ),
       bottomNavigationBar: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 5.0),
@@ -100,7 +110,7 @@ class _MainScreenState extends State<MainScreen> {
               ),
             ],
             currentIndex: _selectedIndex,
-            onTap: _onItemTapped, // No need for setState here
+            onTap: (index) => onItemTapped(index), // Default tap behavior
             backgroundColor: Colors.grey.shade400,
             selectedItemColor: Colors.blueAccent,
             unselectedItemColor: Colors.grey,

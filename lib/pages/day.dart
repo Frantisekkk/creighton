@@ -11,6 +11,11 @@ const Color headerContainerBackgroundColor = Color.fromRGBO(169, 15, 159, 0.75);
 const Color buttonTextColor = Colors.white;
 
 class DayPage extends StatefulWidget {
+  final DateTime selectedDate;
+
+  // Constructor to accept the selected date
+  DayPage({Key? key, required this.selectedDate}) : super(key: key);
+
   @override
   _DayPageState createState() => _DayPageState();
 }
@@ -26,11 +31,12 @@ class _DayPageState extends State<DayPage> {
   double _selectedTemperature = 36.0;
   bool _selectedAbdominalPain = false;
 
-  DateTime _selectedDate = DateTime.now(); // Track selected date
+  late DateTime _selectedDate; // Track selected date
 
   @override
   void initState() {
     super.initState();
+    _selectedDate = widget.selectedDate; // Initialize with passed date
     _loadDayState();
   }
 
@@ -94,7 +100,7 @@ class _DayPageState extends State<DayPage> {
                         _selectDate(context), // Open date picker when tapped
                     child: Text(
                       '$dayName, $date',
-                      textAlign: TextAlign.left,
+                      textAlign: TextAlign.center,
                       style: const TextStyle(
                         fontSize: 25,
                         fontWeight: FontWeight.bold,
