@@ -177,40 +177,53 @@ class _DayPageState extends State<DayPage> {
                           ),
                         ),
                         const SizedBox(height: 20),
-                        ElevatedButton(
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor:
-                                const Color.fromARGB(255, 154, 135, 157),
-                            foregroundColor: buttonTextColor,
+                        Flexible(
+                          child: GestureDetector(
+                            onTap: () async {
+                              final today = DateFormat('yyyy-MM-dd')
+                                  .format(DateTime.now());
+                              final newValue =
+                                  !_selectedAbdominalPain; // Toggle boolean value
+
+                              try {
+                                await apiService.updateAbdominalPain(
+                                    today, newValue); // Update API
+                                setState(() {
+                                  _selectedAbdominalPain =
+                                      newValue; // Update UI state
+                                });
+                              } catch (e) {
+                                print('Error updating abdominal pain: $e');
+                              }
+                            },
+                            child: Container(
+                              padding: const EdgeInsets.symmetric(
+                                  vertical: 14, horizontal: 14),
+                              decoration: BoxDecoration(
+                                color: _selectedAbdominalPain
+                                    ? Colors.green // Active color when selected
+                                    : buttbackroundColor, // Default color
+                                borderRadius: BorderRadius.circular(30),
+                                boxShadow: const [
+                                  BoxShadow(
+                                    color: Colors.black12,
+                                    blurRadius: 5.0,
+                                    offset: Offset(2, 4),
+                                  ),
+                                ],
+                              ),
+                              child: const Center(
+                                child: Text(
+                                  'AP', // Single button label
+                                  style: const TextStyle(
+                                    fontSize: 18,
+                                    fontWeight: FontWeight.bold,
+                                    color: buttonTextColor,
+                                  ),
+                                ),
+                              ),
+                            ),
                           ),
-                          onPressed: () async {
-                            final today =
-                                DateFormat('yyyy-MM-dd').format(DateTime.now());
-                            final newValue =
-                                !_selectedAbdominalPain; // Toggle the current state
-                            try {
-                              await apiService.updateAbdominalPain(
-                                  today, newValue); // Call the API
-                              setState(() {
-                                _selectedAbdominalPain =
-                                    newValue; // Update the UI state
-                              });
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                SnackBar(
-                                    content: Text(
-                                        'Abdominal Pain set to ${newValue ? "true" : "false"}')),
-                              );
-                            } catch (e) {
-                              print('Error updating abdominal pain: $e');
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                SnackBar(
-                                    content: Text(
-                                        'Failed to update abdominal pain')),
-                              );
-                            }
-                          },
-                          child: Text(
-                              'AP (${_selectedAbdominalPain ? "ON" : "OFF"})'),
                         ),
                       ],
                     ),
