@@ -36,6 +36,7 @@ class MainScreen extends StatefulWidget {
 class _MainScreenState extends State<MainScreen> {
   int _selectedIndex = 0;
   bool _isAuthenticated = true; // Default authentication state
+  final PageController _pageController = PageController();
 
   static final List<Widget> _pages = <Widget>[
     TablePage(),
@@ -44,6 +45,11 @@ class _MainScreenState extends State<MainScreen> {
   ];
 
   void _onItemTapped(int index) {
+    _pageController
+        .jumpToPage(index); // Instant page change for smoother experience
+  }
+
+  void _onPageChanged(int index) {
     setState(() {
       _selectedIndex = index;
     });
@@ -53,7 +59,6 @@ class _MainScreenState extends State<MainScreen> {
   void toggleAuthentication(bool isAuthenticated) {
     setState(() {
       _isAuthenticated = isAuthenticated;
-      print(isAuthenticated);
     });
   }
 
@@ -68,7 +73,13 @@ class _MainScreenState extends State<MainScreen> {
     }
 
     return Scaffold(
-      body: _pages[_selectedIndex],
+      body: PageView(
+        controller: _pageController,
+        children: _pages,
+        onPageChanged: _onPageChanged,
+        physics:
+            const ClampingScrollPhysics(), // Disables overscroll bounce for a tighter feel
+      ),
       bottomNavigationBar: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 5.0),
         child: ClipRRect(
@@ -89,7 +100,7 @@ class _MainScreenState extends State<MainScreen> {
               ),
             ],
             currentIndex: _selectedIndex,
-            onTap: _onItemTapped,
+            onTap: _onItemTapped, // No need for setState here
             backgroundColor: Colors.grey.shade400,
             selectedItemColor: Colors.blueAccent,
             unselectedItemColor: Colors.grey,
