@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/api_services/api_service.dart';
+import 'package:flutter_application_1/pages/signup_page.dart';
 
 class LoginPage extends StatefulWidget {
   final VoidCallback onLoginSuccess; // Callback for login success
@@ -74,6 +75,16 @@ class _LoginPageState extends State<LoginPage> {
             ElevatedButton(
               onPressed: loginUser,
               child: Text('Login'),
+            ),
+            SizedBox(height: 10),
+            TextButton(
+              onPressed: () {
+                Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(builder: (context) => SignUpPage()),
+                );
+              },
+              child: Text('Don’t have an account? Register here'),
             ),
           ],
         ),
