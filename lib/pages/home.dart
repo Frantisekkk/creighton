@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_application_1/api_services/api_service.dart';
 import 'package:flutter_application_1/main.dart';
 import 'package:flutter_application_1/pages/day.dart';
 import 'package:flutter_application_1/services/graph_calculation.dart';
@@ -6,18 +7,15 @@ import 'package:intl/intl.dart';
 
 // pages imports
 import '../pages/profil_page.dart';
-import '../../api_services/stickerService.dart';
 
 class HomePage extends StatelessWidget {
   final String userName;
-
-  // Single service instance for color fetches.
-  final StickerService _stickerService = StickerService();
 
   HomePage({Key? key, required this.userName}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    final ApiService apiService = ApiService();
     // final double screenHeight = MediaQuery.of(context).size.height;
     // We subtract the bottom navigation bar height to get a "usable" height.
     // final double screenHeightWithoutBottomNav =
@@ -109,15 +107,18 @@ class HomePage extends StatelessWidget {
                         bottomRight: Radius.circular(30),
                       ),
                     ),
-                    child: FutureBuilder<Color>(
-                      future: _stickerService.fetchColorByDate(todayDate),
+                    child: FutureBuilder<Map<String, dynamic>>(
+                      future: apiService.fetchDayData(todayDate),
                       builder: (context, snapshot) {
                         if (snapshot.connectionState ==
                             ConnectionState.waiting) {
                           return const Center(
                               child: CircularProgressIndicator());
                         }
-                        final Color color = snapshot.data ?? Colors.grey;
+                        // Get the full data map; if null, use an empty map.
+                        final Map<String, dynamic> data = snapshot.data ?? {};
+                        // Extract the sticker color from the data (set to Colors.grey if missing).
+                        final Color color = data['stickerColor'] ?? Colors.grey;
                         return Container(
                           padding: const EdgeInsets.all(16.0),
                           decoration: BoxDecoration(
@@ -193,7 +194,7 @@ class HomePage extends StatelessWidget {
                   margin:
                       const EdgeInsets.symmetric(horizontal: 30, vertical: 10),
                   child: FutureBuilder<List<Color>>(
-                    future: _stickerService.fetchColorsForLastWeek(),
+                    future: apiService.fetchStickersForLastWeek(),
                     builder: (context, snapshot) {
                       if (snapshot.connectionState == ConnectionState.waiting) {
                         return const Center(child: CircularProgressIndicator());

@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:async';
 import 'package:intl/intl.dart';
@@ -6,14 +7,24 @@ import 'package:intl/intl.dart';
 class ApiService {
   final String baseUrl = 'http://192.168.0.75:3000/api';
 
-  // Fetch day data by date (for day page)
+  // ----------------------------------------------------------------------
+  // Merged method for fetching a day's color.
+  // (This method now combines the logic of the former fetchColorByDate and fetchDayData.)
+  // It returns a Color based on the 'sticker' field from the API.
+  // ----------------------------------------------------------------------
   Future<Map<String, dynamic>> fetchDayData(String date) async {
     final url = Uri.parse('$baseUrl/day?date=$date');
     print(url);
     try {
       final response = await http.get(url);
       if (response.statusCode == 200) {
-        return json.decode(response.body); // Return the full day's data
+        final data = json.decode(response.body);
+        // Compute the sticker color from the 'sticker' field
+        final String? stickerName = data['sticker'] as String?;
+        data['stickerColor'] = (stickerName != null && stickerName.isNotEmpty)
+            ? _getColor(stickerName)
+            : Colors.grey;
+        return data;
       } else {
         throw Exception('Failed to fetch day data');
       }
@@ -22,54 +33,51 @@ class ApiService {
     }
   }
 
-  // Fetch stickers for the last 7 days from the database
-  Future<List<Map<String, String>>> fetchStickersForLastWeek() async {
+  // ----------------------------------------------------------------------
+  // Merged method for fetching colors for the last week.
+  // (This method now combines the logic of the former fetchColorsForLastWeek and fetchStickersForLastWeek.)
+  // It returns a List<Color> by retrieving and mapping each day’s 'sticker' field.
+  // ----------------------------------------------------------------------
+  Future<List<Color>> fetchStickersForLastWeek() async {
     try {
-      List<Map<String, String>> stickerData = [];
+      List<Color> colors = [];
       for (int i = 6; i >= 0; i--) {
         DateTime date = DateTime.now().subtract(Duration(days: i));
         String formattedDate = DateFormat('yyyy-MM-dd').format(date);
-
-        // Fetch day data for the specific date
         final url = Uri.parse('$baseUrl/day?date=$formattedDate');
-
         try {
           final response = await http.get(url);
           if (response.statusCode == 200) {
-            Map<String, dynamic> data = json.decode(response.body);
-            stickerData.add({
-              'date': formattedDate,
-              'color': data['sticker'] ??
-                  'unknown', // Use 'sticker' column for color
-            });
+            final data = json.decode(response.body);
+            final String? colorName = data['sticker'] as String?;
+            if (colorName != null && colorName.isNotEmpty) {
+              colors.add(_getColor(colorName));
+            } else {
+              print('Error: No color found for date $formattedDate');
+              colors.add(Colors.grey);
+            }
           } else {
-            stickerData.add({
-              'date': formattedDate,
-              'color': 'no data',
-            });
+            colors.add(Colors.grey);
           }
         } catch (e) {
-          stickerData.add({
-            'date': formattedDate,
-            'color': 'error',
-          });
+          colors.add(Colors.grey);
         }
       }
-      return stickerData;
+      return colors;
     } catch (e) {
-      throw Exception('Error fetching stickers for last week: $e');
+      print('Error fetching stickers for last week: $e');
+      return List.filled(7, Colors.grey);
     }
   }
 
-  // Fetch all cycle data
+  // --------------------- Other API Methods ----------------------------
+
   Future<List<List<Map<String, dynamic>>>> fetchCycleData() async {
     final url = Uri.parse('$baseUrl/cycles');
     try {
       final response = await http.get(url);
       if (response.statusCode == 200) {
         List<dynamic> data = json.decode(response.body);
-
-        // Group data by cycle_id
         Map<int, List<Map<String, dynamic>>> groupedByCycle = {};
         for (var day in data) {
           int cycleId = day['cycle_id'];
@@ -78,7 +86,6 @@ class ApiService {
           }
           groupedByCycle[cycleId]!.add(day);
         }
-
         return groupedByCycle.values.toList();
       } else {
         throw Exception('Failed to fetch cycle data');
@@ -88,7 +95,6 @@ class ApiService {
     }
   }
 
-  // Update day data (generic update method)
   Future<void> updateDayData(String date, Map<String, dynamic> updates) async {
     final url = Uri.parse('$baseUrl/day/update');
     try {
@@ -105,7 +111,6 @@ class ApiService {
     }
   }
 
-  // Update Bleeding
   Future<void> updateBleeding(String date, String bleeding) async {
     final url = Uri.parse('$baseUrl/day/bleeding');
     await http.post(
@@ -115,7 +120,6 @@ class ApiService {
     );
   }
 
-  // Update Mucus
   Future<void> updateMucus(String date, String mucus) async {
     final url = Uri.parse('$baseUrl/day/mucus');
     await http.post(
@@ -125,7 +129,6 @@ class ApiService {
     );
   }
 
-  // Update Fertility
   Future<void> updateFertility(String date, String fertility) async {
     final url = Uri.parse('$baseUrl/day/fertility');
     await http.post(
@@ -135,12 +138,9 @@ class ApiService {
     );
   }
 
-  // Update temperature in the database
   Future<void> updateTemperature(String date, double temperature) async {
-    // Correct the URL by adding "/day" before "/temperature"
     final url = Uri.parse('$baseUrl/day/temperature');
     print("POSTing temperature to: $url");
-
     try {
       final response = await http.post(
         url,
@@ -155,7 +155,6 @@ class ApiService {
     }
   }
 
-  // Update Abdominal Pain
   Future<void> updateAbdominalPain(String date, bool abdominalPain) async {
     final url = Uri.parse('$baseUrl/day/abdominal_pain');
     try {
@@ -172,9 +171,8 @@ class ApiService {
     }
   }
 
-  // ---------------- LOGIN APIs ----------------------
+  // ------------------------- LOGIN APIs -------------------------------
 
-  // 1. login api
   Future<bool> loginUser(String email, String password) async {
     final url = Uri.parse('$baseUrl/login');
     try {
@@ -183,9 +181,7 @@ class ApiService {
         headers: {"Content-Type": "application/json"},
         body: json.encode({'email': email, 'password': password}),
       );
-
       if (response.statusCode == 200) {
-        // Save authentication state (e.g., JWT token if applicable)
         return true;
       } else {
         return false;
@@ -195,7 +191,6 @@ class ApiService {
     }
   }
 
-  // 2. register api
   Future<void> registerUser(
       String firstName, String lastName, String email, String password) async {
     final url = Uri.parse('$baseUrl/register');
@@ -210,7 +205,6 @@ class ApiService {
           'password': password,
         }),
       );
-
       if (response.statusCode != 201) {
         throw Exception(
             'Failed to register user. Status code: ${response.statusCode}');
@@ -218,5 +212,25 @@ class ApiService {
     } catch (e) {
       throw Exception('Error registering user: $e');
     }
+  }
+}
+
+// Helper function to map color names to Flutter Color objects.
+Color _getColor(String color) {
+  switch (color.toLowerCase()) {
+    case 'red':
+      return Colors.red;
+    case 'green':
+      return Colors.green;
+    case 'yellow':
+      return Colors.yellow;
+    case 'blue':
+      return Colors.blue;
+    case 'purple':
+      return Colors.purple;
+    case 'white':
+      return Colors.white;
+    default:
+      return Colors.grey; // Default to gray for unknown colors
   }
 }

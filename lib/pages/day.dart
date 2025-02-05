@@ -1,6 +1,5 @@
 import 'dart:ui';
 import 'package:flutter/material.dart';
-import 'package:flutter_application_1/api_services/stickerService.dart';
 import 'package:intl/intl.dart';
 import '../widgets/day_page_components/ButtonSection.dart';
 import '../api_services/api_service.dart';
@@ -22,7 +21,6 @@ class DayPage extends StatefulWidget {
 
 class _DayPageState extends State<DayPage> {
   final ApiService apiService = ApiService();
-  final StickerService _stickerService = StickerService();
   Color _stickerColor = Colors.grey; // Default color
 
   String _selectedBleeding = '';
@@ -43,16 +41,16 @@ class _DayPageState extends State<DayPage> {
   void _loadDayState() async {
     final selectedDateStr = DateFormat('yyyy-MM-dd').format(_selectedDate);
     try {
+      // fetchDayData now returns a Map with all day data plus 'stickerColor'
       final data = await apiService.fetchDayData(selectedDateStr);
-      final color = await _stickerService.fetchColorByDate(selectedDateStr);
       setState(() {
         _selectedBleeding = data['bleeding'] ?? '';
         _selectedMucus = data['mucus'] ?? '';
         _selectedFertility = data['fertility'] ?? '';
         _selectedAbdominalPain = data['ab'] ?? false;
         _selectedTemperature =
-            double.tryParse(data['temperature'] ?? '36.0') ?? 36.0;
-        _stickerColor = color;
+            double.tryParse(data['temperature']?.toString() ?? '36.0') ?? 36.0;
+        _stickerColor = data['stickerColor'] ?? Colors.grey;
       });
     } catch (e) {
       print('Error loading day state: $e');
