@@ -39,15 +39,13 @@ class HomePage extends StatelessWidget {
                 child: Container(
                   color: const Color.fromRGBO(169, 15, 159, 0.75),
                   // height: screenHeightWithoutBottomNav * 0.2,
-                  child: Stack(
-                    children: [
-                      // Greeting text
-                      Align(
-                        alignment: Alignment.bottomLeft,
-                        child: Padding(
-                          padding:
-                              const EdgeInsets.only(left: 30.0, bottom: 10.0),
-                          child: Text(
+                  child: Padding(
+                    padding:
+                        const EdgeInsets.only(top: 70.0, left: 30, right: 10),
+                    child: FittedBox(
+                      child: Row(
+                        children: [
+                          Text(
                             'Ahoj $userName \u{1F44B}', // 👋
                             style: TextStyle(
                               fontSize:
@@ -57,29 +55,31 @@ class HomePage extends StatelessWidget {
                               color: Colors.white,
                             ),
                           ),
-                        ),
-                      ),
-                      // Profile icon leading to ProfilePage
-                      Positioned(
-                        top: 40,
-                        right: 15,
-                        child: IconButton(
-                          icon: const Icon(
-                            Icons.account_circle,
-                            color: Colors.white,
-                            size: 30,
+                          SizedBox(
+                            width: 30,
                           ),
-                          onPressed: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => ProfilePage(),
+                          // Profile icon leading to ProfilePage
+                          PositionedDirectional(
+                            top: 10,
+                            child: IconButton(
+                              icon: const Icon(
+                                Icons.account_circle,
+                                color: Colors.white,
+                                size: 60,
                               ),
-                            );
-                          },
-                        ),
+                              onPressed: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => ProfilePage(),
+                                  ),
+                                );
+                              },
+                            ),
+                          ),
+                        ],
                       ),
-                    ],
+                    ),
                   ),
                 ),
               ),

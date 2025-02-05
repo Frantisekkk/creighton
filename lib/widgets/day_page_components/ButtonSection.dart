@@ -61,12 +61,14 @@ class ButtonSection extends StatelessWidget {
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(30.0),
                           ),
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 25, vertical: 12),
+                          // padding: const EdgeInsets.symmetric(
+                          // horizontal: 25, vertical: 12),
                         ),
                         onPressed: () => onPressed(
                             option), // Trigger callback with the button value
-                        child: Text(option),
+                        child: FittedBox(
+                          child: Text(option),
+                        ),
                       ),
                     ),
                   );
