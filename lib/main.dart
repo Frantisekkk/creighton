@@ -35,17 +35,12 @@ class MainScreen extends StatefulWidget {
 }
 
 class _MainScreenState extends State<MainScreen> {
-  int _selectedIndex = 1; // Set HomePage as default
-  DateTime _selectedDate = DateTime.now();
-  bool _isAuthenticated = true;
-  late PageController _pageController;
+  int _selectedIndex = 0;
+  DateTime _selectedDate = DateTime.now(); // Track selected date
+  bool _isAuthenticated = true; // Default authentication state
+  final PageController _pageController = PageController();
 
-  @override
-  void initState() {
-    super.initState();
-    _pageController = PageController(initialPage: 1); // Start at HomePage
-  }
-
+  // Method to switch tabs while optionally updating selected date for DayPage
   void onItemTapped(int index, {DateTime? date}) {
     if (index == 2 && date != null) {
       setState(() {
@@ -64,6 +59,7 @@ class _MainScreenState extends State<MainScreen> {
     });
   }
 
+  // Method to toggle authentication state
   void toggleAuthentication(bool isAuthenticated) {
     setState(() {
       _isAuthenticated = isAuthenticated;
@@ -83,7 +79,7 @@ class _MainScreenState extends State<MainScreen> {
     List<Widget> _pages = [
       TablePage(),
       HomePage(userName: 'Monika'),
-      DayPage(selectedDate: _selectedDate),
+      DayPage(selectedDate: _selectedDate), // Update DayPage dynamically
     ];
 
     return Scaffold(
@@ -91,7 +87,8 @@ class _MainScreenState extends State<MainScreen> {
         controller: _pageController,
         children: _pages,
         onPageChanged: _onPageChanged,
-        physics: const ClampingScrollPhysics(),
+        physics:
+            const ClampingScrollPhysics(), // Disables overscroll bounce for a smoother experience
       ),
       bottomNavigationBar: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 5.0),
@@ -113,7 +110,7 @@ class _MainScreenState extends State<MainScreen> {
               ),
             ],
             currentIndex: _selectedIndex,
-            onTap: (index) => onItemTapped(index),
+            onTap: (index) => onItemTapped(index), // Default tap behavior
             backgroundColor: Colors.grey.shade400,
             selectedItemColor: Colors.blueAccent,
             unselectedItemColor: Colors.grey,
