@@ -1,24 +1,53 @@
+// lib/styles/styles.dart
 import 'package:flutter/material.dart';
 
-const kBoxDecoration = BoxDecoration(
-  color: Colors.white,
-  borderRadius: BorderRadius.all(Radius.circular(30)),
-  boxShadow: [
-    BoxShadow(
-      color: Colors.black12,
-      blurRadius: 10.0,
-      offset: Offset(3, 10),
-    ),
-  ],
-);
+// Colors
+const Color backgroundColor = Color.fromARGB(255, 255, 255, 255);
+const Color textColorDark = Colors.black;
+const Color headerContainerBackgroundColor = Color.fromRGBO(169, 15, 159, 0.75);
+const Color buttbackroundColor = Color.fromARGB(255, 154, 135, 157);
+const Color buttonTextColor = Colors.white;
+const Color buttBackgroundColor = Color.fromARGB(255, 154, 135, 157);
+const Color activeButtonColor = Colors.green; // Active toggle color
 
-const kTextStyleTitle = TextStyle(
-  fontSize: 22,
+const TextStyle headerTextStyle = TextStyle(
+  fontSize: 25,
   fontWeight: FontWeight.bold,
+  fontFamily: 'Borel',
+  color: textColorDark,
 );
 
-const kTextStyleSubtitle = TextStyle(
+const TextStyle buttonTextStyle = TextStyle(
   fontSize: 18,
   fontWeight: FontWeight.bold,
-  color: Colors.black87,
+  color: buttonTextColor,
+);
+
+// Define common styles for toggle buttons
+final ButtonStyle toggleButtonStyle = ElevatedButton.styleFrom(
+  backgroundColor: buttBackgroundColor,
+  foregroundColor: buttonTextColor,
+  shape: RoundedRectangleBorder(
+    borderRadius: BorderRadius.circular(30),
+  ),
+  padding: EdgeInsets.symmetric(vertical: 14, horizontal: 14),
+  elevation: 5,
+);
+
+const TextStyle dialogTitleTextStyle = TextStyle(
+  fontSize: 18,
+  fontWeight: FontWeight.bold,
+  color: textColorDark,
+);
+
+const TextStyle temperatureTextStyle = TextStyle(
+  fontSize: 24,
+  fontWeight: FontWeight.bold,
+  color: textColorDark,
+);
+
+const TextStyle buttonSectionTitleTextStyle = TextStyle(
+  color: buttonTextColor,
+  fontSize: 15,
+  fontWeight: FontWeight.bold,
 );
