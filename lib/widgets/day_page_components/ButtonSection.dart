@@ -5,70 +5,62 @@ import 'package:flutter_application_1/widgets/day_page_components/temperature_pi
 
 class ButtonSection extends StatelessWidget {
   final String title;
-  final List<List<String>> options; // Multi-row button layout
-  final String selectedValue; // The current selected value
-  final Function(String) onPressed; // Callback for button press
+  final List<List<String>> options;
+  final String selectedValue;
+  final Function(String) onPressed;
 
-  ButtonSection({
+  const ButtonSection({
+    Key? key,
     required this.title,
     required this.options,
     required this.selectedValue,
     required this.onPressed,
-  });
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Column(
       children: [
-        // Title Bar
-        SizedBox(
-          width: double.infinity,
-          child: Container(
-            margin: const EdgeInsets.symmetric(vertical: 8.0),
-            padding: const EdgeInsets.all(8.0),
-            color: headerContainerBackgroundColor,
-            child: Text(
-              title,
-              textAlign: TextAlign.center,
-              style: buttonSectionTitleTextStyle,
-            ),
-          ),
-        ),
-        // Buttons in multiple rows
-        Column(
-          children: options.map((row) {
-            return Padding(
-              padding: const EdgeInsets.symmetric(vertical: 4.0),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: row.map((option) {
-                  final isSelected = option == selectedValue;
-                  return Flexible(
-                    flex: 1,
-                    child: Container(
-                      margin: const EdgeInsets.symmetric(horizontal: 8.0),
-                      child: ElevatedButton(
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor:
-                              isSelected ? Colors.green : buttbackroundColor,
-                          foregroundColor: buttonTextColor,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(30.0),
-                          ),
-                        ),
-                        onPressed: () => onPressed(option),
-                        child: FittedBox(
-                          child: Text(option),
-                        ),
-                      ),
-                    ),
-                  );
-                }).toList(),
-              ),
-            );
-          }).toList(),
-        ),
+        _buildTitle(title),
+        ...options.map((row) => _buildButtonRow(row, context)).toList(),
       ],
+    );
+  }
+
+  Widget _buildTitle(String title) {
+    return Container(
+      width: double.infinity,
+      margin: const EdgeInsets.symmetric(vertical: 8.0),
+      padding: const EdgeInsets.all(8.0),
+      color: headerContainerBackgroundColor,
+      child: Text(title,
+          textAlign: TextAlign.center, style: buttonSectionTitleTextStyle),
+    );
+  }
+
+  Widget _buildButtonRow(List<String> row, BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 4.0),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        children: row.map((option) => _buildButton(option)).toList(),
+      ),
+    );
+  }
+
+  Widget _buildButton(String option) {
+    bool isSelected = option == selectedValue;
+    return Flexible(
+      child: ElevatedButton(
+        style: ElevatedButton.styleFrom(
+          backgroundColor: isSelected ? Colors.green : buttBackgroundColor,
+          foregroundColor: buttonTextColor,
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
+        ),
+        onPressed: () => onPressed(option),
+        child: FittedBox(child: Text(option)),
+      ),
     );
   }
 }
@@ -107,47 +99,6 @@ class CustomToggleButton extends StatelessWidget {
         ),
         child: Center(
           child: Text(label, style: buttonTextStyle),
-        ),
-      ),
-    );
-  }
-}
-
-// temperature display
-// lib/widgets/day_page_components/temperature_display.dart
-class TemperatureDisplay extends StatelessWidget {
-  final double temperature;
-  final Function onSetTemperature;
-
-  const TemperatureDisplay({
-    Key? key,
-    required this.temperature,
-    required this.onSetTemperature,
-  }) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: () async {
-        double? selectedTemp = await showDialog<double>(
-          context: context,
-          builder: (context) => TemperaturePickerDialog(
-            initialTemperature: temperature,
-          ),
-        );
-        if (selectedTemp != null) {
-          onSetTemperature(selectedTemp);
-        }
-      },
-      child: Container(
-        padding: const EdgeInsets.all(16.0),
-        decoration: BoxDecoration(
-          color: Colors.white.withOpacity(0.8),
-          borderRadius: BorderRadius.circular(10),
-        ),
-        child: Text(
-          '${temperature.toStringAsFixed(1)}°C',
-          style: const TextStyle(fontSize: 18, color: textColorDark),
         ),
       ),
     );

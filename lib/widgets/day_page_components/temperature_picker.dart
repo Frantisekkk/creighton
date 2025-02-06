@@ -1,11 +1,52 @@
 import 'dart:ui';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/styles/styles.dart';
 
+// Widget to display the current temperature and initiate the temperature picker dialog
+class TemperatureDisplay extends StatelessWidget {
+  final double temperature;
+  final Function(double) onSetTemperature;
+
+  const TemperatureDisplay({
+    Key? key,
+    required this.temperature,
+    required this.onSetTemperature,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: () async {
+        double? selectedTemp = await showDialog<double>(
+          context: context,
+          builder: (context) =>
+              TemperaturePickerDialog(initialTemperature: temperature),
+        );
+        if (selectedTemp != null) {
+          onSetTemperature(selectedTemp);
+        }
+      },
+      child: Container(
+        padding: const EdgeInsets.all(16.0),
+        decoration: BoxDecoration(
+          color: Colors.white.withOpacity(0.8),
+          borderRadius: BorderRadius.circular(10),
+        ),
+        child: Text(
+          '${temperature.toStringAsFixed(1)}°C',
+          style: const TextStyle(fontSize: 18, color: textColorDark),
+        ),
+      ),
+    );
+  }
+}
+
+// Dialog to pick a temperature
 class TemperaturePickerDialog extends StatefulWidget {
   final double initialTemperature;
-  TemperaturePickerDialog({required this.initialTemperature});
+
+  const TemperaturePickerDialog({Key? key, required this.initialTemperature})
+      : super(key: key);
 
   @override
   _TemperaturePickerDialogState createState() =>
@@ -13,7 +54,7 @@ class TemperaturePickerDialog extends StatefulWidget {
 }
 
 class _TemperaturePickerDialogState extends State<TemperaturePickerDialog> {
-  double currentTemperature = 36.0;
+  late double currentTemperature;
 
   @override
   void initState() {
@@ -29,8 +70,10 @@ class _TemperaturePickerDialogState extends State<TemperaturePickerDialog> {
         filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
         child: Container(
           decoration: BoxDecoration(
-              color: Colors.white, borderRadius: BorderRadius.circular(20.0)),
-          padding: const EdgeInsets.all(16.0),
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(20),
+          ),
+          padding: const EdgeInsets.all(16),
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
@@ -67,7 +110,7 @@ class _TemperaturePickerDialogState extends State<TemperaturePickerDialog> {
               const SizedBox(height: 20),
               ElevatedButton(
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: buttbackroundColor,
+                  backgroundColor: buttBackgroundColor,
                   foregroundColor: buttonTextColor,
                 ),
                 onPressed: () => Navigator.of(context).pop(currentTemperature),
