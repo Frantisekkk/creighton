@@ -53,37 +53,57 @@ class DayLogic extends ChangeNotifier {
   }
 
   Future<void> updateTemperature(double temperature) async {
-    final dateStr = DateFormat('yyyy-MM-dd').format(_selectedDate);
-    await apiService.updateTemperature(dateStr, temperature);
-    selectedTemperature = temperature;
-    notifyListeners();
+    try {
+      final dateStr = DateFormat('yyyy-MM-dd').format(_selectedDate);
+      await apiService.updateTemperature(dateStr, temperature);
+      selectedTemperature = temperature;
+      notifyListeners();
+    } catch (e) {
+      print("Error updating temperature: $e");
+    }
   }
 
   Future<void> updateAbdominalPain(bool value) async {
-    final dateStr = DateFormat('yyyy-MM-dd').format(_selectedDate);
-    await apiService.updateAbdominalPain(dateStr, value);
-    selectedAbdominalPain = value;
-    notifyListeners();
+    try {
+      final dateStr = DateFormat('yyyy-MM-dd').format(_selectedDate);
+      await apiService.updateAbdominalPain(dateStr, value);
+      selectedAbdominalPain = value;
+      notifyListeners();
+    } catch (e) {
+      print("Error updating abdominal pain: $e");
+    }
   }
 
   Future<void> updateBleeding(String value) async {
-    final dateStr = DateFormat('yyyy-MM-dd').format(_selectedDate);
-    await apiService.updateBleeding(dateStr, value);
-    selectedBleeding = value;
-    notifyListeners();
+    try {
+      final dateStr = DateFormat('yyyy-MM-dd').format(_selectedDate);
+      await apiService.updateBleeding(dateStr, value);
+      selectedBleeding = value;
+      notifyListeners();
+    } catch (e) {
+      print("Error updating bleeding: $e");
+    }
   }
 
   Future<void> updateMucus(String value) async {
-    final dateStr = DateFormat('yyyy-MM-dd').format(_selectedDate);
-    await apiService.updateMucus(dateStr, value);
-    selectedMucus = value;
-    notifyListeners();
+    try {
+      final dateStr = DateFormat('yyyy-MM-dd').format(_selectedDate);
+      await apiService.updateMucus(dateStr, value);
+      selectedMucus = value;
+      notifyListeners();
+    } catch (e) {
+      print("Error updating mucus: $e");
+    }
   }
 
   Future<void> updateFertility(String value) async {
-    final dateStr = DateFormat('yyyy-MM-dd').format(_selectedDate);
-    await apiService.updateFertility(dateStr, value);
-    selectedFertility = value;
-    notifyListeners();
+    try {
+      final dateStr = DateFormat('yyyy-MM-dd').format(_selectedDate);
+      await apiService.updateFertility(dateStr, value);
+      selectedFertility = value;
+      notifyListeners();
+    } catch (e) {
+      print("Error updating fertility: $e");
+    }
   }
 }

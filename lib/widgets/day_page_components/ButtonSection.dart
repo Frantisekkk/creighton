@@ -1,7 +1,6 @@
 // lib/widgets/day_page_components/ButtonSection.dart
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/styles/styles.dart';
-import 'package:flutter_application_1/widgets/day_page_components/temperature_picker.dart';
 
 class ButtonSection extends StatelessWidget {
   final String title;
