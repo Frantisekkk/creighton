@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:flutter_application_1/styles/styles.dart';
 import 'package:http/http.dart' as http;
 import 'dart:async';
 import 'package:intl/intl.dart';
@@ -22,7 +23,7 @@ class ApiService {
         // Compute the sticker color from the 'sticker' field
         final String? stickerName = data['sticker'] as String?;
         data['stickerColor'] = (stickerName != null && stickerName.isNotEmpty)
-            ? _getColor(stickerName)
+            ? getColor(stickerName)
             : Colors.grey;
         return data;
       } else {
@@ -51,7 +52,7 @@ class ApiService {
             final data = json.decode(response.body);
             final String? colorName = data['sticker'] as String?;
             if (colorName != null && colorName.isNotEmpty) {
-              colors.add(_getColor(colorName));
+              colors.add(getColor(colorName));
             } else {
               print('Error: No color found for date $formattedDate');
               colors.add(Colors.grey);
@@ -213,24 +214,22 @@ class ApiService {
       throw Exception('Error registering user: $e');
     }
   }
-}
+  // ------------------ Profile API's --------------------------
 
-// Helper function to map color names to Flutter Color objects.
-Color _getColor(String color) {
-  switch (color.toLowerCase()) {
-    case 'red':
-      return Colors.red;
-    case 'green':
-      return Colors.green;
-    case 'yellow':
-      return Colors.yellow;
-    case 'blue':
-      return Colors.blue;
-    case 'purple':
-      return Colors.purple;
-    case 'white':
-      return Colors.white;
-    default:
-      return Colors.grey; // Default to gray for unknown colors
+  // Fetch user profile
+  Future<Map<String, dynamic>> fetchUserProfile(int userId) async {
+    final url = Uri.parse('$baseUrl/user/$userId');
+
+    try {
+      final response = await http.get(url);
+
+      if (response.statusCode == 200) {
+        return json.decode(response.body);
+      } else {
+        throw Exception('Failed to fetch user profile');
+      }
+    } catch (error) {
+      throw Exception('Error fetching user profile: $error');
+    }
   }
 }

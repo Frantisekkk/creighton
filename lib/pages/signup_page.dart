@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
-import '../api_services/api_service.dart'; // Import the ApiService
-import 'login_page.dart'; // Import the LoginPage
+import 'package:provider/provider.dart';
+import '../logic/signup_logic.dart';
+import 'login_page.dart';
+import '../styles/styles.dart';
 
 class SignUpPage extends StatefulWidget {
   @override
@@ -12,91 +14,80 @@ class _SignUpPageState extends State<SignUpPage> {
   final TextEditingController lastNameController = TextEditingController();
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
-  String errorMessage = '';
-
-  Future<void> registerUser() async {
-    final String firstName = firstNameController.text.trim();
-    final String lastName = lastNameController.text.trim();
-    final String email = emailController.text.trim();
-    final String password = passwordController.text.trim();
-
-    if (firstName.isEmpty ||
-        lastName.isEmpty ||
-        email.isEmpty ||
-        password.isEmpty) {
-      setState(() {
-        errorMessage = 'Please fill in all fields.';
-      });
-      return;
-    }
-
-    try {
-      await ApiService().registerUser(firstName, lastName, email, password);
-      // On success, navigate to the login page
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(
-            builder: (context) => LoginPage(onLoginSuccess: () {})),
-      );
-    } catch (e) {
-      setState(() {
-        errorMessage = 'Error registering user: $e';
-      });
-    }
-  }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: Text("Sign Up")),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            TextField(
-              controller: firstNameController,
-              decoration: InputDecoration(labelText: 'First Name'),
-            ),
-            TextField(
-              controller: lastNameController,
-              decoration: InputDecoration(labelText: 'Last Name'),
-            ),
-            TextField(
-              controller: emailController,
-              decoration: InputDecoration(labelText: 'Email'),
-            ),
-            TextField(
-              controller: passwordController,
-              decoration: InputDecoration(labelText: 'Password'),
-              obscureText: true,
-            ),
-            SizedBox(height: 20),
-            ElevatedButton(
-              onPressed: registerUser,
-              child: Text('Sign Up'),
-            ),
-            if (errorMessage.isNotEmpty)
-              Padding(
-                padding: const EdgeInsets.only(top: 20.0),
-                child: Text(
-                  errorMessage,
-                  style: TextStyle(color: Colors.red),
-                ),
+    return ChangeNotifierProvider(
+      create: (_) => SignUpLogic(),
+      child: Scaffold(
+        appBar: AppBar(title: Text("Sign Up")),
+        body: Padding(
+          padding: defaultPagePadding,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              TextField(
+                controller: firstNameController,
+                decoration: defaultTextFieldDecoration('First Name'),
               ),
-            SizedBox(height: 10),
-            TextButton(
-              onPressed: () {
-                // Navigate to Login page
-                Navigator.pushReplacement(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => LoginPage(onLoginSuccess: () {})),
-                );
-              },
-              child: Text("Already have an account? Login"),
-            ),
-          ],
+              SizedBox(height: defaultVerticalSpacing),
+              TextField(
+                controller: lastNameController,
+                decoration: defaultTextFieldDecoration('Last Name'),
+              ),
+              SizedBox(height: defaultVerticalSpacing),
+              TextField(
+                controller: emailController,
+                decoration: defaultTextFieldDecoration('Email'),
+              ),
+              SizedBox(height: defaultVerticalSpacing),
+              TextField(
+                controller: passwordController,
+                decoration: defaultTextFieldDecoration('Password'),
+                obscureText: true,
+              ),
+              SizedBox(height: defaultVerticalSpacing),
+
+              // Use Consumer for Signup logic
+              Consumer<SignUpLogic>(
+                builder: (context, signUpLogic, child) {
+                  return ElevatedButton(
+                    onPressed: () async {
+                      bool success = await signUpLogic.registerUser(
+                        firstNameController.text,
+                        lastNameController.text,
+                        emailController.text,
+                        passwordController.text,
+                        context, // Pass context for error handling
+                      );
+                      if (success) {
+                        Navigator.pushReplacement(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) =>
+                                  LoginPage(onLoginSuccess: () {})),
+                        );
+                      }
+                    },
+                    child: Text('Sign Up'),
+                  );
+                },
+              ),
+
+              SizedBox(height: 10),
+              TextButton(
+                onPressed: () {
+                  // Navigate to Login page
+                  Navigator.pushReplacement(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => LoginPage(onLoginSuccess: () {})),
+                  );
+                },
+                child: Text("Already have an account? Login"),
+              ),
+            ],
+          ),
         ),
       ),
     );

@@ -1,69 +1,48 @@
 import 'package:flutter/material.dart';
-import '../api_services/api_service.dart';
 import 'package:intl/intl.dart';
+import 'package:provider/provider.dart';
+import '../logic/table_logic.dart';
+import '../styles/styles.dart';
 
-class TablePage extends StatefulWidget {
+class TablePage extends StatelessWidget {
   const TablePage({Key? key}) : super(key: key);
 
   @override
-  _CycleTableState createState() => _CycleTableState();
-}
-
-class _CycleTableState extends State<TablePage> {
-  final ApiService apiService = ApiService();
-  List<List<Map<String, dynamic>>>? cycleData;
-  bool isLoading = true;
-  String errorMessage = '';
-
-  @override
-  void initState() {
-    super.initState();
-    _loadCycleData();
-  }
-
-  Future<void> _loadCycleData() async {
-    try {
-      final data = await apiService.fetchCycleData();
-      setState(() {
-        cycleData = data;
-        isLoading = false;
-      });
-    } catch (e) {
-      setState(() {
-        errorMessage = e.toString();
-        isLoading = false;
-      });
-    }
-  }
-
-  @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Cycle Table Display'),
-      ),
-      body: isLoading
-          ? const Center(child: CircularProgressIndicator())
-          : errorMessage.isNotEmpty
-              ? Center(child: Text('Error: $errorMessage'))
-              : SingleChildScrollView(
-                  scrollDirection: Axis.vertical,
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: cycleData!.reversed.map((cycle) {
-                      return Padding(
-                        padding: const EdgeInsets.symmetric(vertical: 20),
-                        child: SingleChildScrollView(
-                          scrollDirection: Axis.horizontal,
-                          child: CycleRowWidget(
-                            cycleData: cycle,
-                            rowHeight: 300, // Adjust the height if needed
-                          ),
+    return ChangeNotifierProvider<TableLogic>(
+      create: (_) => TableLogic(),
+      child: Consumer<TableLogic>(
+        builder: (context, tableLogic, _) {
+          return Scaffold(
+            appBar: AppBar(
+              title: const Text('Cycle Table Display'),
+            ),
+            body: tableLogic.isLoading
+                ? const Center(child: CircularProgressIndicator())
+                : tableLogic.errorMessage.isNotEmpty
+                    ? Center(child: Text('Error: ${tableLogic.errorMessage}'))
+                    : SingleChildScrollView(
+                        scrollDirection: Axis.vertical,
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: tableLogic.cycleData!.reversed.map((cycle) {
+                            return Padding(
+                              padding: tableRowPadding,
+                              child: SingleChildScrollView(
+                                scrollDirection: Axis.horizontal,
+                                child: CycleRowWidget(
+                                  cycleData: cycle,
+                                  rowHeight:
+                                      300, // You can adjust this if needed
+                                ),
+                              ),
+                            );
+                          }).toList(),
                         ),
-                      );
-                    }).toList(),
-                  ),
-                ),
+                      ),
+          );
+        },
+      ),
     );
   }
 }
@@ -86,15 +65,17 @@ class CycleRowWidget extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           _buildRowHeader(
-              "Day", (data) => data['day_order']?.toString() ?? 'N/A',
-              height: rowHeight * 0.1),
+            "Day",
+            (data) => data['day_order']?.toString() ?? 'N/A',
+            height: rowHeight * 0.1,
+          ),
           _buildRowHeader(
             "Sticker",
             (data) => '',
             height: rowHeight * 0.3,
             iconBuilder: (data) => Icon(
               Icons.circle,
-              color: _getColor(data['sticker'] ?? 'unknown'),
+              color: getColor(data['sticker'] ?? 'unknown'),
             ),
           ),
           _buildRowHeader(
@@ -104,20 +85,28 @@ class CycleRowWidget extends StatelessWidget {
               if (rawDate == null || rawDate.isEmpty) return 'N/A';
               try {
                 final parsedDate = DateTime.parse(rawDate);
-                return DateFormat('d/M/yy')
-                    .format(parsedDate); // Example format
+                return DateFormat('d/M/yy').format(parsedDate);
               } catch (e) {
                 return 'Invalid Date';
               }
             },
             height: rowHeight * 0.1,
           ),
-          _buildRowHeader("Bleeding", (data) => data['bleeding'] ?? 'N/A',
-              height: rowHeight * 0.2),
-          _buildRowHeader("Mucus", (data) => data['mucus'] ?? 'N/A',
-              height: rowHeight * 0.2),
-          _buildRowHeader("Fertility", (data) => data['fertility'] ?? 'N/A',
-              height: rowHeight * 0.1),
+          _buildRowHeader(
+            "Bleeding",
+            (data) => data['bleeding'] ?? 'N/A',
+            height: rowHeight * 0.2,
+          ),
+          _buildRowHeader(
+            "Mucus",
+            (data) => data['mucus'] ?? 'N/A',
+            height: rowHeight * 0.2,
+          ),
+          _buildRowHeader(
+            "Fertility",
+            (data) => data['fertility'] ?? 'N/A',
+            height: rowHeight * 0.1,
+          ),
         ],
       ),
     );
@@ -136,27 +125,23 @@ class CycleRowWidget extends StatelessWidget {
         children: [
           // Header Cell
           Container(
-            width: 80,
+            width: tableCellWidth,
             height: height,
             alignment: Alignment.center,
-            decoration: BoxDecoration(
-              border: Border.all(color: Colors.black, width: 1),
-            ),
+            decoration: tableCellDecoration,
             child: Text(
               header,
-              style: const TextStyle(fontWeight: FontWeight.bold),
+              style: tableHeaderTextStyle,
             ),
           ),
           // Data Cells
           Row(
             children: cycleData.map((data) {
               return Container(
-                width: 80,
+                width: tableCellWidth,
                 height: height,
                 alignment: Alignment.center,
-                decoration: BoxDecoration(
-                  border: Border.all(color: Colors.black, width: 1),
-                ),
+                decoration: tableCellDecoration,
                 child: iconBuilder != null
                     ? iconBuilder(data)
                     : Text(
@@ -169,24 +154,5 @@ class CycleRowWidget extends StatelessWidget {
         ],
       ),
     );
-  }
-
-  static Color _getColor(String sticker) {
-    switch (sticker.toLowerCase()) {
-      case 'red':
-        return Colors.red;
-      case 'green':
-        return Colors.green;
-      case 'yellow':
-        return Colors.yellow;
-      case 'blue':
-        return Colors.blue;
-      case 'purple':
-        return Colors.purple;
-      case 'white':
-        return Colors.white;
-      default:
-        return Colors.grey;
-    }
   }
 }

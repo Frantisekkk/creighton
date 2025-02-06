@@ -1,20 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_application_1/main.dart';
+import 'package:flutter_application_1/logic/profile_logic.dart';
 
 class ProfilePage extends StatelessWidget {
+  final ProfileController controller = ProfileController();
+
   @override
   Widget build(BuildContext context) {
-    // Example raw data
-    final String firstName = "John";
-    final String lastName = "Doe";
-    final String email = "john.doe@example.com";
-    final String phone = "+1 234 567 890";
-    final String birthNumber = "123456/7890";
-    final int age = 30;
-    final String consultantName = "Dr. Smith";
-    final String doctorName = "Dr. Johnson";
-    final String profileImageUrl = "https://via.placeholder.com/150";
-
     return Scaffold(
       appBar: AppBar(
         title: Text("Profile"),
@@ -32,17 +23,18 @@ class ProfilePage extends StatelessWidget {
               ),
               SizedBox(height: 20),
               Text(
-                "$firstName $lastName",
+                "${controller.firstName} ${controller.lastName}",
                 style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
               ),
               SizedBox(height: 10),
-              Text(email, style: TextStyle(fontSize: 16, color: Colors.grey)),
+              Text(controller.email,
+                  style: TextStyle(fontSize: 16, color: Colors.grey)),
               SizedBox(height: 20),
-              _buildProfileItem("Phone", phone),
-              _buildProfileItem("Birth Number", birthNumber),
-              _buildProfileItem("Age", age.toString()),
-              _buildProfileItem("Consultant Name", consultantName),
-              _buildProfileItem("Doctor Name", doctorName),
+              _buildProfileItem("Phone", controller.phone),
+              _buildProfileItem("Birth Number", controller.birthNumber),
+              _buildProfileItem("Age", controller.age.toString()),
+              _buildProfileItem("Consultant Name", controller.consultantName),
+              _buildProfileItem("Doctor Name", controller.doctorName),
               SizedBox(height: 30),
               ElevatedButton(
                 onPressed: () {
@@ -62,7 +54,7 @@ class ProfilePage extends StatelessWidget {
               SizedBox(height: 20),
               ElevatedButton(
                 onPressed: () {
-                  _showLogoutConfirmationDialog(context);
+                  controller.showLogoutConfirmationDialog(context);
                 },
                 style: ElevatedButton.styleFrom(
                   padding: EdgeInsets.symmetric(horizontal: 40, vertical: 12),
@@ -80,37 +72,6 @@ class ProfilePage extends StatelessWidget {
           ),
         ),
       ),
-    );
-  }
-
-  void _showLogoutConfirmationDialog(BuildContext context) {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: Text("Confirm Logout"),
-          content: Text("Are you sure you want to log out?"),
-          actions: [
-            TextButton(
-              onPressed: () {
-                Navigator.of(context).pop(); // Close dialog
-              },
-              child: Text("Cancel"),
-            ),
-            TextButton(
-              onPressed: () {
-                // Log out the user
-                mainScreenKey.currentState?.toggleAuthentication(false);
-
-                // Close the Profile Page and navigate to login
-                Navigator.of(context).pop(); // Close the dialog
-                Navigator.of(context).pop(); // Close the Profile Page
-              },
-              child: Text("Logout", style: TextStyle(color: Colors.red)),
-            ),
-          ],
-        );
-      },
     );
   }
 
