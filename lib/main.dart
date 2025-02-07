@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_application_1/pages/login_page.dart';
-import 'package:flutter_application_1/pages/signup_page.dart';
-import 'pages/home.dart';
-import 'pages/day.dart';
-import 'pages/table.dart';
+import 'package:flutter_application_1/pages/Login.dart';
+import 'package:flutter_application_1/pages/Signup.dart';
+import 'pages/Home.dart';
+import 'pages/Day.dart';
+import 'pages/Table.dart';
 
 // GlobalKey to access the MainScreenState
 final GlobalKey<_MainScreenState> mainScreenKey = GlobalKey<_MainScreenState>();
@@ -125,3 +125,45 @@ class _MainScreenState extends State<MainScreen> {
     );
   }
 }
+
+
+
+
+
+
+// import 'package:flutter/material.dart';
+// import 'package:flutter_application_1/pages/Day.dart';
+// import 'package:flutter_application_1/pages/Login.dart';
+// import 'package:flutter_application_1/pages/Signup.dart';
+// import 'package:flutter_application_1/pages/home.dart';
+// import 'package:flutter_application_1/pages/table.dart';
+// import 'package:flutter_application_1/state/AppState.dart';
+
+// // GlobalKey to access the MainScreenState
+// final GlobalKey<_MainScreenState> mainScreenKey = GlobalKey<_MainScreenState>();
+
+// void main() {
+//   runApp(
+//     MultiProvider(
+//       providers: [
+//         ChangeNotifierProvider(create: (_) => AppState()), // Global State
+//       ],
+//       child: MyApp(),
+//     ),
+//   );
+// }
+
+// class MyApp extends StatelessWidget {
+//   const MyApp({super.key});
+
+//   @override
+//   Widget build(BuildContext context) {
+//     return MaterialApp(
+//       debugShowCheckedModeBanner: false,
+//       home: HomePage(userName: 'Monika'),
+//       theme: ThemeData(
+//         scaffoldBackgroundColor: Colors.white,
+//       ),
+//     );
+//   }
+// }

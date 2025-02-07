@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_application_1/Controllers/LoginLogic.dart';
+import 'package:flutter_application_1/pages/Signup.dart';
+import 'package:flutter_application_1/styles/styles.dart';
 import 'package:provider/provider.dart';
-import '../logic/login_logic.dart';
-import 'signup_page.dart';
-import '../styles/styles.dart';
 
 class LoginPage extends StatefulWidget {
   final VoidCallback onLoginSuccess; // Callback for login success

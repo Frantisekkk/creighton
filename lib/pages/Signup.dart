@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import '../logic/signup_logic.dart';
-import 'login_page.dart';
+import '../logic/SignupLogic.dart';
+import 'Login.dart';
 import '../styles/styles.dart';
 
 class SignUpPage extends StatefulWidget {

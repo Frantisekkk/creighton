@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
-import '../logic/table_logic.dart';
+import '../logic/TableLogic.dart';
 import '../styles/styles.dart';
 
 class TablePage extends StatelessWidget {

@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_application_1/Controllers/HomeLogic.dart';
+import 'package:flutter_application_1/main.dart';
+import 'package:flutter_application_1/pages/Profil.dart';
 import 'package:flutter_application_1/services/graph_calculation.dart';
+import 'package:flutter_application_1/styles/styles.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
-import '../logic/home_logic.dart';
-import '../pages/profil_page.dart';
-import '../styles/styles.dart';
-import '../main.dart';
 
 class HomePage extends StatelessWidget {
   final String userName;

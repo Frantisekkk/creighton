@@ -1,10 +1,10 @@
-import 'dart:ui';
 import 'package:flutter/material.dart';
-import 'package:flutter_application_1/widgets/day_page_components/temperature_picker.dart';
-import 'package:flutter_application_1/styles/styles.dart';
 import 'package:intl/intl.dart';
-import 'package:flutter_application_1/logic/day_logic.dart';
-import '../widgets/day_page_components/ButtonSection.dart';
+import 'dart:ui';
+import 'package:flutter_application_1/widgets/DayPage/temperature_picker.dart';
+import 'package:flutter_application_1/controllers/DayLogic.dart';
+import 'package:flutter_application_1/widgets/DayPage/ButtonSection.dart';
+import 'package:flutter_application_1/styles/styles.dart';
 
 class DayPage extends StatefulWidget {
   final DateTime selectedDate;

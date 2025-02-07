@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../api_services/api_service.dart';
+import '../api_services/ApiService.dart';
 
 class SignUpLogic extends ChangeNotifier {
   final ApiService apiService = ApiService();

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_application_1/logic/profile_logic.dart';
+import 'package:flutter_application_1/logic/ProfileLogic.dart';
 
 class ProfilePage extends StatelessWidget {
   final ProfileController controller = ProfileController();
