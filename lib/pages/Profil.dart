@@ -1,77 +1,94 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_application_1/logic/ProfileLogic.dart';
+import 'package:flutter_application_1/controllers/ProfileLogic.dart';
+import 'package:flutter_application_1/state/AppState.dart';
+import 'package:provider/provider.dart';
 
-class ProfilePage extends StatelessWidget {
-  final ProfileController controller = ProfileController();
+class ProfilePage extends StatefulWidget {
+  @override
+  _ProfilePageState createState() => _ProfilePageState();
+}
+
+class _ProfilePageState extends State<ProfilePage> {
+  bool _isLoading = true;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadProfileData();
+  }
+
+  void _loadProfileData() async {
+    final appState = Provider.of<AppState>(context, listen: false);
+    await appState.fetchUserProfile(1); // Replace 1 with the actual userId
+    setState(() {
+      _isLoading = false;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text("Profile"),
-        backgroundColor: Colors.blueAccent,
-      ),
-      body: Center(
-        child: Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              CircleAvatar(
-                radius: 50,
-                backgroundColor: Colors.blueGrey,
-              ),
-              SizedBox(height: 20),
-              Text(
-                "${controller.firstName} ${controller.lastName}",
-                style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-              ),
-              SizedBox(height: 10),
-              Text(controller.email,
-                  style: TextStyle(fontSize: 16, color: Colors.grey)),
-              SizedBox(height: 20),
-              _buildProfileItem("Phone", controller.phone),
-              _buildProfileItem("Birth Number", controller.birthNumber),
-              _buildProfileItem("Age", controller.age.toString()),
-              _buildProfileItem("Consultant Name", controller.consultantName),
-              _buildProfileItem("Doctor Name", controller.doctorName),
-              SizedBox(height: 30),
-              ElevatedButton(
-                onPressed: () {
-                  // Future API call for editing profile
-                },
-                style: ElevatedButton.styleFrom(
-                  padding: EdgeInsets.symmetric(horizontal: 40, vertical: 12),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(20),
+      appBar: AppBar(title: const Text("Profile")),
+      body: _isLoading
+          ? const Center(child: CircularProgressIndicator()) // Show loading
+          : Consumer<AppState>(
+              builder: (context, appState, child) {
+                final userProfile = appState.userProfile;
+
+                if (userProfile == null) {
+                  return const Center(child: Text("Failed to load profile."));
+                }
+
+                final controller = ProfileController(context);
+
+                return Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      CircleAvatar(
+                        radius: 50,
+                        backgroundImage:
+                            NetworkImage(controller.profileImageUrl),
+                        backgroundColor: Colors.blueGrey,
+                      ),
+                      const SizedBox(height: 20),
+                      Text("${controller.firstName} ${controller.lastName}",
+                          style: const TextStyle(
+                              fontSize: 24, fontWeight: FontWeight.bold)),
+                      const SizedBox(height: 10),
+                      Text(controller.email,
+                          style: const TextStyle(
+                              fontSize: 16, color: Colors.grey)),
+                      const SizedBox(height: 20),
+                      _buildProfileItem("Phone", controller.phone),
+                      _buildProfileItem("Birth Number", "123456/7890"),
+                      _buildProfileItem("Age", "30"),
+                      _buildProfileItem(
+                          "Consultant Name", controller.consultantName),
+                      _buildProfileItem("Doctor Name", controller.doctorName),
+                      const SizedBox(height: 30),
+                      ElevatedButton(
+                        onPressed: () =>
+                            Navigator.pushNamed(context, '/edit-profile'),
+                        child: const Text("Edit Profile",
+                            style: TextStyle(fontSize: 18)),
+                      ),
+                      const SizedBox(height: 20),
+                      ElevatedButton(
+                        onPressed: () =>
+                            controller.showLogoutConfirmationDialog(context),
+                        style: ElevatedButton.styleFrom(
+                            backgroundColor: Colors.red),
+                        child: const Text("Logout",
+                            style:
+                                TextStyle(fontSize: 18, color: Colors.white)),
+                      ),
+                    ],
                   ),
-                ),
-                child: Text(
-                  "Edit Profile",
-                  style: TextStyle(fontSize: 18),
-                ),
-              ),
-              SizedBox(height: 20),
-              ElevatedButton(
-                onPressed: () {
-                  controller.showLogoutConfirmationDialog(context);
-                },
-                style: ElevatedButton.styleFrom(
-                  padding: EdgeInsets.symmetric(horizontal: 40, vertical: 12),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(20),
-                  ),
-                  backgroundColor: Colors.red,
-                ),
-                child: Text(
-                  "Logout",
-                  style: TextStyle(fontSize: 18, color: Colors.white),
-                ),
-              ),
-            ],
-          ),
-        ),
-      ),
+                );
+              },
+            ),
     );
   }
 
@@ -81,14 +98,11 @@ class ProfilePage extends StatelessWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Text(
-            label,
-            style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-          ),
-          Text(
-            value,
-            style: TextStyle(fontSize: 16, color: Colors.grey.shade700),
-          ),
+          Text(label,
+              style:
+                  const TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+          Text(value,
+              style: TextStyle(fontSize: 16, color: Colors.grey.shade700)),
         ],
       ),
     );

@@ -3,7 +3,13 @@ import 'package:intl/intl.dart';
 import 'package:flutter_application_1/api_services/ApiService.dart';
 
 class AppState extends ChangeNotifier {
-  final ApiService _apiService = ApiService(); // API Service Instance
+  final ApiService _apiService = ApiService();
+
+  // ----------------------------------------------------
+  // VARIABLES
+  // ----------------------------------------------------
+  DateTime _selectedDate = DateTime.now();
+  int _selectedIndex = 1; // Default: HomePage
 
   //  Data storage
   Map<String, dynamic>? _dayData;
@@ -16,6 +22,22 @@ class AppState extends ChangeNotifier {
   List<Color>? get weeklyStickers => _weeklyStickers;
   Map<String, dynamic>? get userProfile => _userProfile;
   bool get isAuthenticated => _isAuthenticated;
+
+  // ----------------------------------------------------
+  // METHODS
+  // ----------------------------------------------------
+
+  // bottom navigation switch / index setter
+  int get selectedIndex => _selectedIndex;
+  DateTime get selectedDate => _selectedDate;
+
+  void setPage(int index, {DateTime? date}) {
+    _selectedIndex = index;
+    if (date != null) {
+      _selectedDate = date;
+    }
+    notifyListeners(); // Updates UI
+  }
 
   //  Fetch Today's Data (Home Page)
   Future<void> fetchTodayData() async {

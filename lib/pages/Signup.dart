@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_application_1/controllers/SignupLogic.dart';
+import 'package:flutter_application_1/pages/Login.dart';
+import 'package:flutter_application_1/styles/styles.dart';
 import 'package:provider/provider.dart';
-import '../logic/SignupLogic.dart';
-import 'Login.dart';
-import '../styles/styles.dart';
 
 class SignUpPage extends StatefulWidget {
   @override

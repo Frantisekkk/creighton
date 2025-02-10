@@ -1,11 +1,11 @@
+import 'package:intl/intl.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_application_1/Controllers/HomeLogic.dart';
-import 'package:flutter_application_1/main.dart';
+import 'package:provider/provider.dart';
+import 'package:flutter_application_1/controllers/HomeLogic.dart';
 import 'package:flutter_application_1/pages/Profil.dart';
 import 'package:flutter_application_1/services/graph_calculation.dart';
+import 'package:flutter_application_1/state/AppState.dart';
 import 'package:flutter_application_1/styles/styles.dart';
-import 'package:intl/intl.dart';
-import 'package:provider/provider.dart';
 
 class HomePage extends StatelessWidget {
   final String userName;
@@ -14,6 +14,7 @@ class HomePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final appState = Provider.of<AppState>(context, listen: false);
     // Wrap the UI in a ChangeNotifierProvider so HomeLogic is available.
     return ChangeNotifierProvider<HomeLogic>(
       create: (_) => HomeLogic(),
@@ -79,8 +80,9 @@ class HomePage extends StatelessWidget {
                       flex: 40,
                       child: GestureDetector(
                         onTap: () {
-                          mainScreenKey.currentState
-                              ?.onItemTapped(2, date: DateTime.now());
+                          appState.setPage(2, date: DateTime.now());
+                          // mainScreenKey.currentState
+                          //     ?.onItemTapped(2, date: DateTime.now());
                         },
                         child: Container(
                           padding: colorDisplayContainerPadding,
@@ -168,8 +170,10 @@ class HomePage extends StatelessWidget {
                                   return Expanded(
                                     child: GestureDetector(
                                       onTap: () {
-                                        mainScreenKey.currentState
-                                            ?.onItemTapped(2, date: date);
+                                        appState.setPage(2,
+                                            date: DateTime.now());
+                                        // mainScreenKey.currentState
+                                        //     ?.onItemTapped(2, date: date);
                                       },
                                       child: Container(
                                         margin: stickerMargin,

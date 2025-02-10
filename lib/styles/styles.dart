@@ -4,10 +4,10 @@ import 'package:flutter/material.dart';
 const Color backgroundColor = Color.fromARGB(255, 255, 255, 255);
 const Color textColorDark = Colors.black;
 const Color headerContainerBackgroundColor = Color.fromRGBO(169, 15, 159, 0.75);
-const Color buttbackroundColor = Color.fromARGB(255, 154, 135, 157);
+// const Color buttbackroundColor = Color.fromARGB(255, 154, 135, 157);
 const Color buttonTextColor = Colors.white;
-const Color buttBackgroundColor = Color.fromARGB(255, 154, 135, 157);
-const Color activeButtonColor = Colors.green; // Active toggle color
+const Color buttBackgroundColor = Color.fromRGBO(241, 165, 173, 1);
+const Color activeButtonColor = Color.fromRGBO(172, 81, 128, 1);
 
 // Text Styles
 const TextStyle headerTextStyle = TextStyle(

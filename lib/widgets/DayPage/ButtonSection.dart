@@ -52,7 +52,7 @@ class ButtonSection extends StatelessWidget {
     return Flexible(
       child: ElevatedButton(
         style: ElevatedButton.styleFrom(
-          backgroundColor: isSelected ? Colors.green : buttBackgroundColor,
+          backgroundColor: isSelected ? activeButtonColor : buttBackgroundColor,
           foregroundColor: buttonTextColor,
           shape:
               RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),

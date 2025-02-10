@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/Controllers/LoginLogic.dart';
 import 'package:flutter_application_1/pages/Signup.dart';
+import 'package:flutter_application_1/state/AppState.dart';
 import 'package:flutter_application_1/styles/styles.dart';
 import 'package:provider/provider.dart';
 
@@ -21,6 +22,7 @@ class _LoginPageState extends State<LoginPage> {
 
   @override
   Widget build(BuildContext context) {
+    final appState = Provider.of<AppState>(context, listen: false);
     return ChangeNotifierProvider<LoginLogic>(
       create: (_) => LoginLogic(),
       child: Scaffold(
@@ -54,7 +56,8 @@ class _LoginPageState extends State<LoginPage> {
                         context,
                       );
                       if (success) {
-                        widget.onLoginSuccess();
+                        appState.login(
+                            emailController.text, passwordController.text);
                       }
                     },
                     child: Text('Login'),

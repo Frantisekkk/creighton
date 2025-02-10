@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_application_1/Controllers/TableLogic.dart';
+import 'package:flutter_application_1/styles/styles.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
-import '../logic/TableLogic.dart';
-import '../styles/styles.dart';
 
 class TablePage extends StatelessWidget {
   const TablePage({Key? key}) : super(key: key);
