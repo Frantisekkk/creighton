@@ -73,6 +73,52 @@ class ApiService {
 
   // --------------------- Other API Methods ----------------------------
 
+  // Start a new cycle
+  Future<Map<String, dynamic>> startNewCycle() async {
+    final url = Uri.parse('$baseUrl/cycle/new');
+    try {
+      final response = await http.post(url);
+      if (response.statusCode == 200) {
+        return json.decode(response.body);
+      } else {
+        throw Exception('Failed to start a new cycle');
+      }
+    } catch (error) {
+      throw Exception('Error starting new cycle: $error');
+    }
+  }
+
+  // Undo the last cycle creation
+  Future<Map<String, dynamic>> undoCycle() async {
+    final url = Uri.parse('$baseUrl/cycle/undo');
+    try {
+      final response = await http.post(url);
+      if (response.statusCode == 200) {
+        return json.decode(response.body);
+      } else {
+        throw Exception('Failed to undo the last cycle');
+      }
+    } catch (error) {
+      throw Exception('Error undoing cycle: $error');
+    }
+  }
+
+  // Delete the last cycle
+  Future<Map<String, dynamic>> deleteLastCycle() async {
+    final url = Uri.parse('$baseUrl/cycle/delete_last');
+    try {
+      final response = await http.post(url);
+      if (response.statusCode == 200) {
+        return json.decode(response.body);
+      } else {
+        throw Exception('Failed to delete the last cycle');
+      }
+    } catch (error) {
+      throw Exception('Error deleting last cycle: $error');
+    }
+  }
+
+  //fetching cycle data
   Future<List<List<Map<String, dynamic>>>> fetchCycleData() async {
     final url = Uri.parse('$baseUrl/cycles');
     try {

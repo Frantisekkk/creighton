@@ -4,6 +4,7 @@ import '../api_services/ApiService.dart';
 class LoginLogic extends ChangeNotifier {
   final ApiService apiService = ApiService();
 
+  // This method now takes the email and password as parameters.
   Future<bool> loginUser(
       String email, String password, BuildContext context) async {
     if (email.isEmpty || password.isEmpty) {

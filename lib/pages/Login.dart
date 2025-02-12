@@ -8,21 +8,30 @@ import 'package:provider/provider.dart';
 class LoginPage extends StatefulWidget {
   final VoidCallback onLoginSuccess; // Callback for login success
 
-  LoginPage({required this.onLoginSuccess});
+  const LoginPage({Key? key, required this.onLoginSuccess}) : super(key: key);
 
   @override
   _LoginPageState createState() => _LoginPageState();
 }
 
 class _LoginPageState extends State<LoginPage> {
+  // Controllers remain in the UI
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
 
-  late LoginLogic loginLogic;
+  @override
+  void dispose() {
+    // Dispose controllers when the widget is disposed
+    emailController.dispose();
+    passwordController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
+    // You can obtain other app-wide states if needed (like AppState) here
     final appState = Provider.of<AppState>(context, listen: false);
+
     return ChangeNotifierProvider<LoginLogic>(
       create: (_) => LoginLogic(),
       child: Scaffold(
@@ -32,47 +41,49 @@ class _LoginPageState extends State<LoginPage> {
         ),
         body: Padding(
           padding: defaultPagePadding,
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              TextField(
-                controller: emailController,
-                decoration: defaultTextFieldDecoration('Email'),
-              ),
-              SizedBox(height: defaultVerticalSpacing),
-              TextField(
-                controller: passwordController,
-                decoration: defaultTextFieldDecoration('Password'),
-                obscureText: true,
-              ),
-              SizedBox(height: defaultVerticalSpacing),
-              Consumer<LoginLogic>(
-                builder: (context, loginLogic, child) {
-                  return ElevatedButton(
+          child: Consumer<LoginLogic>(
+            builder: (context, loginLogic, child) {
+              return Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  TextField(
+                    controller: emailController,
+                    decoration: defaultTextFieldDecoration('Email'),
+                  ),
+                  SizedBox(height: defaultVerticalSpacing),
+                  TextField(
+                    controller: passwordController,
+                    decoration: defaultTextFieldDecoration('Password'),
+                    obscureText: true,
+                  ),
+                  SizedBox(height: defaultVerticalSpacing),
+                  ElevatedButton(
                     onPressed: () async {
-                      bool success = await appState.login(
+                      // Pass the text from the controllers to your logic method.
+                      bool success = await loginLogic.loginUser(
                         emailController.text,
                         passwordController.text,
+                        context,
                       );
                       if (success) {
                         widget.onLoginSuccess();
                       }
                     },
                     child: Text('Login'),
-                  );
-                },
-              ),
-              SizedBox(height: 10),
-              TextButton(
-                onPressed: () {
-                  Navigator.pushReplacement(
-                    context,
-                    MaterialPageRoute(builder: (context) => SignUpPage()),
-                  );
-                },
-                child: Text('Don’t have an account? Register here'),
-              ),
-            ],
+                  ),
+                  SizedBox(height: 10),
+                  TextButton(
+                    onPressed: () {
+                      Navigator.pushReplacement(
+                        context,
+                        MaterialPageRoute(builder: (context) => SignUpPage()),
+                      );
+                    },
+                    child: Text('Don’t have an account? Register here'),
+                  ),
+                ],
+              );
+            },
           ),
         ),
       ),

@@ -137,17 +137,15 @@ class HomePage extends StatelessWidget {
                                             Text(
                                               'Popis:',
                                               style: TextStyle(
-                                                fontSize: 18,
-                                                fontWeight: FontWeight.bold,
-                                                color: Colors.black87,
-                                              ),
+                                                  fontSize: 18,
+                                                  fontWeight: FontWeight.bold,
+                                                  color: Colors.black87),
                                             ),
                                             Text(
-                                              '${dayData['bleeding']}, ${dayData['mucus']}, ${dayData['fertility']}',
+                                              '${dayData['bleeding'] ?? "No data"}, ${dayData['mucus'] ?? "No data"}, ${dayData['fertility'] ?? "No data"}',
                                               style: TextStyle(
-                                                fontSize: 18,
-                                                color: Colors.black87,
-                                              ),
+                                                  fontSize: 18,
+                                                  color: Colors.black87),
                                             ),
                                           ],
                                         ),

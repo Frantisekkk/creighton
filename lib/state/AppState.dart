@@ -12,6 +12,10 @@ class AppState extends ChangeNotifier {
   int _selectedIndex = 1;
   String? _userEmail;
 
+  //for cycle
+  bool _isLoading = false;
+  bool get isLoading => _isLoading;
+
   //  Data storage
   Map<String, dynamic>? _dayData;
   List<Color>? _weeklyStickers;
@@ -41,26 +45,49 @@ class AppState extends ChangeNotifier {
     notifyListeners(); // Updates UI
   }
 
-  //  Fetch Today's Data (Home Page)
+  // Fetch Today's Data (Home Page)
   Future<void> fetchTodayData() async {
     String todayStr = DateFormat('yyyy-MM-dd').format(DateTime.now());
     try {
       _dayData = await _apiService.fetchDayData(todayStr);
-      notifyListeners();
+
+      // If no data exists, set a default grey sticker and empty details
+      if (_dayData == null || _dayData!.isEmpty) {
+        _dayData = {
+          'stickerColor': Colors.grey,
+          'bleeding': 'No data',
+          'mucus': 'No data',
+          'fertility': 'No data'
+        };
+      }
     } catch (e) {
       print("Error fetching today's data: $e");
+
+      // Set defaults in case of an error
+      _dayData = {
+        'stickerColor': Colors.grey,
+        'bleeding': 'Error',
+        'mucus': 'Error',
+        'fertility': 'Error'
+      };
     }
+    notifyListeners();
   }
 
   //  Fetch Weekly Stickers (Calendar Row in Home)
   Future<void> fetchWeeklyStickers() async {
     try {
       _weeklyStickers = await _apiService.fetchStickersForLastWeek();
-      notifyListeners();
+
+      // Ensure weeklyStickers is always 7 items long
+      if (_weeklyStickers == null || _weeklyStickers!.length < 7) {
+        _weeklyStickers = List.filled(7, Colors.grey);
+      }
     } catch (e) {
       print("Error fetching weekly stickers: $e");
       _weeklyStickers = List.filled(7, Colors.grey);
     }
+    notifyListeners();
   }
 
   //  Fetch User Profile
@@ -73,6 +100,9 @@ class AppState extends ChangeNotifier {
       print("Error fetching user profile: $e");
     }
   }
+  // -----
+  //REGISTRATION
+  // -----
 
   //  Handle Authentication
   Future<bool> login(String email, String password) async {
@@ -95,5 +125,61 @@ class AppState extends ChangeNotifier {
     _isAuthenticated = false;
     _userProfile = null;
     notifyListeners();
+  }
+
+  // ----------
+  // CYCLE
+  // ----------
+
+  Future<void> startNewCycle() async {
+    _isLoading = true;
+    notifyListeners();
+    try {
+      await _apiService.startNewCycle();
+    } catch (e) {
+      print('Error starting new cycle: $e');
+    } finally {
+      _isLoading = false;
+      notifyListeners();
+    }
+  }
+
+  Future<void> undoCycle() async {
+    _isLoading = true;
+    notifyListeners();
+    try {
+      await _apiService.undoCycle();
+    } catch (e) {
+      print('Error undoing cycle: $e');
+    } finally {
+      _isLoading = false;
+      notifyListeners();
+    }
+  }
+
+  Future<void> deleteLastCycle() async {
+    _isLoading = true;
+    notifyListeners();
+    try {
+      await _apiService.deleteLastCycle();
+    } catch (e) {
+      print('Error deleting last cycle: $e');
+    } finally {
+      _isLoading = false;
+      notifyListeners();
+    }
+  }
+
+  Future<void> fetchCycleData() async {
+    _isLoading = true;
+    notifyListeners();
+    try {
+      await _apiService.fetchCycleData();
+    } catch (e) {
+      print('Error fetching cycle data: $e');
+    } finally {
+      _isLoading = false;
+      notifyListeners();
+    }
   }
 }

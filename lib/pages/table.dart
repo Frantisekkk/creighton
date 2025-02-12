@@ -10,7 +10,7 @@ class TablePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ChangeNotifierProvider<TableLogic>(
-      create: (_) => TableLogic(),
+      create: (context) => TableLogic(context),
       child: Consumer<TableLogic>(
         builder: (context, tableLogic, _) {
           return Scaffold(
