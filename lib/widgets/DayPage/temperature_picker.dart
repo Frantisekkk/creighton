@@ -30,11 +30,13 @@ class TemperatureDisplay extends StatelessWidget {
         padding: const EdgeInsets.all(16.0),
         decoration: BoxDecoration(
           color: Colors.white.withOpacity(0.8),
-          borderRadius: BorderRadius.circular(10),
+          borderRadius: BorderRadius.circular(30),
         ),
-        child: Text(
-          '${temperature.toStringAsFixed(1)}°C',
-          style: const TextStyle(fontSize: 18, color: textColorDark),
+        child: Center(
+          child: Text(
+            '${temperature.toStringAsFixed(1)}°C',
+            style: const TextStyle(fontSize: 18, color: textColorDark),
+          ),
         ),
       ),
     );

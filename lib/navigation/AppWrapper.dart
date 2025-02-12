@@ -23,7 +23,7 @@ class AppWrapper extends StatelessWidget {
   }
 }
 
-// 🔹 Manages Navigation Between Home, Table, and Day Pages
+// Manages Navigation Between Home, Table, and Day Pages
 class MainApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {

@@ -22,7 +22,7 @@ class _DayPageState extends State<DayPage> {
   void initState() {
     super.initState();
     dayLogic = DayLogic(widget.selectedDate);
-    dayLogic.addListener(() => setState(() {})); // Refresh UI on logic changes
+    dayLogic.addListener(() => setState(() {}));
   }
 
   @override

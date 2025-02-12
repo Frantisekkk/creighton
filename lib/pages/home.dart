@@ -50,8 +50,8 @@ class HomePage extends StatelessWidget {
                                 ),
                                 const SizedBox(width: 30),
                                 // Profile icon leading to ProfilePage
-                                PositionedDirectional(
-                                  top: 10,
+                                Padding(
+                                  padding: const EdgeInsets.only(top: 10),
                                   child: IconButton(
                                     icon: const Icon(
                                       Icons.account_circle,
@@ -126,19 +126,27 @@ class HomePage extends StatelessWidget {
                                             Text(
                                               DateFormat('E dd.MM')
                                                   .format(DateTime.now()),
-                                              style:
-                                                  const TextStyle(fontSize: 22),
+                                              style: const TextStyle(
+                                                  fontSize: 22,
+                                                  fontWeight: FontWeight.bold),
                                             ),
                                             const Divider(
                                                 color: Colors.grey,
                                                 thickness: 1),
                                             const SizedBox(height: 10),
-                                            const Text(
-                                              'Selected Color',
+                                            Text(
+                                              'Popis:',
                                               style: TextStyle(
                                                 fontSize: 18,
                                                 fontWeight: FontWeight.bold,
-                                                color: Colors.black54,
+                                                color: Colors.black87,
+                                              ),
+                                            ),
+                                            Text(
+                                              '${dayData['bleeding']}, ${dayData['mucus']}, ${dayData['fertility']}',
+                                              style: TextStyle(
+                                                fontSize: 18,
+                                                color: Colors.black87,
                                               ),
                                             ),
                                           ],
@@ -164,14 +172,14 @@ class HomePage extends StatelessWidget {
                                 children: List.generate(7, (index) {
                                   DateTime date = DateTime.now()
                                       .subtract(Duration(days: 6 - index));
+                                  print(date);
                                   final color =
                                       weeklyStickers[index].withOpacity(0.7);
 
                                   return Expanded(
                                     child: GestureDetector(
                                       onTap: () {
-                                        appState.setPage(2,
-                                            date: DateTime.now());
+                                        appState.setPage(2, date: date);
                                         // mainScreenKey.currentState
                                         //     ?.onItemTapped(2, date: date);
                                       },

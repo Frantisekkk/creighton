@@ -3,16 +3,29 @@ import 'package:provider/provider.dart';
 import 'package:flutter_application_1/state/AppState.dart';
 
 class ProfileController {
+  late BuildContext context;
   late String firstName;
   late String lastName;
   late String email;
   late String phone;
   late String consultantName;
   late String doctorName;
-  late String profileImageUrl; // if you want to support a profile image
+  late String profileImageUrl;
+  late String birthNumber;
 
-  ProfileController(BuildContext context) {
+  bool _isLoading = true;
+
+  ProfileController(this.context);
+
+  bool get isLoading => _isLoading;
+
+  Future<void> loadProfileData() async {
     final appState = Provider.of<AppState>(context, listen: false);
+
+    if (appState.userProfile == null) {
+      await appState.fetchUserProfile();
+    }
+
     final userProfile = appState.userProfile ?? {};
 
     firstName = userProfile['first_name'] ?? "N/A";
@@ -23,9 +36,12 @@ class ProfileController {
     doctorName = userProfile['doctor_name'] ?? "N/A";
     profileImageUrl =
         userProfile['profile_image'] ?? "https://via.placeholder.com/150";
+    birthNumber = userProfile['birth_number'] ?? "N/A";
+
+    _isLoading = false;
   }
 
-  void showLogoutConfirmationDialog(BuildContext context) {
+  void showLogoutConfirmationDialog() {
     final appState = Provider.of<AppState>(context, listen: false);
 
     showDialog(
@@ -37,15 +53,15 @@ class ProfileController {
           actions: [
             TextButton(
               onPressed: () {
-                Navigator.of(context).pop(); // Close dialog
+                Navigator.of(context).pop();
               },
               child: const Text("Cancel"),
             ),
             TextButton(
               onPressed: () {
                 appState.logout();
-                Navigator.of(context).pop(); // Close the dialog
-                Navigator.of(context).pop(); // Close the Profile Page
+                Navigator.of(context).pop();
+                Navigator.of(context).pop();
               },
               child: const Text("Logout", style: TextStyle(color: Colors.red)),
             ),

@@ -158,6 +158,7 @@ class ApiService {
 
   Future<void> updateAbdominalPain(String date, bool abdominalPain) async {
     final url = Uri.parse('$baseUrl/day/abdominal_pain');
+    print("updating abdominal pain: $url");
     try {
       final response = await http.post(
         url,
@@ -192,9 +193,30 @@ class ApiService {
     }
   }
 
+  // lib/api_services/ApiService.dart
   Future<void> registerUser(
-      String firstName, String lastName, String email, String password) async {
+    String firstName,
+    String lastName,
+    String email,
+    String password,
+    String birthNumber,
+    int age,
+    String phone,
+    String doctor,
+    String consultant,
+  ) async {
     final url = Uri.parse('$baseUrl/register');
+    print({
+      'first_name': firstName,
+      'last_name': lastName,
+      'email': email,
+      'password': password,
+      'birth_number': birthNumber,
+      'age': age,
+      'phone': phone,
+      'doctor': doctor,
+      'consultant': consultant,
+    });
     try {
       final response = await http.post(
         url,
@@ -204,6 +226,11 @@ class ApiService {
           'last_name': lastName,
           'email': email,
           'password': password,
+          'birth_number': birthNumber,
+          'age': age,
+          'phone': phone,
+          'doctor': doctor,
+          'consultant': consultant,
         }),
       );
       if (response.statusCode != 201) {
@@ -214,17 +241,59 @@ class ApiService {
       throw Exception('Error registering user: $e');
     }
   }
+
+  // for fetching doctors and consultats for picking in registartion
+  // Fetch the list of doctors from the backend
+  Future<List<Map<String, dynamic>>> fetchDoctors() async {
+    final url = Uri.parse('$baseUrl/doctors');
+    try {
+      final response = await http.get(url);
+      if (response.statusCode == 200) {
+        // Expecting a list of objects like: { "id": "doctor_id", "name": "Dr. John Smith" }
+        final List<dynamic> data = json.decode(response.body);
+        return data.cast<Map<String, dynamic>>();
+      } else {
+        throw Exception('Failed to load doctors');
+      }
+    } catch (e) {
+      throw Exception('Error loading doctors: $e');
+    }
+  }
+
+// Fetch the list of consultants from the backend
+  Future<List<Map<String, dynamic>>> fetchConsultants() async {
+    final url = Uri.parse('$baseUrl/consultants');
+    try {
+      final response = await http.get(url);
+      if (response.statusCode == 200) {
+        // Expecting a list of objects like: { "id": "consultant_id", "name": "Consultant Jane Doe" }
+        final List<dynamic> data = json.decode(response.body);
+        return data.cast<Map<String, dynamic>>();
+      } else {
+        throw Exception('Failed to load consultants');
+      }
+    } catch (e) {
+      throw Exception('Error loading consultants: $e');
+    }
+  }
+
   // ------------------ Profile API's --------------------------
 
   // Fetch user profile
-  Future<Map<String, dynamic>> fetchUserProfile(int userId) async {
-    final url = Uri.parse('$baseUrl/user/$userId');
+  Future<Map<String, dynamic>> fetchUserProfile(String email) async {
+    final url = Uri.parse('$baseUrl/user/birth/$email');
 
     try {
       final response = await http.get(url);
 
       if (response.statusCode == 200) {
-        return json.decode(response.body);
+        final Map<String, dynamic> userData = json.decode(response.body);
+
+        // Ensure the name is properly formatted
+        userData['name'] =
+            '${userData['first_name'] ?? "N/A"} ${userData['last_name'] ?? "N/A"}';
+
+        return userData;
       } else {
         throw Exception('Failed to fetch user profile');
       }

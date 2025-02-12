@@ -50,14 +50,12 @@ class _LoginPageState extends State<LoginPage> {
                 builder: (context, loginLogic, child) {
                   return ElevatedButton(
                     onPressed: () async {
-                      bool success = await loginLogic.loginUser(
+                      bool success = await appState.login(
                         emailController.text,
                         passwordController.text,
-                        context,
                       );
                       if (success) {
-                        appState.login(
-                            emailController.text, passwordController.text);
+                        widget.onLoginSuccess();
                       }
                     },
                     child: Text('Login'),

@@ -9,7 +9,8 @@ class AppState extends ChangeNotifier {
   // VARIABLES
   // ----------------------------------------------------
   DateTime _selectedDate = DateTime.now();
-  int _selectedIndex = 1; // Default: HomePage
+  int _selectedIndex = 1;
+  String? _userEmail;
 
   //  Data storage
   Map<String, dynamic>? _dayData;
@@ -22,6 +23,7 @@ class AppState extends ChangeNotifier {
   List<Color>? get weeklyStickers => _weeklyStickers;
   Map<String, dynamic>? get userProfile => _userProfile;
   bool get isAuthenticated => _isAuthenticated;
+  String? get userEmail => _userEmail;
 
   // ----------------------------------------------------
   // METHODS
@@ -62,9 +64,10 @@ class AppState extends ChangeNotifier {
   }
 
   //  Fetch User Profile
-  Future<void> fetchUserProfile(int userId) async {
+  Future<void> fetchUserProfile() async {
     try {
-      _userProfile = await _apiService.fetchUserProfile(userId);
+      if (_userEmail == null) return;
+      _userProfile = await _apiService.fetchUserProfile(_userEmail!);
       notifyListeners();
     } catch (e) {
       print("Error fetching user profile: $e");
@@ -77,6 +80,8 @@ class AppState extends ChangeNotifier {
       bool success = await _apiService.loginUser(email, password);
       if (success) {
         _isAuthenticated = true;
+        _userEmail = email;
+        await fetchUserProfile();
         notifyListeners();
       }
       return success;
