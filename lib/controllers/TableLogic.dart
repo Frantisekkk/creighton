@@ -7,14 +7,16 @@ class TableLogic extends ChangeNotifier {
   bool isLoading = true;
   String errorMessage = '';
 
-  TableLogic(BuildContext context) {
-    loadCycleData(context);
-  }
+  TableLogic();
 
   void loadCycleData(BuildContext context) {
+    Future.microtask(
+        () => _loadData(context)); // Schedules async task outside build
+  }
+
+  Future<void> _loadData(BuildContext context) async {
     final appState = Provider.of<AppState>(context, listen: false);
 
-    // Check if data is already available
     if (!appState.isLoading && appState.dayData != null) {
       cycleData = appState.dayData?["cycleData"];
       isLoading = false;
@@ -22,8 +24,7 @@ class TableLogic extends ChangeNotifier {
       return;
     }
 
-    // If data is not available, fetch it
-    fetchCycleData(context);
+    await fetchCycleData(context);
   }
 
   Future<void> fetchCycleData(BuildContext context) async {

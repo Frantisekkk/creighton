@@ -17,7 +17,7 @@ class HomePage extends StatelessWidget {
     final appState = Provider.of<AppState>(context, listen: false);
     // Wrap the UI in a ChangeNotifierProvider so HomeLogic is available.
     return ChangeNotifierProvider<HomeLogic>(
-      create: (_) => HomeLogic(),
+      create: (context) => HomeLogic(appState: appState),
       child: Consumer<HomeLogic>(
         builder: (context, homeLogic, _) {
           final dayData = homeLogic.dayData;
@@ -142,7 +142,7 @@ class HomePage extends StatelessWidget {
                                                   color: Colors.black87),
                                             ),
                                             Text(
-                                              '${dayData['bleeding'] ?? "No data"}, ${dayData['mucus'] ?? "No data"}, ${dayData['fertility'] ?? "No data"}',
+                                              '${dayData['bleeding']}, ${dayData['mucus']}, ${dayData['fertility']}',
                                               style: TextStyle(
                                                   fontSize: 18,
                                                   color: Colors.black87),

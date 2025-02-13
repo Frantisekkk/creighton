@@ -252,17 +252,17 @@ class ApiService {
     String consultant,
   ) async {
     final url = Uri.parse('$baseUrl/register');
-    print({
-      'first_name': firstName,
-      'last_name': lastName,
-      'email': email,
-      'password': password,
-      'birth_number': birthNumber,
-      'age': age,
-      'phone': phone,
-      'doctor': doctor,
-      'consultant': consultant,
-    });
+    // print({
+    //   'first_name': firstName,
+    //   'last_name': lastName,
+    //   'email': email,
+    //   'password': password,
+    //   'birth_number': birthNumber,
+    //   'age': age,
+    //   'phone': phone,
+    //   'doctor': doctor,
+    //   'consultant': consultant,
+    // });
     try {
       final response = await http.post(
         url,
