@@ -1,10 +1,8 @@
 import 'package:flutter/material.dart';
-import '../api_services/ApiService.dart';
+import 'package:provider/provider.dart';
+import 'package:flutter_application_1/state/AppState.dart';
 
 class LoginLogic extends ChangeNotifier {
-  final ApiService apiService = ApiService();
-
-  // This method now takes the email and password as parameters.
   Future<bool> loginUser(
       String email, String password, BuildContext context) async {
     if (email.isEmpty || password.isEmpty) {
@@ -14,8 +12,11 @@ class LoginLogic extends ChangeNotifier {
       return false;
     }
 
+    // Retrieve AppState from the Provider
+    final appState = Provider.of<AppState>(context, listen: false);
     try {
-      final bool isAuthenticated = await apiService.loginUser(email, password);
+      // Call AppState's login method
+      final bool isAuthenticated = await appState.login(email, password);
       if (!isAuthenticated) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text('Invalid credentials')),
