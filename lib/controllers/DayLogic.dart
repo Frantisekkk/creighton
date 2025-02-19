@@ -1,109 +1,96 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import '../api_services/ApiService.dart';
+import 'package:flutter_application_1/state/AppState.dart';
 
 class DayLogic extends ChangeNotifier {
-  final ApiService apiService = ApiService();
+  final AppState appState;
+  DateTime selectedDate;
 
-  late DateTime _selectedDate;
-  DateTime get selectedDate => _selectedDate;
+  // Day-specific data fields.
+  Color stickerColor;
+  double selectedTemperature;
+  bool selectedAbdominalPain;
+  String selectedBleeding;
+  String selectedMucus;
+  String selectedFertility;
 
-  String selectedBleeding = '';
-  String selectedMucus = '';
-  String selectedFertility = '';
-  double selectedTemperature = 36.0;
-  bool selectedAbdominalPain = false;
-  Color stickerColor = Colors.grey;
-
-  DayLogic(DateTime initialDate) {
-    _selectedDate = initialDate;
-    loadDayState();
+  DayLogic({required this.appState, DateTime? initialDate})
+      : selectedDate = initialDate ?? DateTime.now(),
+        stickerColor = Colors.grey,
+        selectedTemperature = 36.5,
+        selectedAbdominalPain = false,
+        selectedBleeding = '',
+        selectedMucus = '',
+        selectedFertility = '' {
+    loadData();
   }
 
-  /// Loads the state for the current selected date.
-  Future<void> loadDayState() async {
-    final selectedDateStr = DateFormat('yyyy-MM-dd').format(_selectedDate);
-    try {
-      final data = await apiService.fetchDayData(selectedDateStr);
-      selectedBleeding = data['bleeding'] ?? '';
-      selectedMucus = data['mucus'] ?? '';
-      selectedFertility = data['fertility'] ?? '';
-      selectedAbdominalPain = data['ab'] ?? false;
-      selectedTemperature =
-          double.tryParse(data['temperature']?.toString() ?? '36.0') ?? 36.0;
-      stickerColor = data['stickerColor'] ?? Colors.grey;
-    } catch (e) {
-      print('Error loading day state: $e');
-    }
-    notifyListeners(); // This tells the UI to update
+  /// Loads the day’s data by fetching it through the AppState API call.
+  Future<void> loadData() async {
+    String dateStr = DateFormat('yyyy-MM-dd').format(selectedDate);
+    Map<String, dynamic> data = await appState.fetchDayDataForDate(dateStr);
+
+    // Update fields from fetched data. If keys are missing, defaults are used.
+    stickerColor = data['stickerColor'] ?? Colors.grey;
+    selectedBleeding = data['bleeding'] ?? '';
+    selectedMucus = data['mucus'] ?? '';
+    selectedFertility = data['fertility'] ?? '';
+    selectedTemperature = data['temperature'] ?? 36.5;
+    selectedAbdominalPain = data['abdominalPain'] ?? false;
+    notifyListeners();
   }
 
-  /// Selects a new date and reloads the state.
+  /// Opens a date picker to select a new date and loads its data.
   Future<void> selectDate(BuildContext context) async {
-    DateTime? picked = await showDatePicker(
+    DateTime? pickedDate = await showDatePicker(
       context: context,
-      initialDate: _selectedDate,
-      firstDate: DateTime.now().subtract(const Duration(days: 365)),
-      lastDate: DateTime.now(),
+      initialDate: selectedDate,
+      firstDate: DateTime(2000),
+      lastDate: DateTime(2100),
     );
-    if (picked != null && picked != _selectedDate) {
-      _selectedDate = picked;
-      loadDayState();
+    if (pickedDate != null && pickedDate != selectedDate) {
+      selectedDate = pickedDate;
+      await loadData();
     }
   }
 
-  Future<void> updateTemperature(double temperature) async {
-    try {
-      final dateStr = DateFormat('yyyy-MM-dd').format(_selectedDate);
-      await apiService.updateTemperature(dateStr, temperature);
-      selectedTemperature = temperature;
-      notifyListeners();
-    } catch (e) {
-      print("Error updating temperature: $e");
-    }
+  /// Updates the temperature for the selected date.
+  Future<void> updateTemperature(double newTemp) async {
+    selectedTemperature = newTemp;
+    notifyListeners();
+    String dateStr = DateFormat('yyyy-MM-dd').format(selectedDate);
+    await appState.updateTemperatureForDate(dateStr, newTemp);
   }
 
+  /// Updates the abdominal pain status for the selected date.
   Future<void> updateAbdominalPain(bool value) async {
-    try {
-      final dateStr = DateFormat('yyyy-MM-dd').format(_selectedDate);
-      await apiService.updateAbdominalPain(dateStr, value);
-      selectedAbdominalPain = value;
-      notifyListeners();
-    } catch (e) {
-      print("Error updating abdominal pain: $e");
-    }
+    selectedAbdominalPain = value;
+    notifyListeners();
+    String dateStr = DateFormat('yyyy-MM-dd').format(selectedDate);
+    await appState.updateAbdominalPainForDate(dateStr, value);
   }
 
+  /// Updates the bleeding value for the selected date.
   Future<void> updateBleeding(String value) async {
-    try {
-      final dateStr = DateFormat('yyyy-MM-dd').format(_selectedDate);
-      await apiService.updateBleeding(dateStr, value);
-      selectedBleeding = value;
-      notifyListeners();
-    } catch (e) {
-      print("Error updating bleeding: $e");
-    }
+    selectedBleeding = value;
+    notifyListeners();
+    String dateStr = DateFormat('yyyy-MM-dd').format(selectedDate);
+    await appState.updateBleedingForDate(dateStr, value);
   }
 
+  /// Updates the mucus value for the selected date.
   Future<void> updateMucus(String value) async {
-    try {
-      final dateStr = DateFormat('yyyy-MM-dd').format(_selectedDate);
-      await apiService.updateMucus(dateStr, value);
-      selectedMucus = value;
-      notifyListeners();
-    } catch (e) {
-      print("Error updating mucus: $e");
-    }
+    selectedMucus = value;
+    notifyListeners();
+    String dateStr = DateFormat('yyyy-MM-dd').format(selectedDate);
+    await appState.updateMucusForDate(dateStr, value);
   }
 
+  /// Updates the fertility value for the selected date.
   Future<void> updateFertility(String value) async {
-    try {
-      final dateStr = DateFormat('yyyy-MM-dd').format(_selectedDate);
-      await apiService.updateFertility(dateStr, value);
-      selectedFertility = value;
-      notifyListeners();
-    } catch (e) {
-      print("Error updating fertility: $e");
-    }
+    selectedFertility = value;
+    notifyListeners();
+    String dateStr = DateFormat('yyyy-MM-dd').format(selectedDate);
+    await appState.updateFertilityForDate(dateStr, value);
   }
 }

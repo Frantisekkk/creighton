@@ -1,15 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'dart:ui';
 import 'package:flutter_application_1/widgets/DayPage/temperature_picker.dart';
 import 'package:flutter_application_1/controllers/DayLogic.dart';
 import 'package:flutter_application_1/widgets/DayPage/ButtonSection.dart';
 import 'package:flutter_application_1/styles/styles.dart';
+import 'package:provider/provider.dart';
+import 'package:flutter_application_1/state/AppState.dart';
 
 class DayPage extends StatefulWidget {
   final DateTime selectedDate;
 
-  DayPage({Key? key, required this.selectedDate}) : super(key: key);
+  const DayPage({Key? key, required this.selectedDate}) : super(key: key);
 
   @override
   _DayPageState createState() => _DayPageState();
@@ -17,17 +18,24 @@ class DayPage extends StatefulWidget {
 
 class _DayPageState extends State<DayPage> {
   late DayLogic dayLogic;
+  late VoidCallback _dayLogicListener;
 
   @override
   void initState() {
     super.initState();
-    dayLogic = DayLogic(widget.selectedDate);
-    dayLogic.addListener(() => setState(() {}));
+    // Retrieve the global AppState from Provider.
+    final appState = Provider.of<AppState>(context, listen: false);
+    dayLogic = DayLogic(appState: appState, initialDate: widget.selectedDate);
+    _dayLogicListener = () {
+      setState(() {});
+    };
+    dayLogic.addListener(_dayLogicListener);
   }
 
   @override
   void dispose() {
-    dayLogic.removeListener(() => setState(() {}));
+    dayLogic.removeListener(_dayLogicListener);
+    dayLogic.dispose();
     super.dispose();
   }
 
@@ -96,7 +104,8 @@ class _DayPageState extends State<DayPage> {
                       children: [
                         TemperatureDisplay(
                           temperature: dayLogic.selectedTemperature,
-                          onSetTemperature: dayLogic.updateTemperature,
+                          onSetTemperature: (newTemp) =>
+                              dayLogic.updateTemperature(newTemp),
                         ),
                         CustomToggleButton(
                           isActive: dayLogic.selectedAbdominalPain,
@@ -121,7 +130,6 @@ class _DayPageState extends State<DayPage> {
                 await dayLogic.updateBleeding(value);
               },
             ),
-
             // Description Section
             ButtonSection(
               title: 'Popis',
@@ -146,7 +154,6 @@ class _DayPageState extends State<DayPage> {
                 await dayLogic.updateFertility(value);
               },
             ),
-
             // Custom description Section
             Container(
               margin: const EdgeInsets.all(20.0),

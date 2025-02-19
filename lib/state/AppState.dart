@@ -45,33 +45,28 @@ class AppState extends ChangeNotifier {
     notifyListeners(); // Updates UI
   }
 
-  // Fetch Today's Data (Home Page)
-  Future<void> fetchTodayData() async {
-    String todayStr = DateFormat('yyyy-MM-dd').format(DateTime.now());
+  // Add a new method to fetch day data for a specified date string.
+  Future<Map<String, dynamic>> fetchDayDataForDate(String dateStr) async {
     try {
-      _dayData = await _apiService.fetchDayData(todayStr);
-
-      // If no data exists, set a default grey sticker and empty details
-      if (_dayData == null || _dayData!.isEmpty) {
-        _dayData = {
+      final data = await _apiService.fetchDayData(dateStr);
+      if (data == null || data.isEmpty) {
+        return {
           'stickerColor': Colors.grey,
           'bleeding': 'No data',
           'mucus': 'No data',
           'fertility': 'No data'
         };
       }
+      return data;
     } catch (e) {
-      print("Error fetching today's data: $e");
-
-      // Set defaults in case of an error
-      _dayData = {
+      print("Error fetching day data for $dateStr: $e");
+      return {
         'stickerColor': Colors.grey,
         'bleeding': 'Error',
         'mucus': 'Error',
         'fertility': 'Error'
       };
     }
-    notifyListeners();
   }
 
   //  Fetch Weekly Stickers (Calendar Row in Home)
@@ -180,6 +175,50 @@ class AppState extends ChangeNotifier {
     } finally {
       _isLoading = false;
       notifyListeners();
+    }
+  }
+
+  // ------------------------
+  // Day page day parameters update
+  // -----------------------------------
+  Future<void> updateTemperatureForDate(
+      String dateStr, double temperature) async {
+    try {
+      await _apiService.updateTemperature(dateStr, temperature);
+    } catch (e) {
+      print("Error updating temperature: $e");
+    }
+  }
+
+  Future<void> updateAbdominalPainForDate(String dateStr, bool value) async {
+    try {
+      await _apiService.updateAbdominalPain(dateStr, value);
+    } catch (e) {
+      print("Error updating abdominal pain: $e");
+    }
+  }
+
+  Future<void> updateBleedingForDate(String dateStr, String value) async {
+    try {
+      await _apiService.updateBleeding(dateStr, value);
+    } catch (e) {
+      print("Error updating bleeding: $e");
+    }
+  }
+
+  Future<void> updateMucusForDate(String dateStr, String value) async {
+    try {
+      await _apiService.updateMucus(dateStr, value);
+    } catch (e) {
+      print("Error updating mucus: $e");
+    }
+  }
+
+  Future<void> updateFertilityForDate(String dateStr, String value) async {
+    try {
+      await _apiService.updateFertility(dateStr, value);
+    } catch (e) {
+      print("Error updating fertility: $e");
     }
   }
 }

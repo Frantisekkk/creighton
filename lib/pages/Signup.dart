@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_application_1/state/AppState.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_application_1/controllers/SignupLogic.dart';
 import 'package:flutter_application_1/widgets/registerPage/ConsultantPickerDialog.dart';
@@ -148,13 +149,8 @@ class _SignUpPageState extends State<SignUpPage> {
                           context,
                         );
                         if (success) {
-                          Navigator.pushReplacement(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) =>
-                                  LoginPage(onLoginSuccess: () {}),
-                            ),
-                          );
+                          Provider.of<AppState>(context, listen: false)
+                              .setPage(1);
                         }
                       },
                       child: Text('Sign Up'),

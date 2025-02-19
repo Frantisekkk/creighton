@@ -187,18 +187,23 @@ class ApiService {
 
   Future<void> updateTemperature(String date, double temperature) async {
     final url = Uri.parse('$baseUrl/day/temperature');
-    print("POSTing temperature to: $url");
+    print(
+        "POSTing temperature to: $url with data {date: $date, temperature: $temperature}");
     try {
       final response = await http.post(
         url,
         headers: {"Content-Type": "application/json"},
         body: json.encode({'date': date, 'temperature': temperature}),
       );
+
+      print("Response Code: ${response.statusCode}");
+      print("Response Body: ${response.body}");
+
       if (response.statusCode != 200) {
         throw Exception('Failed to update temperature');
       }
     } catch (error) {
-      throw Exception('Error updating temperature: $error');
+      print("Error updating temperature: $error");
     }
   }
 

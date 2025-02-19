@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import '../state/AppState.dart';
 
 class HomeLogic extends ChangeNotifier {
@@ -21,8 +22,9 @@ class HomeLogic extends ChangeNotifier {
 
   /// Loads data for today by delegating to AppState.
   Future<void> loadDayData() async {
+    final todayStr = DateFormat('yyyy-MM-dd').format(today);
     try {
-      await appState.fetchTodayData();
+      await appState.fetchDayDataForDate(todayStr);
     } catch (e) {
       print("Error loading day data: $e");
     }
