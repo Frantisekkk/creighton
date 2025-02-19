@@ -245,7 +245,7 @@ class ApiService {
   }
 
   // lib/api_services/ApiService.dart
-  Future<void> registerUser(
+  Future<bool> registerUser(
     String firstName,
     String lastName,
     String email,
@@ -257,17 +257,6 @@ class ApiService {
     String consultant,
   ) async {
     final url = Uri.parse('$baseUrl/register');
-    // print({
-    //   'first_name': firstName,
-    //   'last_name': lastName,
-    //   'email': email,
-    //   'password': password,
-    //   'birth_number': birthNumber,
-    //   'age': age,
-    //   'phone': phone,
-    //   'doctor': doctor,
-    //   'consultant': consultant,
-    // });
     try {
       final response = await http.post(
         url,
@@ -284,9 +273,12 @@ class ApiService {
           'consultant': consultant,
         }),
       );
-      if (response.statusCode != 201) {
-        throw Exception(
-            'Failed to register user. Status code: ${response.statusCode}');
+
+      if (response.statusCode == 201) {
+        return true; // Success
+      } else {
+        print('Registration failed: ${response.body}');
+        return false; // Registration failed
       }
     } catch (e) {
       throw Exception('Error registering user: $e');

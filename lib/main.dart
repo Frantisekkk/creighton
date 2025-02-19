@@ -1,11 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/navigation/AppWrapper.dart';
 import 'package:provider/provider.dart';
-import 'package:flutter_application_1/pages/Day.dart';
-import 'package:flutter_application_1/pages/Login.dart';
-import 'package:flutter_application_1/pages/Signup.dart';
-import 'package:flutter_application_1/pages/home.dart';
-import 'package:flutter_application_1/pages/table.dart';
 import 'package:flutter_application_1/state/AppState.dart';
 
 void main() {

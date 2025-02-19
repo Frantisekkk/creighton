@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_application_1/navigation/AppWrapper.dart';
 import 'package:flutter_application_1/state/AppState.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_application_1/controllers/SignupLogic.dart';
@@ -24,8 +25,9 @@ class _SignUpPageState extends State<SignUpPage> {
 
   @override
   Widget build(BuildContext context) {
+    final appState = Provider.of<AppState>(context, listen: false);
     return ChangeNotifierProvider(
-      create: (_) => SignUpLogic(),
+      create: (context) => SignUpLogic(appState),
       child: Consumer<SignUpLogic>(
         builder: (context, signUpLogic, child) {
           return Scaffold(
@@ -135,7 +137,6 @@ class _SignUpPageState extends State<SignUpPage> {
                     ),
                     SizedBox(height: defaultVerticalSpacing),
 
-                    // Sign Up Button
                     ElevatedButton(
                       onPressed: () async {
                         bool success = await signUpLogic.registerUser(
@@ -148,17 +149,29 @@ class _SignUpPageState extends State<SignUpPage> {
                           phoneController.text,
                           context,
                         );
+
                         if (success) {
-                          Provider.of<AppState>(context, listen: false)
-                              .setPage(1);
+                          Navigator.pushReplacement(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => AppWrapper()),
+                          );
+                        } else {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                                content: Text(
+                                    'Registration failed. Please try again.')),
+                          );
                         }
                       },
                       child: Text('Sign Up'),
                     ),
 
                     SizedBox(height: 10),
+
                     TextButton(
                       onPressed: () {
+                        // Navigate to Login page if user already has an account
                         Navigator.pushReplacement(
                           context,
                           MaterialPageRoute(

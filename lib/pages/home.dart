@@ -170,7 +170,6 @@ class HomePage extends StatelessWidget {
                                 children: List.generate(7, (index) {
                                   DateTime date = DateTime.now()
                                       .subtract(Duration(days: 6 - index));
-                                  print(date);
                                   final color =
                                       weeklyStickers[index].withOpacity(0.7);
 

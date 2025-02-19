@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 import 'package:flutter_application_1/api_services/ApiService.dart';
 
 class AppState extends ChangeNotifier {
@@ -49,7 +48,7 @@ class AppState extends ChangeNotifier {
   Future<Map<String, dynamic>> fetchDayDataForDate(String dateStr) async {
     try {
       final data = await _apiService.fetchDayData(dateStr);
-      if (data == null || data.isEmpty) {
+      if (data.isEmpty) {
         return {
           'stickerColor': Colors.grey,
           'bleeding': 'No data',
@@ -99,6 +98,67 @@ class AppState extends ChangeNotifier {
   //REGISTRATION
   // -----
 
+  /// Registers a new user by calling the API service.
+  Future<bool> registerUser(
+    String firstName,
+    String lastName,
+    String email,
+    String password,
+    String birthNumber,
+    int age,
+    String phone,
+    String doctor,
+    String consultant,
+  ) async {
+    try {
+      bool success = await _apiService.registerUser(
+        firstName,
+        lastName,
+        email,
+        password,
+        birthNumber,
+        age,
+        phone,
+        doctor,
+        consultant,
+      );
+
+      if (success) {
+        _isAuthenticated = true;
+        _userEmail = email;
+        await fetchUserProfile();
+        notifyListeners();
+      }
+
+      return success;
+    } catch (e) {
+      print("Registration error: $e");
+      return false;
+    }
+  }
+
+  /// Fetches the list of doctors from the API service.
+  Future<List<Map<String, dynamic>>> fetchDoctors() async {
+    try {
+      return await _apiService.fetchDoctors();
+    } catch (e) {
+      throw Exception('Error fetching doctors: $e');
+    }
+  }
+
+  /// Fetches the list of consultants from the API service.
+  Future<List<Map<String, dynamic>>> fetchConsultants() async {
+    try {
+      return await _apiService.fetchConsultants();
+    } catch (e) {
+      throw Exception('Error fetching consultants: $e');
+    }
+  }
+
+  // -----
+  // LOGIN
+  // -----
+
   //  Handle Authentication
   Future<bool> login(String email, String password) async {
     try {
@@ -131,6 +191,7 @@ class AppState extends ChangeNotifier {
     notifyListeners();
     try {
       await _apiService.startNewCycle();
+      await fetchCycleData(); // Refresh UI after starting new cycle
     } catch (e) {
       print('Error starting new cycle: $e');
     } finally {

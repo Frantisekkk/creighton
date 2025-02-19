@@ -119,6 +119,36 @@ class _DayPageState extends State<DayPage> {
                 ],
               ),
             ),
+
+            // Add this inside the Column in your build method, before the Bleeding Section
+
+            Container(
+              margin:
+                  const EdgeInsets.symmetric(horizontal: 30.0, vertical: 10.0),
+              width: double.infinity, // Stretch full width
+              child: ElevatedButton(
+                onPressed: () async {
+                  final appState =
+                      Provider.of<AppState>(context, listen: false);
+                  await appState.startNewCycle();
+                },
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: buttBackgroundColor,
+                  padding: const EdgeInsets.symmetric(vertical: 14.0),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(30.0),
+                  ),
+                ),
+                child: const Text(
+                  'Start New Cycle',
+                  style: TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white),
+                ),
+              ),
+            ),
+
             // Bleeding Section
             ButtonSection(
               title: '🩸 Bleeding',

@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_application_1/api_services/ApiService.dart';
+import 'package:flutter_application_1/state/AppState.dart';
 
 class SignUpLogic extends ChangeNotifier {
-  final ApiService apiService = ApiService();
+  final AppState appState;
 
   // Fields
   String selectedDoctor = '';
@@ -14,15 +14,15 @@ class SignUpLogic extends ChangeNotifier {
   bool isLoadingDoctors = true;
   bool isLoadingConsultants = true;
 
-  SignUpLogic() {
+  SignUpLogic(this.appState) {
     loadDoctors();
     loadConsultants();
   }
 
-  /// Fetch doctors from API
+  /// Fetch doctors using AppState
   Future<void> loadDoctors() async {
     try {
-      final doctorsData = await apiService.fetchDoctors();
+      final doctorsData = await appState.fetchDoctors();
       doctorList = doctorsData.map((doc) => doc['name'] as String).toList();
       if (doctorList.isNotEmpty) {
         selectedDoctor = doctorList.first;
@@ -35,10 +35,10 @@ class SignUpLogic extends ChangeNotifier {
     }
   }
 
-  /// Fetch consultants from API
+  /// Fetch consultants using AppState
   Future<void> loadConsultants() async {
     try {
-      final consultantsData = await apiService.fetchConsultants();
+      final consultantsData = await appState.fetchConsultants();
       consultantList =
           consultantsData.map((con) => con['name'] as String).toList();
       if (consultantList.isNotEmpty) {
@@ -64,7 +64,7 @@ class SignUpLogic extends ChangeNotifier {
     notifyListeners();
   }
 
-  /// Registers a new user
+  /// Registers a new user using AppState
   Future<bool> registerUser(
     String firstName,
     String lastName,
@@ -98,7 +98,7 @@ class SignUpLogic extends ChangeNotifier {
     }
 
     try {
-      await apiService.registerUser(
+      await appState.registerUser(
         firstName,
         lastName,
         email,
