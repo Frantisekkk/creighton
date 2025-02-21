@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_application_1/state/AppState.dart';
 
-class ProfileController {
+class ProfileController extends ChangeNotifier {
   late BuildContext context;
   late String firstName;
   late String lastName;

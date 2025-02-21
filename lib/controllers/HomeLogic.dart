@@ -5,6 +5,7 @@ import '../state/AppState.dart';
 class HomeLogic extends ChangeNotifier {
   final AppState appState;
   final DateTime today;
+  bool _isDisposed = false;
 
   HomeLogic({required this.appState, DateTime? initialDate})
       : today = initialDate ?? DateTime.now() {
@@ -14,6 +15,18 @@ class HomeLogic extends ChangeNotifier {
   // Expose the home page data from AppState.
   Map<String, dynamic>? get dayData => appState.dayData;
   List<Color>? get weeklyStickers => appState.weeklyStickers;
+
+  @override
+  void dispose() {
+    _isDisposed = true; // <-- Mark as disposed
+    super.dispose();
+  }
+
+  void safeNotifyListeners() {
+    if (!_isDisposed) {
+      notifyListeners();
+    }
+  }
 
   /// Loads both the day data and the weekly stickers.
   Future<void> loadData() async {
@@ -28,7 +41,7 @@ class HomeLogic extends ChangeNotifier {
     } catch (e) {
       print("Error loading day data: $e");
     }
-    notifyListeners();
+    safeNotifyListeners();
   }
 
   /// Loads the sticker colors for the last week by delegating to AppState.
@@ -38,6 +51,6 @@ class HomeLogic extends ChangeNotifier {
     } catch (e) {
       print("Error loading weekly stickers: $e");
     }
-    notifyListeners();
+    safeNotifyListeners();
   }
 }

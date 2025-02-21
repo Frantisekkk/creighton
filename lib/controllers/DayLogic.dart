@@ -35,7 +35,9 @@ class DayLogic extends ChangeNotifier {
     selectedBleeding = data['bleeding'] ?? '';
     selectedMucus = data['mucus'] ?? '';
     selectedFertility = data['fertility'] ?? '';
-    selectedTemperature = data['temperature'] ?? 0.0;
+    selectedTemperature = (data['temperature'] is String)
+        ? double.tryParse(data['temperature']) ?? 0.0
+        : (data['temperature'] ?? 0.0);
     selectedAbdominalPain = data['ab'] ?? false;
     isLoaded = true;
     notifyListeners();
@@ -51,7 +53,10 @@ class DayLogic extends ChangeNotifier {
     );
     if (pickedDate != null && pickedDate != selectedDate) {
       selectedDate = pickedDate;
+      isLoaded = false;
+      notifyListeners();
       await loadData();
+      notifyListeners();
     }
   }
 
