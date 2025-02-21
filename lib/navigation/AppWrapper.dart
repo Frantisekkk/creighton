@@ -32,7 +32,10 @@ class MainApp extends StatelessWidget {
     final List<Widget> _pages = [
       TablePage(),
       HomePage(userName: 'Monika'),
-      DayPage(selectedDate: appState.selectedDate),
+      DayPage(
+        key: ValueKey(appState.selectedDate),
+        selectedDate: appState.selectedDate,
+      ),
     ];
 
     return Scaffold(

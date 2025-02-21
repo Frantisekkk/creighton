@@ -9,8 +9,7 @@ import 'package:flutter_application_1/state/AppState.dart';
 
 class DayPage extends StatefulWidget {
   final DateTime selectedDate;
-
-  const DayPage({Key? key, required this.selectedDate}) : super(key: key);
+  DayPage({Key? key, required this.selectedDate}) : super(key: key);
 
   @override
   _DayPageState createState() => _DayPageState();
