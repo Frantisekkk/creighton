@@ -15,7 +15,6 @@ class ApiService {
   // ----------------------------------------------------------------------
   Future<Map<String, dynamic>> fetchDayData(String date) async {
     final url = Uri.parse('$baseUrl/day?date=$date');
-    print(url);
     try {
       final response = await http.get(url);
       if (response.statusCode == 200) {
@@ -324,7 +323,9 @@ class ApiService {
 
   // Fetch user profile
   Future<Map<String, dynamic>> fetchUserProfile(String email) async {
-    final url = Uri.parse('$baseUrl/user/birth/$email');
+    final encodedEmail =
+        Uri.encodeComponent(email); // Ensure email is safely encoded
+    final url = Uri.parse('$baseUrl/user/email/$encodedEmail');
 
     try {
       final response = await http.get(url);
@@ -336,7 +337,7 @@ class ApiService {
         userData['name'] =
             '${userData['first_name'] ?? "N/A"} ${userData['last_name'] ?? "N/A"}';
 
-        return userData;
+        return userData; // Now includes 'birth_number'
       } else {
         throw Exception('Failed to fetch user profile');
       }

@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/Controllers/LoginLogic.dart';
+import 'package:flutter_application_1/navigation/AppWrapper.dart';
 import 'package:flutter_application_1/pages/Signup.dart';
+import 'package:flutter_application_1/state/AppState.dart';
 import 'package:flutter_application_1/styles/styles.dart';
 import 'package:provider/provider.dart';
 
@@ -62,7 +64,12 @@ class _LoginPageState extends State<LoginPage> {
                         context,
                       );
                       if (success) {
-                        widget.onLoginSuccess();
+                        Provider.of<AppState>(context, listen: false)
+                            .isAuthenticated = true;
+                        Navigator.of(context).pushAndRemoveUntil(
+                          MaterialPageRoute(builder: (context) => AppWrapper()),
+                          (Route<dynamic> route) => false,
+                        );
                       }
                     },
                     child: Text('Login'),
@@ -70,9 +77,9 @@ class _LoginPageState extends State<LoginPage> {
                   SizedBox(height: 10),
                   TextButton(
                     onPressed: () {
-                      Navigator.pushReplacement(
-                        context,
+                      Navigator.of(context).pushAndRemoveUntil(
                         MaterialPageRoute(builder: (context) => SignUpPage()),
+                        (Route<dynamic> route) => false,
                       );
                     },
                     child: Text('Don’t have an account? Register here'),

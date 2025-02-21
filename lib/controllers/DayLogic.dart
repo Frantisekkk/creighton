@@ -13,11 +13,12 @@ class DayLogic extends ChangeNotifier {
   String selectedBleeding;
   String selectedMucus;
   String selectedFertility;
+  bool isLoaded = false;
 
   DayLogic({required this.appState, DateTime? initialDate})
       : selectedDate = initialDate ?? DateTime.now(),
         stickerColor = Colors.grey,
-        selectedTemperature = 36.5,
+        selectedTemperature = 0,
         selectedAbdominalPain = false,
         selectedBleeding = '',
         selectedMucus = '',
@@ -29,14 +30,14 @@ class DayLogic extends ChangeNotifier {
   Future<void> loadData() async {
     String dateStr = DateFormat('yyyy-MM-dd').format(selectedDate);
     Map<String, dynamic> data = await appState.fetchDayDataForDate(dateStr);
-
     // Update fields from fetched data. If keys are missing, defaults are used.
     stickerColor = data['stickerColor'] ?? Colors.grey;
     selectedBleeding = data['bleeding'] ?? '';
     selectedMucus = data['mucus'] ?? '';
     selectedFertility = data['fertility'] ?? '';
-    selectedTemperature = data['temperature'] ?? 36.5;
-    selectedAbdominalPain = data['abdominalPain'] ?? false;
+    selectedTemperature = data['temperature'] ?? 0.0;
+    selectedAbdominalPain = data['ab'] ?? false;
+    isLoaded = true;
     notifyListeners();
   }
 

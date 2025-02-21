@@ -26,6 +26,10 @@ class AppState extends ChangeNotifier {
   List<Color>? get weeklyStickers => _weeklyStickers;
   Map<String, dynamic>? get userProfile => _userProfile;
   bool get isAuthenticated => _isAuthenticated;
+  set isAuthenticated(bool value) {
+    _isAuthenticated = value;
+  }
+
   String? get userEmail => _userEmail;
 
   // ----------------------------------------------------
@@ -53,7 +57,8 @@ class AppState extends ChangeNotifier {
           'stickerColor': Colors.grey,
           'bleeding': 'No data',
           'mucus': 'No data',
-          'fertility': 'No data'
+          'fertility': 'No data',
+          'ab': false
         };
       }
       return data;
@@ -63,7 +68,8 @@ class AppState extends ChangeNotifier {
         'stickerColor': Colors.grey,
         'bleeding': 'Error',
         'mucus': 'Error',
-        'fertility': 'Error'
+        'fertility': 'Error',
+        'ab': false
       };
     }
   }

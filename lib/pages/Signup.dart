@@ -76,8 +76,7 @@ class _SignUpPageState extends State<SignUpPage> {
                     TextField(
                       controller: phoneController,
                       decoration: defaultTextFieldDecoration('Phone Number'),
-                      keyboardType:
-                          TextInputType.phone, // ✅ Ensure numeric input
+                      keyboardType: TextInputType.phone,
                     ),
                     SizedBox(height: defaultVerticalSpacing),
 
@@ -172,12 +171,17 @@ class _SignUpPageState extends State<SignUpPage> {
                     TextButton(
                       onPressed: () {
                         // Navigate to Login page if user already has an account
-                        Navigator.pushReplacement(
-                          context,
+                        Navigator.of(context).pushAndRemoveUntil(
                           MaterialPageRoute(
-                            builder: (context) =>
-                                LoginPage(onLoginSuccess: () {}),
-                          ),
+                              builder: (context) =>
+                                  LoginPage(onLoginSuccess: () {
+                                    Navigator.pushReplacement(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) => AppWrapper()),
+                                    );
+                                  })),
+                          (Route<dynamic> route) => false,
                         );
                       },
                       child: Text("Already have an account? Login"),

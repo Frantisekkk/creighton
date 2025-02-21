@@ -23,13 +23,22 @@ class _DayPageState extends State<DayPage> {
   @override
   void initState() {
     super.initState();
-    // Retrieve the global AppState from Provider.
+
     final appState = Provider.of<AppState>(context, listen: false);
     dayLogic = DayLogic(appState: appState, initialDate: widget.selectedDate);
+
     _dayLogicListener = () {
-      setState(() {});
+      if (mounted) {
+        setState(() {}); // Force UI rebuild when DayLogic updates
+      }
     };
+
     dayLogic.addListener(_dayLogicListener);
+
+    // Ensure data loads after widget is built
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      dayLogic.loadData();
+    });
   }
 
   @override
@@ -44,6 +53,9 @@ class _DayPageState extends State<DayPage> {
     String dayName = DateFormat('EEEE').format(dayLogic.selectedDate);
     String date = DateFormat('d. M. y').format(dayLogic.selectedDate);
 
+    if (!dayLogic.isLoaded) {
+      return const Center(child: CircularProgressIndicator());
+    }
     return Scaffold(
       backgroundColor: backgroundColor,
       body: SingleChildScrollView(
