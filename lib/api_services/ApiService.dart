@@ -1,25 +1,44 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:flutter_application_1/styles/styles.dart';
 import 'package:http/http.dart' as http;
 import 'dart:async';
 import 'package:intl/intl.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class ApiService {
   final String baseUrl = 'http://192.168.0.75:3000/api';
 
   // ----------------------------------------------------------------------
   // Merged method for fetching a day's color.
-  // (This method now combines the logic of the former fetchColorByDate and fetchDayData.)
-  // It returns a Color based on the 'sticker' field from the API.
+  // Returns a Color based on the 'sticker' field from the API.
+  // Now requires a JWT token to specify which user.
   // ----------------------------------------------------------------------
-  Future<Map<String, dynamic>> fetchDayData(String date) async {
+  Future<Map<String, dynamic>> fetchDayData(String date,
+      {required String token}) async {
     final url = Uri.parse('$baseUrl/day?date=$date');
+    print(url);
+
     try {
-      final response = await http.get(url);
+      final response = await http.get(
+        url,
+        headers: {"Authorization": "Bearer $token"},
+      );
       if (response.statusCode == 200) {
         final data = json.decode(response.body);
-        // Compute the sticker color from the 'sticker' field
+
+        // If data is empty, return default values
+        if (data == null || data.isEmpty) {
+          return {
+            'stickerColor': Colors.grey,
+            'bleeding': 'No data',
+            'mucus': 'No data',
+            'fertility': 'No data',
+            'ab': false,
+          };
+        }
+
         final String? stickerName = data['sticker'] as String?;
         data['stickerColor'] = (stickerName != null && stickerName.isNotEmpty)
             ? getColor(stickerName)
@@ -35,10 +54,10 @@ class ApiService {
 
   // ----------------------------------------------------------------------
   // Merged method for fetching colors for the last week.
-  // (This method now combines the logic of the former fetchColorsForLastWeek and fetchStickersForLastWeek.)
-  // It returns a List<Color> by retrieving and mapping each day’s 'sticker' field.
+  // Returns a List<Color> by retrieving and mapping each day’s 'sticker' field.
+  // Now requires a JWT token to specify which user.
   // ----------------------------------------------------------------------
-  Future<List<Color>> fetchStickersForLastWeek() async {
+  Future<List<Color>> fetchStickersForLastWeek({required String token}) async {
     try {
       List<Color> colors = [];
       for (int i = 6; i >= 0; i--) {
@@ -46,7 +65,13 @@ class ApiService {
         String formattedDate = DateFormat('yyyy-MM-dd').format(date);
         final url = Uri.parse('$baseUrl/day?date=$formattedDate');
         try {
-          final response = await http.get(url);
+          final response = await http.get(
+            url,
+            headers: {
+              "Authorization": "Bearer $token",
+              "Content-Type": "application/json"
+            },
+          );
           if (response.statusCode == 200) {
             final data = json.decode(response.body);
             final String? colorName = data['sticker'] as String?;
@@ -73,10 +98,16 @@ class ApiService {
   // --------------------- Other API Methods ----------------------------
 
   // Start a new cycle
-  Future<Map<String, dynamic>> startNewCycle() async {
+  Future<Map<String, dynamic>> startNewCycle({required String token}) async {
     final url = Uri.parse('$baseUrl/cycle/new');
     try {
-      final response = await http.post(url);
+      final response = await http.post(
+        url,
+        headers: {
+          "Authorization": "Bearer $token",
+          "Content-Type": "application/json"
+        },
+      );
       if (response.statusCode == 200) {
         return json.decode(response.body);
       } else {
@@ -88,10 +119,16 @@ class ApiService {
   }
 
   // Undo the last cycle creation
-  Future<Map<String, dynamic>> undoCycle() async {
+  Future<Map<String, dynamic>> undoCycle({required String token}) async {
     final url = Uri.parse('$baseUrl/cycle/undo');
     try {
-      final response = await http.post(url);
+      final response = await http.post(
+        url,
+        headers: {
+          "Authorization": "Bearer $token",
+          "Content-Type": "application/json"
+        },
+      );
       if (response.statusCode == 200) {
         return json.decode(response.body);
       } else {
@@ -103,10 +140,16 @@ class ApiService {
   }
 
   // Delete the last cycle
-  Future<Map<String, dynamic>> deleteLastCycle() async {
+  Future<Map<String, dynamic>> deleteLastCycle({required String token}) async {
     final url = Uri.parse('$baseUrl/cycle/delete_last');
     try {
-      final response = await http.post(url);
+      final response = await http.post(
+        url,
+        headers: {
+          "Authorization": "Bearer $token",
+          "Content-Type": "application/json"
+        },
+      );
       if (response.statusCode == 200) {
         return json.decode(response.body);
       } else {
@@ -117,11 +160,18 @@ class ApiService {
     }
   }
 
-  //fetching cycle data
-  Future<List<List<Map<String, dynamic>>>> fetchCycleData() async {
+  // Fetching cycle data
+  Future<List<List<Map<String, dynamic>>>> fetchCycleData(
+      {required String token}) async {
     final url = Uri.parse('$baseUrl/cycles');
     try {
-      final response = await http.get(url);
+      final response = await http.get(
+        url,
+        headers: {
+          "Authorization": "Bearer $token",
+          "Content-Type": "application/json"
+        },
+      );
       if (response.statusCode == 200) {
         List<dynamic> data = json.decode(response.body);
         Map<int, List<Map<String, dynamic>>> groupedByCycle = {};
@@ -141,12 +191,16 @@ class ApiService {
     }
   }
 
-  Future<void> updateDayData(String date, Map<String, dynamic> updates) async {
+  Future<void> updateDayData(String date, Map<String, dynamic> updates,
+      {required String token}) async {
     final url = Uri.parse('$baseUrl/day/update');
     try {
       final response = await http.post(
         url,
-        headers: {"Content-Type": "application/json"},
+        headers: {
+          "Authorization": "Bearer $token",
+          "Content-Type": "application/json"
+        },
         body: json.encode({'date': date, 'updates': updates}),
       );
       if (response.statusCode != 200) {
@@ -157,41 +211,57 @@ class ApiService {
     }
   }
 
-  Future<void> updateBleeding(String date, String bleeding) async {
+  Future<void> updateBleeding(String date, String bleeding,
+      {required String token}) async {
     final url = Uri.parse('$baseUrl/day/bleeding');
     await http.post(
       url,
-      headers: {"Content-Type": "application/json"},
+      headers: {
+        "Authorization": "Bearer $token",
+        "Content-Type": "application/json"
+      },
       body: json.encode({'date': date, 'bleeding': bleeding}),
     );
   }
 
-  Future<void> updateMucus(String date, String mucus) async {
+  Future<void> updateMucus(String date, String mucus,
+      {required String token}) async {
     final url = Uri.parse('$baseUrl/day/mucus');
     await http.post(
       url,
-      headers: {"Content-Type": "application/json"},
+      headers: {
+        "Authorization": "Bearer $token",
+        "Content-Type": "application/json"
+      },
       body: json.encode({'date': date, 'mucus': mucus}),
     );
   }
 
-  Future<void> updateFertility(String date, String fertility) async {
+  Future<void> updateFertility(String date, String fertility,
+      {required String token}) async {
     final url = Uri.parse('$baseUrl/day/fertility');
     await http.post(
       url,
-      headers: {"Content-Type": "application/json"},
+      headers: {
+        "Authorization": "Bearer $token",
+        "Content-Type": "application/json"
+      },
       body: json.encode({'date': date, 'fertility': fertility}),
     );
   }
 
-  Future<void> updateTemperature(String date, double temperature) async {
+  Future<void> updateTemperature(String date, double temperature,
+      {required String token}) async {
     final url = Uri.parse('$baseUrl/day/temperature');
     print(
         "POSTing temperature to: $url with data {date: $date, temperature: $temperature}");
     try {
       final response = await http.post(
         url,
-        headers: {"Content-Type": "application/json"},
+        headers: {
+          "Authorization": "Bearer $token",
+          "Content-Type": "application/json"
+        },
         body: json.encode({'date': date, 'temperature': temperature}),
       );
 
@@ -206,13 +276,17 @@ class ApiService {
     }
   }
 
-  Future<void> updateAbdominalPain(String date, bool abdominalPain) async {
+  Future<void> updateAbdominalPain(String date, bool abdominalPain,
+      {required String token}) async {
     final url = Uri.parse('$baseUrl/day/abdominal_pain');
     print("updating abdominal pain: $url");
     try {
       final response = await http.post(
         url,
-        headers: {"Content-Type": "application/json"},
+        headers: {
+          "Authorization": "Bearer $token",
+          "Content-Type": "application/json"
+        },
         body: json.encode({'date': date, 'abdominalPain': abdominalPain}),
       );
       if (response.statusCode != 200) {
@@ -233,17 +307,39 @@ class ApiService {
         headers: {"Content-Type": "application/json"},
         body: json.encode({'email': email, 'password': password}),
       );
+
       if (response.statusCode == 200) {
-        return true;
-      } else {
-        return false;
+        final data = json.decode(response.body);
+        final token = data['token']; // Get JWT token
+        if (token != null) {
+          await saveToken(token); // Store token locally
+          return true;
+        }
       }
+      return false;
     } catch (e) {
       throw Exception('Error during login: $e');
     }
   }
 
-  // lib/api_services/ApiService.dart
+  // Save token locally (Use shared_preferences)
+  Future<void> saveToken(String token) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString('jwt_token', token);
+  }
+
+  // Retrieve token
+  Future<String?> getToken() async {
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.getString('jwt_token');
+  }
+
+  // Remove JWT token on logout
+  Future<void> logout() async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.remove('jwt_token');
+  }
+
   Future<bool> registerUser(
     String firstName,
     String lastName,
@@ -284,14 +380,12 @@ class ApiService {
     }
   }
 
-  // for fetching doctors and consultats for picking in registartion
-  // Fetch the list of doctors from the backend
+  // For fetching doctors and consultants for registration
   Future<List<Map<String, dynamic>>> fetchDoctors() async {
     final url = Uri.parse('$baseUrl/doctors');
     try {
       final response = await http.get(url);
       if (response.statusCode == 200) {
-        // Expecting a list of objects like: { "id": "doctor_id", "name": "Dr. John Smith" }
         final List<dynamic> data = json.decode(response.body);
         return data.cast<Map<String, dynamic>>();
       } else {
@@ -302,13 +396,11 @@ class ApiService {
     }
   }
 
-// Fetch the list of consultants from the backend
   Future<List<Map<String, dynamic>>> fetchConsultants() async {
     final url = Uri.parse('$baseUrl/consultants');
     try {
       final response = await http.get(url);
       if (response.statusCode == 200) {
-        // Expecting a list of objects like: { "id": "consultant_id", "name": "Consultant Jane Doe" }
         final List<dynamic> data = json.decode(response.body);
         return data.cast<Map<String, dynamic>>();
       } else {
@@ -321,28 +413,24 @@ class ApiService {
 
   // ------------------ Profile API's --------------------------
 
-  // Fetch user profile
-  Future<Map<String, dynamic>> fetchUserProfile(String email) async {
-    final encodedEmail =
-        Uri.encodeComponent(email); // Ensure email is safely encoded
-    final url = Uri.parse('$baseUrl/user/email/$encodedEmail');
-
+  Future<Map<String, dynamic>> fetchUserProfile({required String token}) async {
+    final url = Uri.parse('$baseUrl/user/profile');
     try {
-      final response = await http.get(url);
+      final response = await http.get(
+        url,
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": "Bearer $token"
+        },
+      );
 
       if (response.statusCode == 200) {
-        final Map<String, dynamic> userData = json.decode(response.body);
-
-        // Ensure the name is properly formatted
-        userData['name'] =
-            '${userData['first_name'] ?? "N/A"} ${userData['last_name'] ?? "N/A"}';
-
-        return userData; // Now includes 'birth_number'
+        return json.decode(response.body);
       } else {
         throw Exception('Failed to fetch user profile');
       }
-    } catch (error) {
-      throw Exception('Error fetching user profile: $error');
+    } catch (e) {
+      throw Exception('Error fetching user profile: $e');
     }
   }
 }

@@ -87,72 +87,71 @@ class HomePage extends StatelessWidget {
                         child: Container(
                           padding: colorDisplayContainerPadding,
                           decoration: colorDisplayContainerDecoration,
-                          child: dayData == null
-                              ? const Center(child: CircularProgressIndicator())
-                              : Container(
-                                  padding: const EdgeInsets.all(16.0),
-                                  decoration: colorDisplayBoxDecoration,
-                                  child: Row(
-                                    children: [
-                                      // Left half: colored rectangle
-                                      Flexible(
-                                        flex: 1,
-                                        child: Center(
-                                          child: AspectRatio(
-                                            aspectRatio: 3.7 / 5,
-                                            child: Container(
-                                              decoration: BoxDecoration(
-                                                color:
-                                                    dayData['stickerColor'] ??
-                                                        Colors.grey,
-                                                borderRadius:
-                                                    BorderRadius.circular(20),
-                                                border: Border.all(
-                                                    color: Colors.grey,
-                                                    width: 0.4),
-                                              ),
-                                            ),
-                                          ),
+                          child: Container(
+                            padding: const EdgeInsets.all(16.0),
+                            decoration: colorDisplayBoxDecoration,
+                            child: Row(
+                              children: [
+                                // Left half: colored rectangle
+                                Flexible(
+                                  flex: 1,
+                                  child: Center(
+                                    child: AspectRatio(
+                                      aspectRatio: 3.7 / 5,
+                                      child: Container(
+                                        decoration: BoxDecoration(
+                                          color: homeLogic
+                                                  .dayData?['stickerColor'] ??
+                                              Colors.grey,
+                                          borderRadius:
+                                              BorderRadius.circular(20),
+                                          border: Border.all(
+                                              color: Colors.grey, width: 0.4),
                                         ),
                                       ),
-                                      const SizedBox(width: 20),
-                                      // Right half: date and label text
-                                      Flexible(
-                                        flex: 1,
-                                        child: Column(
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.start,
-                                          children: [
-                                            Text(
-                                              DateFormat('E dd.MM')
-                                                  .format(DateTime.now()),
-                                              style: const TextStyle(
-                                                  fontSize: 22,
-                                                  fontWeight: FontWeight.bold),
-                                            ),
-                                            const Divider(
-                                                color: Colors.grey,
-                                                thickness: 1),
-                                            const SizedBox(height: 10),
-                                            Text(
-                                              'Popis:',
-                                              style: TextStyle(
-                                                  fontSize: 18,
-                                                  fontWeight: FontWeight.bold,
-                                                  color: Colors.black87),
-                                            ),
-                                            Text(
-                                              '${dayData['bleeding']}, ${dayData['mucus']}, ${dayData['fertility']}',
-                                              style: TextStyle(
-                                                  fontSize: 18,
-                                                  color: Colors.black87),
-                                            ),
-                                          ],
+                                    ),
+                                  ),
+                                ),
+                                const SizedBox(width: 20),
+                                // Right half: date and label text
+                                Flexible(
+                                  flex: 1,
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        DateFormat('E dd.MM')
+                                            .format(DateTime.now()),
+                                        style: const TextStyle(
+                                            fontSize: 22,
+                                            fontWeight: FontWeight.bold),
+                                      ),
+                                      const Divider(
+                                          color: Colors.grey, thickness: 1),
+                                      const SizedBox(height: 10),
+                                      Text(
+                                        'Popis:',
+                                        style: TextStyle(
+                                            fontSize: 18,
+                                            fontWeight: FontWeight.bold,
+                                            color: Colors.black87),
+                                      ),
+                                      Text(
+                                        '${dayData?['bleeding'] ?? 'No data'}, '
+                                        '${dayData?['mucus'] ?? 'No data'}, '
+                                        '${dayData?['fertility'] ?? 'No data'}',
+                                        style: TextStyle(
+                                          fontSize: 18,
+                                          color: Colors.black87,
                                         ),
                                       ),
                                     ],
                                   ),
                                 ),
+                              ],
+                            ),
+                          ),
                         ),
                       ),
                     ),
