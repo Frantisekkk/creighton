@@ -17,6 +17,8 @@ class ApiService {
   // ----------------------------------------------------------------------
   Future<Map<String, dynamic>> fetchDayData(String date,
       {required String token}) async {
+    print("Fetching day data with token: $token");
+
     final url = Uri.parse('$baseUrl/day?date=$date');
     print(url);
 
@@ -58,6 +60,8 @@ class ApiService {
   // Now requires a JWT token to specify which user.
   // ----------------------------------------------------------------------
   Future<List<Color>> fetchStickersForLastWeek({required String token}) async {
+    print("Fetching day data with token: $token");
+
     try {
       List<Color> colors = [];
       for (int i = 6; i >= 0; i--) {
@@ -163,6 +167,8 @@ class ApiService {
   // Fetching cycle data
   Future<List<List<Map<String, dynamic>>>> fetchCycleData(
       {required String token}) async {
+    print("Fetching day data with token: $token");
+
     final url = Uri.parse('$baseUrl/cycles');
     try {
       final response = await http.get(
@@ -336,8 +342,29 @@ class ApiService {
 
   // Remove JWT token on logout
   Future<void> logout() async {
+    final url =
+        Uri.parse('$baseUrl/logout'); // Backend logout endpoint (optional)
     final prefs = await SharedPreferences.getInstance();
+
+    try {
+      final token = await getToken();
+      if (token != null) {
+        await http.post(
+          url,
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": "Bearer $token"
+          },
+        );
+      }
+    } catch (e) {
+      print("Error logging out from backend: $e");
+    }
+
+    // Clear stored JWT token
     await prefs.remove('jwt_token');
+
+    print("User logged out successfully.");
   }
 
   Future<bool> registerUser(
@@ -414,6 +441,7 @@ class ApiService {
   // ------------------ Profile API's --------------------------
 
   Future<Map<String, dynamic>> fetchUserProfile({required String token}) async {
+    print("profile Fetching day data with token: $token");
     final url = Uri.parse('$baseUrl/user/profile');
     try {
       final response = await http.get(

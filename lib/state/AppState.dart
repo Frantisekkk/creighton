@@ -218,10 +218,23 @@ class AppState extends ChangeNotifier {
     notifyListeners();
   }
 
-  void logout() {
+  void logout() async {
     _isAuthenticated = false;
     _userProfile = null;
-    _apiService.logout();
+    _dayData = {
+      'stickerColor': Colors.grey,
+      'bleeding': 'No data',
+      'mucus': 'No data',
+      'fertility': 'No data',
+      'ab': false,
+    };
+    _weeklyStickers = null;
+    _cycleData = null;
+    _userEmail = null;
+
+    // Call API service to remove JWT from local storage
+    await _apiService.logout();
+
     notifyListeners();
   }
 

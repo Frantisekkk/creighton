@@ -59,7 +59,7 @@ class ProfileController extends ChangeNotifier {
             ),
             TextButton(
               onPressed: () {
-                appState.logout();
+                Provider.of<AppState>(context, listen: false).logout();
                 Navigator.of(context).pop();
                 Navigator.of(context).pop();
               },
