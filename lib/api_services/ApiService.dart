@@ -27,7 +27,19 @@ class ApiService {
         url,
         headers: {"Authorization": "Bearer $token"},
       );
+
       if (response.statusCode == 200) {
+        if (response.body.isEmpty) {
+          // Handling empty response case
+          return {
+            'stickerColor': Colors.grey,
+            'bleeding': 'No data',
+            'mucus': 'No data',
+            'fertility': 'No data',
+            'ab': false,
+          };
+        }
+
         final data = json.decode(response.body);
 
         // If data is empty, return default values
@@ -45,12 +57,29 @@ class ApiService {
         data['stickerColor'] = (stickerName != null && stickerName.isNotEmpty)
             ? getColor(stickerName)
             : Colors.grey;
+
         return data;
+      } else if (response.statusCode == 404) {
+        // Handle "not found" case by returning default values
+        print('No data found for the given date.');
+        return {
+          'stickerColor': Colors.grey,
+          'bleeding': 'No data',
+          'mucus': 'No data',
+          'fertility': 'No data',
+          'ab': false,
+        };
       } else {
-        throw Exception('Failed to fetch day data');
+        return {
+          'error':
+              'Failed to fetch day data. Status code: ${response.statusCode}',
+        };
       }
     } catch (error) {
-      throw Exception('Error fetching day data: $error');
+      // Instead of throwing an error, return an error message in the response
+      return {
+        'error': 'Error fetching day data: $error',
+      };
     }
   }
 
@@ -293,7 +322,7 @@ class ApiService {
           "Authorization": "Bearer $token",
           "Content-Type": "application/json"
         },
-        body: json.encode({'date': date, 'abdominalPain': abdominalPain}),
+        body: json.encode({'date': date, 'ab': abdominalPain}),
       );
       if (response.statusCode != 200) {
         throw Exception('Failed to update abdominal pain');

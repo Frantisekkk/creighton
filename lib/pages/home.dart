@@ -20,6 +20,7 @@ class HomePage extends StatelessWidget {
       create: (context) => HomeLogic(appState: appState),
       child: Consumer<HomeLogic>(
         builder: (context, homeLogic, _) {
+          //homeLogic.loadData();
           final dayData = homeLogic.dayData;
           final weeklyStickers = homeLogic.weeklyStickers;
 

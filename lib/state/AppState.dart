@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/api_services/ApiService.dart';
+import 'package:intl/intl.dart';
 
 class AppState extends ChangeNotifier {
   final ApiService _apiService = ApiService();
@@ -44,18 +45,22 @@ class AppState extends ChangeNotifier {
 
   List<List<Map<String, dynamic>>>? get cycleData => _cycleData;
   String? get userEmail => _userEmail;
+  int get selectedIndex => _selectedIndex;
+  DateTime get selectedDate => _selectedDate;
 
   // ----------------------------------------------------
   // METHODS
   // ----------------------------------------------------
 
   // Bottom navigation index/page setter
-  int get selectedIndex => _selectedIndex;
-  DateTime get selectedDate => _selectedDate;
   void setPage(int index, {DateTime? date}) {
     _selectedIndex = index;
     if (date != null) {
       _selectedDate = date;
+    } else if (index == 1) {
+      // Reset to today when navigating back to homepage
+      _selectedDate = DateTime.now();
+      fetchDayDataForDate(DateFormat('yyyy-MM-dd').format(_selectedDate));
     }
     notifyListeners();
   }
