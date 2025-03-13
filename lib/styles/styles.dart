@@ -170,13 +170,18 @@ Color getColor(String color) {
       return Colors.green;
     case 'yellow':
       return Colors.yellow;
-    case 'blue':
-      return Colors.blue;
-    case 'purple':
-      return Colors.purple;
     case 'white':
       return Colors.white;
     default:
       return Colors.grey; // Default to gray for unknown colors
   }
+}
+
+// Convert Color object back to string name
+String getColorName(Color color) {
+  if (color == Colors.red) return 'red';
+  if (color == Colors.green) return 'green';
+  if (color == Colors.yellow) return 'yellow';
+  if (color == Colors.white) return 'white';
+  return 'grey'; // Default if unknown color
 }

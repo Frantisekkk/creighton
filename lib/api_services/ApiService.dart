@@ -332,6 +332,30 @@ class ApiService {
     }
   }
 
+  Future<String> updateStickerColor(String date, String colorName,
+      {required String token}) async {
+    final url = Uri.parse('$baseUrl/day/sticker');
+
+    try {
+      final response = await http.post(
+        url,
+        headers: {
+          "Authorization": "Bearer $token",
+          "Content-Type": "application/json"
+        },
+        body: json.encode({'date': date, 'sticker': colorName}),
+      );
+
+      if (response.statusCode == 200) {
+        return 'Sticker color updated successfully';
+      } else {
+        return 'Failed to update sticker color: ${response.body}';
+      }
+    } catch (error) {
+      return 'Error updating sticker color: $error';
+    }
+  }
+
   // ------------------------- LOGIN APIs -------------------------------
 
   Future<bool> loginUser(String email, String password) async {

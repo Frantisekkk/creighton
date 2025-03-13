@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_application_1/widgets/DayPage/ImagePickerDialog.dart';
 import 'package:intl/intl.dart';
 import 'package:flutter_application_1/widgets/DayPage/temperature_picker.dart';
 import 'package:flutter_application_1/controllers/DayLogic.dart';
@@ -92,16 +93,42 @@ class _DayPageState extends State<DayPage> {
               ),
               child: Row(
                 children: [
-                  Flexible(
-                    flex: 1,
-                    child: Center(
-                      child: AspectRatio(
-                        aspectRatio: 3.7 / 5,
-                        child: Container(
-                          decoration: BoxDecoration(
-                            color: dayLogic.stickerColor,
-                            borderRadius: BorderRadius.circular(20),
-                            border: Border.all(color: Colors.grey, width: 0.4),
+                  GestureDetector(
+                    onTap: () async {
+                      final result = await showDialog<Map<String, dynamic>>(
+                        context: context,
+                        builder: (context) => StickerPickerDialog(
+                          initialColor: dayLogic
+                              .stickerColor, // Pass the current sticker color
+                        ),
+                      );
+
+                      if (result != null) {
+                        Color selectedColor = result['color'];
+                        bool showBaby = result['showBaby'];
+
+                        // Update UI with new sticker color
+                        dayLogic.updateStickerColor(selectedColor);
+
+                        // Handle baby overlay logic if needed
+                        if (showBaby) {
+                          // Perform additional logic if baby is selected
+                        }
+                      }
+                    },
+                    child: Flexible(
+                      flex: 1,
+                      child: Center(
+                        child: AspectRatio(
+                          aspectRatio: 3.7 / 5,
+                          child: Container(
+                            decoration: BoxDecoration(
+                              color: dayLogic
+                                  .stickerColor, // Display current sticker color
+                              borderRadius: BorderRadius.circular(20),
+                              border:
+                                  Border.all(color: Colors.grey, width: 0.4),
+                            ),
                           ),
                         ),
                       ),

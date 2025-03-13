@@ -42,8 +42,6 @@ class ProfileController extends ChangeNotifier {
   }
 
   void showLogoutConfirmationDialog() {
-    final appState = Provider.of<AppState>(context, listen: false);
-
     showDialog(
       context: context,
       builder: (BuildContext context) {

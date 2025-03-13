@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/api_services/ApiService.dart';
+import 'package:flutter_application_1/styles/Styles.dart';
 import 'package:intl/intl.dart';
 
 class AppState extends ChangeNotifier {
@@ -315,6 +316,32 @@ class AppState extends ChangeNotifier {
   // ----------------------------------------------------
   // Day Parameter Update Methods
   // ----------------------------------------------------
+
+  Future<void> updateStickerColorForDate(String dateStr, Color newColor) async {
+    try {
+      // Update the local UI state first
+      _dayData['stickerColor'] = newColor;
+      notifyListeners();
+
+      // Fetch the token
+      final token = await _apiService.getToken();
+      if (token == null) {
+        print("Error: Token is null");
+        return;
+      }
+
+      // Convert Color to string before sending to API
+      String colorName = getColorName(newColor);
+
+      // Call the API method
+      String responseMessage = await _apiService
+          .updateStickerColor(dateStr, colorName, token: token);
+
+      print(responseMessage); // Log the response message
+    } catch (e) {
+      print("Error updating sticker color: $e");
+    }
+  }
 
   Future<void> updateTemperatureForDate(
       String dateStr, double temperature) async {

@@ -60,6 +60,14 @@ class DayLogic extends ChangeNotifier {
     }
   }
 
+  /// Updates the sticker color for the selected date.
+  Future<void> updateStickerColor(Color newColor) async {
+    stickerColor = newColor;
+    notifyListeners();
+    String dateStr = DateFormat('yyyy-MM-dd').format(selectedDate);
+    await appState.updateStickerColorForDate(dateStr, newColor);
+  }
+
   /// Updates the temperature for the selected date.
   Future<void> updateTemperature(double newTemp) async {
     selectedTemperature = newTemp;
