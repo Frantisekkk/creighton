@@ -332,7 +332,7 @@ class ApiService {
     }
   }
 
-  Future<String> updateStickerColor(String date, String colorName,
+  Future<String> updateStickerColor(String date, String colorName, bool baby,
       {required String token}) async {
     final url = Uri.parse('$baseUrl/day/sticker');
 
@@ -343,7 +343,8 @@ class ApiService {
           "Authorization": "Bearer $token",
           "Content-Type": "application/json"
         },
-        body: json.encode({'date': date, 'sticker': colorName}),
+        // Include the baby flag in the request body
+        body: json.encode({'date': date, 'sticker': colorName, 'baby': baby}),
       );
 
       if (response.statusCode == 200) {

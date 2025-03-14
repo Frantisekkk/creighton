@@ -94,28 +94,24 @@ class _DayPageState extends State<DayPage> {
               child: Row(
                 children: [
                   GestureDetector(
+                    // In DayPage widget (inside your GestureDetector)
                     onTap: () async {
                       final result = await showDialog<Map<String, dynamic>>(
                         context: context,
                         builder: (context) => StickerPickerDialog(
-                          initialColor: dayLogic
-                              .stickerColor, // Pass the current sticker color
+                          initialColor: dayLogic.stickerColor,
+                          initialBabySelection: dayLogic
+                              .baby, // if you maintain this in your DayLogic state
                         ),
                       );
 
                       if (result != null) {
                         Color selectedColor = result['color'];
                         bool showBaby = result['showBaby'];
-
-                        // Update UI with new sticker color
-                        dayLogic.updateStickerColor(selectedColor);
-
-                        // Handle baby overlay logic if needed
-                        if (showBaby) {
-                          // Perform additional logic if baby is selected
-                        }
+                        dayLogic.updateStickerColor(selectedColor, showBaby);
                       }
                     },
+
                     child: Flexible(
                       flex: 1,
                       child: Center(

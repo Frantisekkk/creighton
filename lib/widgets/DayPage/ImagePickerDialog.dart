@@ -61,34 +61,46 @@ class _StickerPickerDialogState extends State<StickerPickerDialog> {
                     ),
                     const SizedBox(height: 10),
 
-                    // Color Picker Row
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: availableColors.map((color) {
-                        return GestureDetector(
-                          onTap: () {
-                            setState(() {
-                              selectedColor = color;
-                            });
-                          },
-                          child: Container(
-                            margin: const EdgeInsets.all(8),
-                            width: 60,
-                            height: 60,
-                            decoration: BoxDecoration(
-                              color: color,
-                              shape: BoxShape.rectangle,
-                              borderRadius: BorderRadius.circular(10),
-                              border: Border.all(
-                                color: selectedColor == color
-                                    ? Colors.blue
-                                    : Colors.transparent,
-                                width: 3,
+                    LayoutBuilder(
+                      builder: (context, constraints) {
+                        // Calculate available width:
+                        // Here, we subtract a fixed horizontal margin for each container
+                        // For example, assume 8 pixels margin on each side for each container
+                        double totalHorizontalMargin =
+                            (availableColors.length + 1) * 8;
+                        double containerWidth =
+                            (constraints.maxWidth - totalHorizontalMargin) /
+                                availableColors.length;
+
+                        return Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          children: availableColors.map((color) {
+                            return GestureDetector(
+                              onTap: () {
+                                setState(() {
+                                  selectedColor = color;
+                                });
+                              },
+                              child: Container(
+                                margin: const EdgeInsets.symmetric(
+                                    horizontal: 4, vertical: 8),
+                                width: containerWidth,
+                                height: 60,
+                                decoration: BoxDecoration(
+                                  color: color,
+                                  borderRadius: BorderRadius.circular(10),
+                                  border: Border.all(
+                                    color: selectedColor == color
+                                        ? Colors.blue
+                                        : Colors.black,
+                                    width: selectedColor == color ? 3 : 1,
+                                  ),
+                                ),
                               ),
-                            ),
-                          ),
+                            );
+                          }).toList(),
                         );
-                      }).toList(),
+                      },
                     ),
                     const SizedBox(height: 15),
 

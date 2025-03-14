@@ -8,6 +8,7 @@ class DayLogic extends ChangeNotifier {
 
   // Day-specific data fields.
   Color stickerColor;
+  bool baby;
   double selectedTemperature;
   bool selectedAbdominalPain;
   String selectedBleeding;
@@ -18,6 +19,7 @@ class DayLogic extends ChangeNotifier {
   DayLogic({required this.appState, DateTime? initialDate})
       : selectedDate = initialDate ?? DateTime.now(),
         stickerColor = Colors.grey,
+        baby = false,
         selectedTemperature = 0,
         selectedAbdominalPain = false,
         selectedBleeding = '',
@@ -30,8 +32,10 @@ class DayLogic extends ChangeNotifier {
   Future<void> loadData() async {
     String dateStr = DateFormat('yyyy-MM-dd').format(selectedDate);
     Map<String, dynamic> data = await appState.fetchDayDataForDate(dateStr);
-    // Update fields from fetched data. If keys are missing, defaults are used.
+
+    // Update fields from fetched data. Defaults used if keys are missing.
     stickerColor = data['stickerColor'] ?? Colors.grey;
+    baby = data['baby'] ?? false; // load baby flag from data
     selectedBleeding = data['bleeding'] ?? '';
     selectedMucus = data['mucus'] ?? '';
     selectedFertility = data['fertility'] ?? '';
@@ -60,12 +64,13 @@ class DayLogic extends ChangeNotifier {
     }
   }
 
-  /// Updates the sticker color for the selected date.
-  Future<void> updateStickerColor(Color newColor) async {
+  /// Updates the sticker color and baby flag for the selected date.
+  Future<void> updateStickerColor(Color newColor, bool newBaby) async {
     stickerColor = newColor;
+    baby = newBaby;
     notifyListeners();
     String dateStr = DateFormat('yyyy-MM-dd').format(selectedDate);
-    await appState.updateStickerColorForDate(dateStr, newColor);
+    await appState.updateStickerColorForDate(dateStr, newColor, newBaby);
   }
 
   /// Updates the temperature for the selected date.

@@ -317,10 +317,12 @@ class AppState extends ChangeNotifier {
   // Day Parameter Update Methods
   // ----------------------------------------------------
 
-  Future<void> updateStickerColorForDate(String dateStr, Color newColor) async {
+  Future<void> updateStickerColorForDate(
+      String dateStr, Color newColor, bool baby) async {
     try {
-      // Update the local UI state first
+      // Update the local UI state first (update both sticker color and baby status)
       _dayData['stickerColor'] = newColor;
+      _dayData['baby'] = baby;
       notifyListeners();
 
       // Fetch the token
@@ -333,9 +335,9 @@ class AppState extends ChangeNotifier {
       // Convert Color to string before sending to API
       String colorName = getColorName(newColor);
 
-      // Call the API method
+      // Call the API method, now including the baby flag
       String responseMessage = await _apiService
-          .updateStickerColor(dateStr, colorName, token: token);
+          .updateStickerColor(dateStr, colorName, baby, token: token);
 
       print(responseMessage); // Log the response message
     } catch (e) {
