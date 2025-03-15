@@ -515,4 +515,42 @@ class ApiService {
       throw Exception('Error fetching user profile: $e');
     }
   }
+
+  //edit user data in profile/ editprofile page
+  Future<void> updateUserProfile({
+    required String token,
+    required String firstName,
+    required String lastName,
+    required String email,
+    required String birthNumber,
+    required String phone,
+    required String doctor,
+    required String consultant,
+  }) async {
+    final url = Uri.parse('$baseUrl/user/update');
+    try {
+      final response = await http.put(
+        url,
+        headers: {
+          "Authorization": "Bearer $token",
+          "Content-Type": "application/json"
+        },
+        body: json.encode({
+          'first_name': firstName,
+          'last_name': lastName,
+          'email': email,
+          'birth_number': birthNumber,
+          'phone': phone,
+          'doctor': doctor,
+          'consultant': consultant,
+        }),
+      );
+
+      if (response.statusCode != 200) {
+        throw Exception('Failed to update profile');
+      }
+    } catch (error) {
+      throw Exception('Error updating profile: $error');
+    }
+  }
 }

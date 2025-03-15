@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/controllers/ProfileLogic.dart';
+import 'package:flutter_application_1/pages/EditProflle.dart';
 
 class ProfilePage extends StatefulWidget {
   @override
@@ -52,8 +53,18 @@ class _ProfilePageState extends State<ProfilePage> {
                   _buildProfileItem("Doctor Name", _controller.doctorName),
                   const SizedBox(height: 30),
                   ElevatedButton(
-                    onPressed: () =>
-                        Navigator.pushNamed(context, '/edit-profile'),
+                    onPressed: () async {
+                      final result = await Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) =>
+                              EditProfilePage(controller: _controller),
+                        ),
+                      );
+                      if (result == true) {
+                        _loadProfileData(); // Refresh profile data after editing
+                      }
+                    },
                     child: const Text("Edit Profile",
                         style: TextStyle(fontSize: 18)),
                   ),
