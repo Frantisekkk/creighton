@@ -82,8 +82,6 @@ class HomePage extends StatelessWidget {
                       child: GestureDetector(
                         onTap: () {
                           appState.setPage(2, date: DateTime.now());
-                          // mainScreenKey.currentState
-                          //     ?.onItemTapped(2, date: DateTime.now());
                         },
                         child: Container(
                           padding: colorDisplayContainerPadding,
@@ -93,30 +91,51 @@ class HomePage extends StatelessWidget {
                             decoration: colorDisplayBoxDecoration,
                             child: Row(
                               children: [
-                                // Left half: colored rectangle
-                                Flexible(
-                                  flex: 1,
+                                // Left half: expanded sticker box
+                                Expanded(
                                   child: Center(
                                     child: AspectRatio(
-                                      aspectRatio: 3.7 / 5,
-                                      child: Container(
-                                        decoration: BoxDecoration(
-                                          color: homeLogic
-                                                  .dayData?['stickerColor'] ??
-                                              Colors.grey,
-                                          borderRadius:
-                                              BorderRadius.circular(20),
-                                          border: Border.all(
-                                              color: Colors.grey, width: 0.4),
-                                        ),
+                                      aspectRatio:
+                                          3.7 / 5, // Maintain aspect ratio
+                                      child: Stack(
+                                        children: [
+                                          // Background sticker color
+                                          Positioned.fill(
+                                            child: Container(
+                                              decoration: BoxDecoration(
+                                                color: homeLogic.dayData?[
+                                                        'stickerColor'] ??
+                                                    Colors.grey,
+                                                borderRadius:
+                                                    BorderRadius.circular(20),
+                                                border: Border.all(
+                                                    color: Colors.grey,
+                                                    width: 0.4),
+                                              ),
+                                            ),
+                                          ),
+                                          // Baby Image Overlay (if enabled)
+                                          if (homeLogic.dayData?['baby'] ??
+                                              false)
+                                            Positioned.fill(
+                                              child: Container(
+                                                margin: const EdgeInsets.all(
+                                                    20.0), // Adjust margin as needed
+                                                child: Image.asset(
+                                                  'assets/images/baby_transparent.png',
+                                                  fit: BoxFit.contain,
+                                                ),
+                                              ),
+                                            ),
+                                        ],
                                       ),
                                     ),
                                   ),
                                 ),
                                 const SizedBox(width: 20),
-                                // Right half: date and label text
-                                Flexible(
-                                  flex: 1,
+
+                                // Right half: date and text
+                                Expanded(
                                   child: Column(
                                     crossAxisAlignment:
                                         CrossAxisAlignment.start,
@@ -139,13 +158,12 @@ class HomePage extends StatelessWidget {
                                             color: Colors.black87),
                                       ),
                                       Text(
-                                        '${dayData?['bleeding'] ?? 'No data'}, '
-                                        '${dayData?['mucus'] ?? 'No data'}, '
-                                        '${dayData?['fertility'] ?? 'No data'}',
+                                        '${homeLogic.dayData?['bleeding'] ?? 'No data'}, '
+                                        '${homeLogic.dayData?['mucus'] ?? 'No data'}, '
+                                        '${homeLogic.dayData?['fertility'] ?? 'No data'}',
                                         style: TextStyle(
-                                          fontSize: 18,
-                                          color: Colors.black87,
-                                        ),
+                                            fontSize: 18,
+                                            color: Colors.black87),
                                       ),
                                     ],
                                   ),

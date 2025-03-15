@@ -93,38 +93,47 @@ class _DayPageState extends State<DayPage> {
               ),
               child: Row(
                 children: [
-                  GestureDetector(
-                    // In DayPage widget (inside your GestureDetector)
-                    onTap: () async {
-                      final result = await showDialog<Map<String, dynamic>>(
-                        context: context,
-                        builder: (context) => StickerPickerDialog(
-                          initialColor: dayLogic.stickerColor,
-                          initialBabySelection: dayLogic
-                              .baby, // if you maintain this in your DayLogic state
-                        ),
-                      );
-
-                      if (result != null) {
-                        Color selectedColor = result['color'];
-                        bool showBaby = result['showBaby'];
-                        dayLogic.updateStickerColor(selectedColor, showBaby);
-                      }
-                    },
-
-                    child: Flexible(
-                      flex: 1,
+                  Flexible(
+                    flex: 1,
+                    child: GestureDetector(
+                      onTap: () async {
+                        final result = await showDialog<Map<String, dynamic>>(
+                          context: context,
+                          builder: (context) => StickerPickerDialog(
+                            initialColor: dayLogic.stickerColor,
+                            initialBabySelection:
+                                dayLogic.baby, // Ensure this state is tracked
+                          ),
+                        );
+                        if (result != null) {
+                          Color selectedColor = result['color'];
+                          bool showBaby = result['showBaby'];
+                          dayLogic.updateStickerColor(selectedColor, showBaby);
+                        }
+                      },
                       child: Center(
                         child: AspectRatio(
                           aspectRatio: 3.7 / 5,
-                          child: Container(
-                            decoration: BoxDecoration(
-                              color: dayLogic
-                                  .stickerColor, // Display current sticker color
-                              borderRadius: BorderRadius.circular(20),
-                              border:
-                                  Border.all(color: Colors.grey, width: 0.4),
-                            ),
+                          child: Stack(
+                            alignment: Alignment.center,
+                            children: [
+                              // Background sticker color
+                              Container(
+                                decoration: BoxDecoration(
+                                  color: dayLogic.stickerColor,
+                                  borderRadius: BorderRadius.circular(20),
+                                  border: Border.all(
+                                      color: Colors.grey, width: 0.4),
+                                ),
+                              ),
+                              // Baby Image Overlay (if enabled)
+                              if (dayLogic.baby)
+                                Image.asset(
+                                  'assets/images/baby_transparent.png',
+                                  fit: BoxFit.contain,
+                                  width: 70, // Adjust size as needed
+                                ),
+                            ],
                           ),
                         ),
                       ),

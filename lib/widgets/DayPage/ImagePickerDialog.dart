@@ -134,19 +134,26 @@ class _StickerPickerDialogState extends State<StickerPickerDialog> {
                             color: selectedColor,
                             borderRadius: BorderRadius.circular(20),
                           ),
+                          child: showBaby
+                              ? Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Expanded(
+                                      child: Positioned.fill(
+                                        child: Container(
+                                          margin: const EdgeInsets.all(
+                                              20.0), // Adjust margin as needed
+                                          child: Image.asset(
+                                            'assets/images/baby_transparent.png',
+                                            fit: BoxFit.contain,
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                )
+                              : null, // Keep container empty if `showBaby` is false
                         ),
-                        if (showBaby)
-                          Positioned(
-                            bottom: 10,
-                            child: Opacity(
-                              opacity: 0.5,
-                              child: Image.asset(
-                                'assets/images/baby_transparent.jpg', // Updated baby overlay asset path
-                                width: 70,
-                                height: 70,
-                              ),
-                            ),
-                          ),
                       ],
                     ),
                     const SizedBox(height: 15),

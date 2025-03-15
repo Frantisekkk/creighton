@@ -5,6 +5,7 @@ import 'package:flutter_application_1/state/AppState.dart';
 class DayLogic extends ChangeNotifier {
   final AppState appState;
   DateTime selectedDate;
+  bool _isDisposed = false;
 
   // Day-specific data fields.
   Color stickerColor;
@@ -28,6 +29,18 @@ class DayLogic extends ChangeNotifier {
     loadData();
   }
 
+  @override
+  void dispose() {
+    _isDisposed = true;
+    super.dispose();
+  }
+
+  void safeNotifyListeners() {
+    if (!_isDisposed) {
+      notifyListeners();
+    }
+  }
+
   /// Loads the day’s data by fetching it through the AppState API call.
   Future<void> loadData() async {
     String dateStr = DateFormat('yyyy-MM-dd').format(selectedDate);
@@ -44,7 +57,7 @@ class DayLogic extends ChangeNotifier {
         : (data['temperature'] ?? 0.0);
     selectedAbdominalPain = data['ab'] ?? false;
     isLoaded = true;
-    notifyListeners();
+    safeNotifyListeners();
   }
 
   /// Opens a date picker to select a new date and loads its data.
