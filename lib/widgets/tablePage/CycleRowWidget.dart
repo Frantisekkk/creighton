@@ -28,10 +28,27 @@ class CycleRowWidget extends StatelessWidget {
             "Sticker",
             (data) => '',
             height: rowHeight * 0.3,
-            iconBuilder: (data) => Icon(
-              Icons.circle,
-              color: getColor(data['sticker'] ?? 'unknown'),
-            ),
+            iconBuilder: (data) {
+              final Color stickerColor = getColor(data['sticker'] ?? 'unknown');
+              final bool baby = data['baby'] ?? false;
+              return Container(
+                width: tableCellWidth,
+                height: rowHeight * 0.3,
+                decoration: BoxDecoration(
+                  color: stickerColor,
+                ),
+                child: baby
+                    ? Container(
+                        margin: const EdgeInsets.all(
+                            8.0), // Adjust margin as needed
+                        child: Image.asset(
+                          'assets/images/baby_transparent.png',
+                          fit: BoxFit.contain,
+                        ),
+                      )
+                    : null,
+              );
+            },
           ),
           _buildRowHeader(
             "Date",
