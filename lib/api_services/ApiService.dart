@@ -17,10 +17,10 @@ class ApiService {
   // ----------------------------------------------------------------------
   Future<Map<String, dynamic>> fetchDayData(String date,
       {required String token}) async {
-    print("Fetching day data with token: $token");
+    // print("Fetching day data with token: $token");
 
     final url = Uri.parse('$baseUrl/day?date=$date');
-    print(url);
+    // print(url);
 
     try {
       final response = await http.get(
@@ -89,7 +89,7 @@ class ApiService {
   // Now requires a JWT token to specify which user.
   // ----------------------------------------------------------------------
   Future<List<Color>> fetchStickersForLastWeek({required String token}) async {
-    print("Fetching day data with token: $token");
+    // print("Fetching day data with token: $token");
 
     try {
       List<Color> colors = [];
@@ -196,7 +196,7 @@ class ApiService {
   // Fetching cycle data
   Future<List<List<Map<String, dynamic>>>> fetchCycleData(
       {required String token}) async {
-    print("Fetching day data with token: $token");
+    // print("Fetching day data with token: $token");
 
     final url = Uri.parse('$baseUrl/cycles');
     try {
@@ -495,7 +495,7 @@ class ApiService {
   // ------------------ Profile API's --------------------------
 
   Future<Map<String, dynamic>> fetchUserProfile({required String token}) async {
-    print("profile Fetching day data with token: $token");
+    // print("profile Fetching day data with token: $token");
     final url = Uri.parse('$baseUrl/user/profile');
     try {
       final response = await http.get(

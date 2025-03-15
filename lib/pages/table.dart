@@ -4,8 +4,15 @@ import 'package:flutter_application_1/styles/styles.dart';
 import 'package:flutter_application_1/widgets/tablePage/CycleRowWidget.dart';
 import 'package:provider/provider.dart';
 
-class TablePage extends StatelessWidget {
+class TablePage extends StatefulWidget {
   const TablePage({Key? key}) : super(key: key);
+
+  @override
+  _TablePageState createState() => _TablePageState();
+}
+
+class _TablePageState extends State<TablePage> {
+  bool _hasCalledLoadData = false;
 
   @override
   Widget build(BuildContext context) {
@@ -13,6 +20,14 @@ class TablePage extends StatelessWidget {
       create: (_) => TableLogic(),
       child: Consumer<TableLogic>(
         builder: (context, tableLogic, _) {
+          // Use a post-frame callback to call loadCycleData after the first build.
+          if (!_hasCalledLoadData) {
+            WidgetsBinding.instance.addPostFrameCallback((_) {
+              tableLogic.loadCycleData(context);
+            });
+            _hasCalledLoadData = true;
+          }
+
           return Scaffold(
             appBar: AppBar(
               title: const Text('Cycle Table Display'),
@@ -24,13 +39,13 @@ class TablePage extends StatelessWidget {
                 children: (tableLogic.cycleData == null ||
                         tableLogic.cycleData!.isEmpty)
                     ? [
-                        // Always show the table with headers, even if there's no data
+                        // Show only table headers if no data exists.
                         Padding(
                           padding: tableRowPadding,
                           child: SingleChildScrollView(
                             scrollDirection: Axis.horizontal,
                             child: CycleRowWidget(
-                              cycleData: [], // Empty list = table with only headers
+                              cycleData: [],
                               rowHeight: 300,
                             ),
                           ),

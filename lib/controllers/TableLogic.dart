@@ -17,9 +17,10 @@ class TableLogic extends ChangeNotifier {
   Future<void> _loadData(BuildContext context) async {
     final appState = Provider.of<AppState>(context, listen: false);
 
-    if (!appState.isLoading && appState.dayData != null) {
-      cycleData = appState.dayData?["cycleData"];
+    if (!appState.isLoading && appState.cycleData != null) {
+      cycleData = appState.cycleData;
       isLoading = false;
+      print("TableLogic._loadData: Cycle data loaded: $cycleData");
       notifyListeners();
       return;
     }
@@ -37,7 +38,7 @@ class TableLogic extends ChangeNotifier {
       notifyListeners();
 
       await appState.fetchCycleData();
-      cycleData = appState.dayData?["cycleData"];
+      cycleData = appState.cycleData;
     } catch (e) {
       errorMessage = e.toString();
     } finally {
