@@ -241,21 +241,33 @@ class HomePage extends StatelessWidget {
                       flex: 25,
                       child: Container(
                         alignment: Alignment.center,
-                        child: Stack(
-                          alignment: Alignment.center,
-                          children: [
-                            CustomPaint(
-                              size: const Size(200, 100),
-                              painter: CustomCircularProgress(value: 0.75),
-                            ),
-                            Positioned(
-                              bottom: 0,
-                              child: Text(
-                                '${(25 * 0.75).round()}',
-                                style: circularProgressTextStyle,
-                              ),
-                            ),
-                          ],
+                        child: Builder(
+                          builder: (context) {
+                            // Retrieve cycle data from dayData; using default values if not available
+                            final int currentDay =
+                                homeLogic.dayData?['cycleDay'] ?? 2;
+                            final int displayTotal =
+                                currentDay <= 28 ? 28 : currentDay + 5;
+                            final double progressValue =
+                                currentDay / displayTotal;
+                            return Stack(
+                              alignment: Alignment.center,
+                              children: [
+                                CustomPaint(
+                                  size: const Size(200, 100),
+                                  painter: CustomCircularProgress(
+                                      value: progressValue),
+                                ),
+                                Positioned(
+                                  bottom: 0,
+                                  child: Text(
+                                    '$currentDay',
+                                    style: circularProgressTextStyle,
+                                  ),
+                                ),
+                              ],
+                            );
+                          },
                         ),
                       ),
                     ),

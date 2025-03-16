@@ -1,36 +1,37 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/state/AppState.dart';
-import 'package:provider/provider.dart';
 
 class TableLogic extends ChangeNotifier {
+  final AppState appState;
   List<List<Map<String, dynamic>>>? cycleData;
   bool isLoading = true;
   String errorMessage = '';
 
-  TableLogic();
-
-  void loadCycleData(BuildContext context) {
-    Future.microtask(
-        () => _loadData(context)); // Schedules async task outside build
+  TableLogic({required this.appState}) {
+    appState.addListener(_onAppStateChanged); // Listen to changes in AppState
+    loadCycleData();
   }
 
-  Future<void> _loadData(BuildContext context) async {
-    final appState = Provider.of<AppState>(context, listen: false);
+  void _onAppStateChanged() {
+    cycleData = appState.cycleData;
+    notifyListeners(); // Notify the UI to rebuild
+  }
 
+  void loadCycleData() {
+    Future.microtask(() => _loadData());
+  }
+
+  Future<void> _loadData() async {
     if (!appState.isLoading && appState.cycleData != null) {
       cycleData = appState.cycleData;
       isLoading = false;
-      print("TableLogic._loadData: Cycle data loaded: $cycleData");
       notifyListeners();
       return;
     }
-
-    await fetchCycleData(context);
+    await fetchCycleData();
   }
 
-  Future<void> fetchCycleData(BuildContext context) async {
-    final appState = Provider.of<AppState>(context, listen: false);
-
+  Future<void> fetchCycleData() async {
     if (appState.isLoading) return; // Prevent duplicate fetching
 
     try {
@@ -45,5 +46,12 @@ class TableLogic extends ChangeNotifier {
       isLoading = false;
       notifyListeners();
     }
+  }
+
+  @override
+  void dispose() {
+    appState
+        .removeListener(_onAppStateChanged); // Remove listener when destroyed
+    super.dispose();
   }
 }

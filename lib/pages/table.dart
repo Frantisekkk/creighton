@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/Controllers/TableLogic.dart';
+import 'package:flutter_application_1/state/AppState.dart';
 import 'package:flutter_application_1/styles/styles.dart';
 import 'package:flutter_application_1/widgets/tablePage/CycleRowWidget.dart';
 import 'package:provider/provider.dart';
@@ -12,22 +13,31 @@ class TablePage extends StatefulWidget {
 }
 
 class _TablePageState extends State<TablePage> {
-  bool _hasCalledLoadData = false;
+  late TableLogic tableLogic; // Hold TableLogic instance
+  bool _hasInitialized = false;
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    if (!_hasInitialized) {
+      final appState = Provider.of<AppState>(context, listen: false);
+      tableLogic = TableLogic(appState: appState); // Manually pass AppState
+      _hasInitialized = true;
+    }
+  }
+
+  @override
+  void dispose() {
+    tableLogic.dispose(); // Dispose TableLogic when leaving the page
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
-    return ChangeNotifierProvider<TableLogic>(
-      create: (_) => TableLogic(),
+    return ChangeNotifierProvider<TableLogic>.value(
+      value: tableLogic, // Provide the manually created TableLogic instance
       child: Consumer<TableLogic>(
         builder: (context, tableLogic, _) {
-          // Use a post-frame callback to call loadCycleData after the first build.
-          if (!_hasCalledLoadData) {
-            WidgetsBinding.instance.addPostFrameCallback((_) {
-              tableLogic.loadCycleData(context);
-            });
-            _hasCalledLoadData = true;
-          }
-
           return Scaffold(
             appBar: AppBar(
               title: const Text('Cycle Table Display'),
@@ -39,13 +49,13 @@ class _TablePageState extends State<TablePage> {
                 children: (tableLogic.cycleData == null ||
                         tableLogic.cycleData!.isEmpty)
                     ? [
-                        // Show only table headers if no data exists.
+                        // Always show the table with headers, even if there's no data
                         Padding(
                           padding: tableRowPadding,
                           child: SingleChildScrollView(
                             scrollDirection: Axis.horizontal,
                             child: CycleRowWidget(
-                              cycleData: [],
+                              cycleData: [], // Empty list = table with only headers
                               rowHeight: 300,
                             ),
                           ),

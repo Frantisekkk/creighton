@@ -84,6 +84,7 @@ class DayLogic extends ChangeNotifier {
     notifyListeners();
     String dateStr = DateFormat('yyyy-MM-dd').format(selectedDate);
     await appState.updateStickerColorForDate(dateStr, newColor, newBaby);
+    await appState.refreshAllData();
   }
 
   /// Updates the temperature for the selected date.
@@ -92,6 +93,7 @@ class DayLogic extends ChangeNotifier {
     notifyListeners();
     String dateStr = DateFormat('yyyy-MM-dd').format(selectedDate);
     await appState.updateTemperatureForDate(dateStr, newTemp);
+    await appState.refreshAllData();
   }
 
   /// Updates the abdominal pain status for the selected date.
@@ -100,6 +102,7 @@ class DayLogic extends ChangeNotifier {
     notifyListeners();
     String dateStr = DateFormat('yyyy-MM-dd').format(selectedDate);
     await appState.updateAbdominalPainForDate(dateStr, value);
+    await appState.refreshAllData();
   }
 
   /// Updates the bleeding value for the selected date.
@@ -108,6 +111,7 @@ class DayLogic extends ChangeNotifier {
     notifyListeners();
     String dateStr = DateFormat('yyyy-MM-dd').format(selectedDate);
     await appState.updateBleedingForDate(dateStr, value);
+    await appState.refreshAllData();
   }
 
   /// Updates the mucus value for the selected date.
@@ -116,6 +120,7 @@ class DayLogic extends ChangeNotifier {
     notifyListeners();
     String dateStr = DateFormat('yyyy-MM-dd').format(selectedDate);
     await appState.updateMucusForDate(dateStr, value);
+    await appState.refreshAllData();
   }
 
   /// Updates the fertility value for the selected date.
@@ -124,5 +129,6 @@ class DayLogic extends ChangeNotifier {
     notifyListeners();
     String dateStr = DateFormat('yyyy-MM-dd').format(selectedDate);
     await appState.updateFertilityForDate(dateStr, value);
+    await appState.refreshAllData();
   }
 }

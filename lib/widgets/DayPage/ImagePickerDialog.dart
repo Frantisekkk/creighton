@@ -139,7 +139,8 @@ class _StickerPickerDialogState extends State<StickerPickerDialog> {
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   children: [
                                     Expanded(
-                                      child: Positioned.fill(
+                                      child: Align(
+                                        alignment: Alignment.center,
                                         child: Container(
                                           margin: const EdgeInsets.all(
                                               20.0), // Adjust margin as needed

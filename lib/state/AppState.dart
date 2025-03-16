@@ -53,6 +53,23 @@ class AppState extends ChangeNotifier {
   // METHODS
   // ----------------------------------------------------
 
+  // load data from the database to refresh the loaded data in app
+  Future<void> refreshAllData() async {
+    final todayStr = DateFormat('yyyy-MM-dd').format(DateTime.now());
+
+    // Run the fetches concurrently
+    await Future.wait([
+      fetchDayDataForDate(todayStr),
+      fetchWeeklyStickers(),
+      fetchCycleData(),
+      fetchUserProfile(),
+      // Add any other data-fetch methods you need here.
+    ]);
+
+    // Trigger a rebuild once all data is refreshed.
+    notifyListeners();
+  }
+
   // Bottom navigation index/page setter
   void setPage(int index, {DateTime? date}) {
     _selectedIndex = index;

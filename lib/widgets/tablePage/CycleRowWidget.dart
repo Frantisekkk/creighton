@@ -39,7 +39,7 @@ class CycleRowWidget extends StatelessWidget {
                 ),
                 child: baby
                     ? Container(
-                        margin: const EdgeInsets.all(
+                        padding: const EdgeInsets.all(
                             8.0), // Adjust margin as needed
                         child: Image.asset(
                           'assets/images/baby_transparent.png',
