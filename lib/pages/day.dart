@@ -171,9 +171,7 @@ class _DayPageState extends State<DayPage> {
               width: double.infinity, // Stretch full width
               child: ElevatedButton(
                 onPressed: () async {
-                  final appState =
-                      Provider.of<AppState>(context, listen: false);
-                  await appState.startNewCycle();
+                  await dayLogic.startNewCycle();
                 },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: buttBackgroundColor,

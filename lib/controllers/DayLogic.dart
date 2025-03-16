@@ -77,6 +77,12 @@ class DayLogic extends ChangeNotifier {
     }
   }
 
+  /// Starts a new cycle by calling the AppState method.
+  Future<void> startNewCycle() async {
+    await appState.startNewCycle();
+    await appState.refreshAllData();
+  }
+
   /// Updates the sticker color and baby flag for the selected date.
   Future<void> updateStickerColor(Color newColor, bool newBaby) async {
     stickerColor = newColor;
