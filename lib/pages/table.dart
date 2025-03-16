@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_application_1/Controllers/TableLogic.dart';
+import 'package:flutter_application_1/controllers/TableLogic.dart';
 import 'package:flutter_application_1/state/AppState.dart';
-import 'package:flutter_application_1/styles/styles.dart';
 import 'package:flutter_application_1/widgets/tablePage/CycleRowWidget.dart';
 import 'package:provider/provider.dart';
 
@@ -13,7 +12,7 @@ class TablePage extends StatefulWidget {
 }
 
 class _TablePageState extends State<TablePage> {
-  late TableLogic tableLogic; // Hold TableLogic instance
+  late TableLogic tableLogic;
   bool _hasInitialized = false;
 
   @override
@@ -21,27 +20,25 @@ class _TablePageState extends State<TablePage> {
     super.didChangeDependencies();
     if (!_hasInitialized) {
       final appState = Provider.of<AppState>(context, listen: false);
-      tableLogic = TableLogic(appState: appState); // Manually pass AppState
+      tableLogic = TableLogic(appState: appState); // Create TableLogic instance
       _hasInitialized = true;
     }
   }
 
   @override
   void dispose() {
-    tableLogic.dispose(); // Dispose TableLogic when leaving the page
+    tableLogic.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     return ChangeNotifierProvider<TableLogic>.value(
-      value: tableLogic, // Provide the manually created TableLogic instance
+      value: tableLogic, // Provide the TableLogic instance to descendants
       child: Consumer<TableLogic>(
         builder: (context, tableLogic, _) {
           return Scaffold(
-            appBar: AppBar(
-              title: const Text('Cycle Table Display'),
-            ),
+            appBar: AppBar(title: const Text('Cycle Table Display')),
             body: SingleChildScrollView(
               scrollDirection: Axis.vertical,
               child: Column(
@@ -49,26 +46,27 @@ class _TablePageState extends State<TablePage> {
                 children: (tableLogic.cycleData == null ||
                         tableLogic.cycleData!.isEmpty)
                     ? [
-                        // Always show the table with headers, even if there's no data
                         Padding(
-                          padding: tableRowPadding,
+                          padding: const EdgeInsets.all(8.0),
                           child: SingleChildScrollView(
                             scrollDirection: Axis.horizontal,
                             child: CycleRowWidget(
-                              cycleData: [], // Empty list = table with only headers
+                              cycleData: [],
                               rowHeight: 300,
+                              tableLogic: tableLogic,
                             ),
                           ),
                         )
                       ]
                     : tableLogic.cycleData!.reversed.map((cycle) {
                         return Padding(
-                          padding: tableRowPadding,
+                          padding: const EdgeInsets.all(8.0),
                           child: SingleChildScrollView(
                             scrollDirection: Axis.horizontal,
                             child: CycleRowWidget(
                               cycleData: cycle,
                               rowHeight: 300,
+                              tableLogic: tableLogic,
                             ),
                           ),
                         );

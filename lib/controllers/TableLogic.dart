@@ -48,6 +48,41 @@ class TableLogic extends ChangeNotifier {
     }
   }
 
+  // Navigate to Edit Day screen
+  void navigateToEditDay(BuildContext context, DateTime date) {
+    appState.setPage(2, date: date);
+  }
+
+  // Handle Creating a New Cycle
+  Future<void> createNewCycle(BuildContext context) async {
+    try {
+      await appState.startNewCycle();
+      await fetchCycleData(); // Refresh table after creation
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('New cycle created successfully!')),
+      );
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Error creating cycle: $e')),
+      );
+    }
+  }
+
+  // Handle Deleting a Cycle
+  Future<void> deleteCycle(BuildContext context) async {
+    try {
+      await appState.deleteLastCycle();
+      await fetchCycleData(); // Refresh table after deletion
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Cycle deleted successfully!')),
+      );
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Error deleting cycle: $e')),
+      );
+    }
+  }
+
   @override
   void dispose() {
     appState

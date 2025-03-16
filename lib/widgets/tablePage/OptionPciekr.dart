@@ -1,20 +1,23 @@
 import 'dart:ui';
 import 'package:flutter/material.dart';
+import 'package:flutter_application_1/controllers/TableLogic.dart';
+import 'package:intl/intl.dart';
 
 class CycleActionDialog extends StatelessWidget {
   final String formattedDate;
   final int dayOrder;
+  final TableLogic tableLogic; // Required instance
 
   const CycleActionDialog({
     Key? key,
     required this.formattedDate,
     required this.dayOrder,
+    required this.tableLogic,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    bool isFirstDay = dayOrder == 1; // Check if it's the first day of the cycle
-
+    bool isFirstDay = dayOrder == 1;
     return Dialog(
       backgroundColor: Colors.transparent,
       child: BackdropFilter(
@@ -33,8 +36,6 @@ class CycleActionDialog extends StatelessWidget {
                 style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
               ),
               const SizedBox(height: 10),
-
-              // Show Date and Day Order
               Text(
                 'Date: $formattedDate',
                 style: const TextStyle(fontSize: 16),
@@ -45,11 +46,8 @@ class CycleActionDialog extends StatelessWidget {
                 style: const TextStyle(fontSize: 16),
               ),
               const SizedBox(height: 15),
-
-              // Buttons
               Column(
                 children: [
-                  // Edit This Day Button
                   ElevatedButton(
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.blueAccent,
@@ -58,13 +56,16 @@ class CycleActionDialog extends StatelessWidget {
                           vertical: 12, horizontal: 20),
                     ),
                     onPressed: () {
-                      Navigator.of(context).pop('edit'); // Return selection
+                      Navigator.of(context).pop();
+                      WidgetsBinding.instance.addPostFrameCallback((_) {
+                        DateTime parsedDate =
+                            DateFormat('d/M/yy').parse(formattedDate);
+                        tableLogic.navigateToEditDay(context, parsedDate);
+                      });
                     },
                     child: const Text('Edit This Day'),
                   ),
                   const SizedBox(height: 10),
-
-                  // Dynamic Button: "Create New Cycle" OR "Delete Cycle"
                   ElevatedButton(
                     style: ElevatedButton.styleFrom(
                       backgroundColor:

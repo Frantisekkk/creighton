@@ -1,20 +1,26 @@
+import 'package:flutter_application_1/controllers/TableLogic.dart';
 import 'package:flutter_application_1/widgets/tablePage/OptionPciekr.dart';
 import 'package:intl/intl.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/styles/styles.dart';
+import 'package:provider/provider.dart';
 
 class CycleRowWidget extends StatelessWidget {
   final List<Map<String, dynamic>> cycleData;
   final double rowHeight;
+  final TableLogic tableLogic;
 
   const CycleRowWidget({
     Key? key,
     required this.cycleData,
     required this.rowHeight,
+    required this.tableLogic,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    // final tableLogic = Provider.of<TableLogic>(context, listen: false);
+    final tableLogic = context.read<TableLogic>();
     return SizedBox(
       height: rowHeight,
       child: Column(
@@ -36,6 +42,7 @@ class CycleRowWidget extends StatelessWidget {
               final bool baby = data['baby'] ?? false;
               return InkWell(
                 onTap: () async {
+                  // Pass tableLogic to the dialog so it doesn't look it up later.
                   final selectedAction = await showDialog<String>(
                     context: context,
                     builder: (BuildContext context) {
@@ -43,12 +50,13 @@ class CycleRowWidget extends StatelessWidget {
                         formattedDate: DateFormat('d/M/yy')
                             .format(DateTime.parse(data['date'])),
                         dayOrder: data['day_order'],
+                        tableLogic: tableLogic,
                       );
                     },
                   );
 
                   if (selectedAction == 'edit') {
-                    // TODO: Navigate to Edit Day Screen
+                    tableLogic.navigateToEditDay(context, data['date']);
                     print("Editing day: ${data['date']}");
                   } else if (selectedAction == 'create') {
                     // Show confirmation dialog before creating a new cycle
@@ -74,7 +82,7 @@ class CycleRowWidget extends StatelessWidget {
                     );
 
                     if (confirmed == true) {
-                      // TODO: Call function to create a new cycle
+                      await tableLogic.createNewCycle(context);
                       print("Creating new cycle at date: ${data['date']}");
                     }
                   } else if (selectedAction == 'delete') {
@@ -101,7 +109,7 @@ class CycleRowWidget extends StatelessWidget {
                     );
 
                     if (confirmed == true) {
-                      // TODO: Call function to delete the cycle
+                      await tableLogic.deleteCycle(context);
                       print("Deleting cycle starting at: ${data['date']}");
                     }
                   }
