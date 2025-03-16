@@ -1,3 +1,4 @@
+import 'package:flutter_application_1/widgets/tablePage/OptionPciekr.dart';
 import 'package:intl/intl.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/styles/styles.dart';
@@ -20,37 +21,112 @@ class CycleRowWidget extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           _buildRowHeader(
+            context,
             "Day",
             (data) => data['day_order']?.toString() ?? 'N/A',
             height: rowHeight * 0.1,
           ),
           _buildRowHeader(
+            context,
             "Sticker",
             (data) => '',
             height: rowHeight * 0.3,
             iconBuilder: (data) {
               final Color stickerColor = getColor(data['sticker'] ?? 'unknown');
               final bool baby = data['baby'] ?? false;
-              return Container(
-                width: tableCellWidth,
-                height: rowHeight * 0.3,
-                decoration: BoxDecoration(
-                  color: stickerColor,
+              return InkWell(
+                onTap: () async {
+                  final selectedAction = await showDialog<String>(
+                    context: context,
+                    builder: (BuildContext context) {
+                      return CycleActionDialog(
+                        formattedDate: DateFormat('d/M/yy')
+                            .format(DateTime.parse(data['date'])),
+                        dayOrder: data['day_order'],
+                      );
+                    },
+                  );
+
+                  if (selectedAction == 'edit') {
+                    // TODO: Navigate to Edit Day Screen
+                    print("Editing day: ${data['date']}");
+                  } else if (selectedAction == 'create') {
+                    // Show confirmation dialog before creating a new cycle
+                    final confirmed = await showDialog<bool>(
+                      context: context,
+                      builder: (BuildContext context) {
+                        return AlertDialog(
+                          title: Text('Confirm New Cycle'),
+                          content: Text(
+                              'Are you sure you want to create a new cycle on ${data['date']}?'),
+                          actions: [
+                            TextButton(
+                              onPressed: () => Navigator.pop(context, false),
+                              child: Text('Cancel'),
+                            ),
+                            TextButton(
+                              onPressed: () => Navigator.pop(context, true),
+                              child: Text('Confirm'),
+                            ),
+                          ],
+                        );
+                      },
+                    );
+
+                    if (confirmed == true) {
+                      // TODO: Call function to create a new cycle
+                      print("Creating new cycle at date: ${data['date']}");
+                    }
+                  } else if (selectedAction == 'delete') {
+                    // Show confirmation before deleting the cycle
+                    final confirmed = await showDialog<bool>(
+                      context: context,
+                      builder: (BuildContext context) {
+                        return AlertDialog(
+                          title: Text('Delete Cycle?'),
+                          content: Text(
+                              'Are you sure you want to delete this cycle? All its days will be merged with the previous cycle.'),
+                          actions: [
+                            TextButton(
+                              onPressed: () => Navigator.pop(context, false),
+                              child: Text('Cancel'),
+                            ),
+                            TextButton(
+                              onPressed: () => Navigator.pop(context, true),
+                              child: Text('Delete'),
+                            ),
+                          ],
+                        );
+                      },
+                    );
+
+                    if (confirmed == true) {
+                      // TODO: Call function to delete the cycle
+                      print("Deleting cycle starting at: ${data['date']}");
+                    }
+                  }
+                },
+                child: Container(
+                  width: tableCellWidth,
+                  height: rowHeight * 0.3,
+                  decoration: BoxDecoration(
+                    color: stickerColor,
+                  ),
+                  child: baby
+                      ? Container(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Image.asset(
+                            'assets/images/baby_transparent.png',
+                            fit: BoxFit.contain,
+                          ),
+                        )
+                      : null,
                 ),
-                child: baby
-                    ? Container(
-                        padding: const EdgeInsets.all(
-                            8.0), // Adjust margin as needed
-                        child: Image.asset(
-                          'assets/images/baby_transparent.png',
-                          fit: BoxFit.contain,
-                        ),
-                      )
-                    : null,
               );
             },
           ),
           _buildRowHeader(
+            context,
             "Date",
             (data) {
               final rawDate = data['date']?.toString();
@@ -65,16 +141,19 @@ class CycleRowWidget extends StatelessWidget {
             height: rowHeight * 0.1,
           ),
           _buildRowHeader(
+            context,
             "Bleeding",
             (data) => data['bleeding'] ?? 'N/A',
             height: rowHeight * 0.2,
           ),
           _buildRowHeader(
+            context,
             "Mucus",
             (data) => data['mucus'] ?? 'N/A',
             height: rowHeight * 0.2,
           ),
           _buildRowHeader(
+            context,
             "Fertility",
             (data) => data['fertility'] ?? 'N/A',
             height: rowHeight * 0.1,
@@ -85,12 +164,13 @@ class CycleRowWidget extends StatelessWidget {
   }
 
   Widget _buildRowHeader(
+    BuildContext context,
     String header,
     String Function(Map<String, dynamic>) dataExtractor, {
     required double height,
     Widget Function(Map<String, dynamic>)? iconBuilder,
   }) {
-    // If there is no data, show one placeholder empty cell.
+    // Build each data cell (or a placeholder if there's no data).
     final dataCells = cycleData.isNotEmpty
         ? cycleData.map((data) {
             return Container(
