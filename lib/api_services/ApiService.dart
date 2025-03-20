@@ -61,7 +61,7 @@ class ApiService {
         return data;
       } else if (response.statusCode == 404) {
         // Handle "not found" case by returning default values
-        print('No data found for the given date.');
+        print('No data found for the given date $date.');
         return {
           'stickerColor': Colors.grey,
           'bleeding': 'No data',
@@ -169,27 +169,6 @@ class ApiService {
       }
     } catch (error) {
       throw Exception('Error undoing cycle: $error');
-    }
-  }
-
-  // Delete the last cycle
-  Future<Map<String, dynamic>> deleteLastCycle({required String token}) async {
-    final url = Uri.parse('$baseUrl/cycle/delete_last');
-    try {
-      final response = await http.post(
-        url,
-        headers: {
-          "Authorization": "Bearer $token",
-          "Content-Type": "application/json"
-        },
-      );
-      if (response.statusCode == 200) {
-        return json.decode(response.body);
-      } else {
-        throw Exception('Failed to delete the last cycle');
-      }
-    } catch (error) {
-      throw Exception('Error deleting last cycle: $error');
     }
   }
 

@@ -56,8 +56,8 @@ class CycleRowWidget extends StatelessWidget {
                   );
 
                   if (selectedAction == 'edit') {
-                    tableLogic.navigateToEditDay(context, data['date']);
-                    print("Editing day: ${data['date']}");
+                    DateTime parsedDate = DateTime.parse(data['date']);
+                    tableLogic.navigateToEditDay(context, parsedDate);
                   } else if (selectedAction == 'create') {
                     // Show confirmation dialog before creating a new cycle
                     final confirmed = await showDialog<bool>(

@@ -296,21 +296,6 @@ class AppState extends ChangeNotifier {
     }
   }
 
-  Future<void> deleteLastCycle() async {
-    _isLoading = true;
-    notifyListeners();
-    try {
-      final token = await _apiService.getToken();
-      if (token == null) throw Exception("Token is null");
-      await _apiService.deleteLastCycle(token: token);
-    } catch (e) {
-      print('Error deleting last cycle: $e');
-    } finally {
-      _isLoading = false;
-      notifyListeners();
-    }
-  }
-
   Future<void> fetchCycleData() async {
     _isLoading = true;
     notifyListeners();

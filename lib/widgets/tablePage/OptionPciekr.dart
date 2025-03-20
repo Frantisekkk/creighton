@@ -1,7 +1,6 @@
 import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/controllers/TableLogic.dart';
-import 'package:intl/intl.dart';
 
 class CycleActionDialog extends StatelessWidget {
   final String formattedDate;
@@ -56,12 +55,7 @@ class CycleActionDialog extends StatelessWidget {
                           vertical: 12, horizontal: 20),
                     ),
                     onPressed: () {
-                      Navigator.of(context).pop();
-                      WidgetsBinding.instance.addPostFrameCallback((_) {
-                        DateTime parsedDate =
-                            DateFormat('d/M/yy').parse(formattedDate);
-                        tableLogic.navigateToEditDay(context, parsedDate);
-                      });
+                      Navigator.of(context).pop('edit');
                     },
                     child: const Text('Edit This Day'),
                   ),
