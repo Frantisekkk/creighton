@@ -65,7 +65,8 @@ class AppState extends ChangeNotifier {
       fetchUserProfile(),
       // Add any other data-fetch methods you need here.
     ]);
-
+    print(dayData);
+    print(weeklyStickers);
     // Trigger a rebuild once all data is refreshed.
     notifyListeners();
   }
@@ -106,6 +107,7 @@ class AppState extends ChangeNotifier {
             }
           : data;
       notifyListeners();
+      print(dayData);
       return _dayData;
     } catch (e) {
       print("Error fetching day data for $dateStr: $e");
@@ -140,6 +142,7 @@ class AppState extends ChangeNotifier {
       print("Error fetching weekly stickers: $e");
       _weeklyStickers = List.filled(7, Colors.grey);
     }
+    print(weeklyStickers);
     notifyListeners();
   }
 
@@ -281,13 +284,13 @@ class AppState extends ChangeNotifier {
     }
   }
 
-  Future<void> undoCycle() async {
+  Future<void> undoCycle(DateTime startDate) async {
     _isLoading = true;
     notifyListeners();
     try {
       final token = await _apiService.getToken();
       if (token == null) throw Exception("Token is null");
-      await _apiService.undoCycle(token: token);
+      await _apiService.undoCycle(token: token, startDate: startDate);
     } catch (e) {
       print('Error undoing cycle: $e');
     } finally {

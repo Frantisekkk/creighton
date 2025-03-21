@@ -109,7 +109,8 @@ class CycleRowWidget extends StatelessWidget {
                     );
 
                     if (confirmed == true) {
-                      await tableLogic.deleteCycle(context);
+                      await tableLogic.deleteCycle(
+                          context, DateTime.parse(data['date']));
                       print("Deleting cycle starting at: ${data['date']}");
                     }
                   }

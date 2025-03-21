@@ -69,9 +69,10 @@ class TableLogic extends ChangeNotifier {
   }
 
   // Handle Deleting a Cycle
-  Future<void> deleteCycle(BuildContext context) async {
+  Future<void> deleteCycle(
+      BuildContext context, DateTime cycleStartDate) async {
     try {
-      await appState.undoCycle();
+      await appState.undoCycle(cycleStartDate);
       await fetchCycleData(); // Refresh table after deletion
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Cycle deleted successfully!')),

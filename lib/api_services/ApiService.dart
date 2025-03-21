@@ -152,7 +152,8 @@ class ApiService {
   }
 
   // Undo the last cycle creation
-  Future<Map<String, dynamic>> undoCycle({required String token}) async {
+  Future<Map<String, dynamic>> undoCycle(
+      {required String token, required DateTime startDate}) async {
     final url = Uri.parse('$baseUrl/cycle/undo');
     try {
       final response = await http.post(
@@ -161,11 +162,15 @@ class ApiService {
           "Authorization": "Bearer $token",
           "Content-Type": "application/json"
         },
+        body: json.encode({
+          "start_date": startDate
+              .toIso8601String(), // ISO format expected by your backend
+        }),
       );
       if (response.statusCode == 200) {
         return json.decode(response.body);
       } else {
-        throw Exception('Failed to undo the last cycle');
+        throw Exception('Failed to undo the cycle for the provided date');
       }
     } catch (error) {
       throw Exception('Error undoing cycle: $error');
