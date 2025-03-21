@@ -54,9 +54,9 @@ class TableLogic extends ChangeNotifier {
   }
 
   // Handle Creating a New Cycle
-  Future<void> createNewCycle(BuildContext context) async {
+  Future<void> createNewCycle(BuildContext context, DateTime date) async {
     try {
-      await appState.startNewCycle();
+      await appState.startNewCycle(date);
       await fetchCycleData(); // Refresh table after creation
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('New cycle created successfully!')),

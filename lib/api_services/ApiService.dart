@@ -131,7 +131,10 @@ class ApiService {
   // --------------------- Other API Methods ----------------------------
 
   // Start a new cycle
-  Future<Map<String, dynamic>> startNewCycle({required String token}) async {
+  Future<Map<String, dynamic>> startNewCycle({
+    required String token,
+    required DateTime date,
+  }) async {
     final url = Uri.parse('$baseUrl/cycle/new');
     try {
       final response = await http.post(
@@ -140,6 +143,10 @@ class ApiService {
           "Authorization": "Bearer $token",
           "Content-Type": "application/json"
         },
+        // Include the date in the request body as an ISO8601 string
+        body: json.encode({
+          "start_date": date.toIso8601String(),
+        }),
       );
       if (response.statusCode == 200) {
         return json.decode(response.body);
@@ -435,10 +442,19 @@ class ApiService {
       );
 
       if (response.statusCode == 201) {
-        return true; // Success
+        final data = json.decode(response.body);
+        final token = data['token']; // Extract the token
+        if (token != null) {
+          await saveToken(
+              token); // Save the token locally using SharedPreferences
+          return true;
+        } else {
+          print("No token received in registration response.");
+          return false;
+        }
       } else {
         print('Registration failed: ${response.body}');
-        return false; // Registration failed
+        return false;
       }
     } catch (e) {
       throw Exception('Error registering user: $e');

@@ -79,7 +79,7 @@ class DayLogic extends ChangeNotifier {
 
   /// Starts a new cycle by calling the AppState method.
   Future<void> startNewCycle() async {
-    await appState.startNewCycle();
+    await appState.startNewCycle(selectedDate);
     await appState.refreshAllData();
   }
 

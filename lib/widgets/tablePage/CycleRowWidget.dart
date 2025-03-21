@@ -82,7 +82,8 @@ class CycleRowWidget extends StatelessWidget {
                     );
 
                     if (confirmed == true) {
-                      await tableLogic.createNewCycle(context);
+                      await tableLogic.createNewCycle(
+                          context, DateTime.parse(data['date']));
                       print("Creating new cycle at date: ${data['date']}");
                     }
                   } else if (selectedAction == 'delete') {

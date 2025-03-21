@@ -245,7 +245,7 @@ class HomePage extends StatelessWidget {
                           builder: (context) {
                             // Retrieve cycle data from dayData; using default values if not available
                             final int currentDay =
-                                homeLogic.dayData?['day_order'] ?? 2;
+                                homeLogic.dayData?['day_order'] ?? 0;
                             final int displayTotal =
                                 currentDay <= 28 ? 28 : currentDay + 5;
                             final double progressValue =

@@ -226,34 +226,34 @@ class _DayPageState extends State<DayPage> {
               },
             ),
             // Custom description Section
-            Container(
-              margin: const EdgeInsets.all(20.0),
-              padding: const EdgeInsets.all(16.0),
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(10),
-              ),
-              child: const Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    'Vlastný popis',
-                    style: TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
-                        color: textColorDark),
-                  ),
-                  SizedBox(height: 10),
-                  TextField(
-                    maxLines: 4,
-                    decoration: InputDecoration(
-                      border: OutlineInputBorder(),
-                      hintText: 'Enter text here...',
-                    ),
-                  ),
-                ],
-              ),
-            ),
+            // Container(
+            //   margin: const EdgeInsets.all(20.0),
+            //   padding: const EdgeInsets.all(16.0),
+            //   decoration: BoxDecoration(
+            //     color: Colors.white,
+            //     borderRadius: BorderRadius.circular(10),
+            //   ),
+            //   child: const Column(
+            //     crossAxisAlignment: CrossAxisAlignment.start,
+            //     children: [
+            //       Text(
+            //         'Vlastný popis',
+            //         style: TextStyle(
+            //             fontSize: 18,
+            //             fontWeight: FontWeight.bold,
+            //             color: textColorDark),
+            //       ),
+            //       SizedBox(height: 10),
+            //       TextField(
+            //         maxLines: 4,
+            //         decoration: InputDecoration(
+            //           border: OutlineInputBorder(),
+            //           hintText: 'Enter text here...',
+            //         ),
+            //       ),
+            //     ],
+            //   ),
+            // ),
           ],
         ),
       ),

@@ -65,8 +65,6 @@ class AppState extends ChangeNotifier {
       fetchUserProfile(),
       // Add any other data-fetch methods you need here.
     ]);
-    print(dayData);
-    print(weeklyStickers);
     // Trigger a rebuild once all data is refreshed.
     notifyListeners();
   }
@@ -107,7 +105,6 @@ class AppState extends ChangeNotifier {
             }
           : data;
       notifyListeners();
-      print(dayData);
       return _dayData;
     } catch (e) {
       print("Error fetching day data for $dateStr: $e");
@@ -268,13 +265,14 @@ class AppState extends ChangeNotifier {
   // Cycle Methods
   // ----------------------------------------------------
 
-  Future<void> startNewCycle() async {
+  Future<void> startNewCycle(DateTime date) async {
     _isLoading = true;
     notifyListeners();
     try {
       final token = await _apiService.getToken();
       if (token == null) throw Exception("Token is null");
-      await _apiService.startNewCycle(token: token);
+      // Pass the date parameter to the API call
+      await _apiService.startNewCycle(token: token, date: date);
       await fetchCycleData(); // Refresh UI after starting a new cycle
     } catch (e) {
       print('Error starting new cycle: $e');
