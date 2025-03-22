@@ -31,7 +31,7 @@ class MainApp extends StatelessWidget {
 
     final List<Widget> _pages = [
       TablePage(),
-      HomePage(userName: 'Monika'),
+      HomePage(),
       DayPage(
         key: ValueKey(appState.selectedDate),
         selectedDate: appState.selectedDate,

@@ -139,7 +139,6 @@ class AppState extends ChangeNotifier {
       print("Error fetching weekly stickers: $e");
       _weeklyStickers = List.filled(7, Colors.grey);
     }
-    print(weeklyStickers);
     notifyListeners();
   }
 

@@ -8,13 +8,12 @@ import 'package:flutter_application_1/state/AppState.dart';
 import 'package:flutter_application_1/styles/styles.dart';
 
 class HomePage extends StatelessWidget {
-  final String userName;
-
-  HomePage({Key? key, required this.userName}) : super(key: key);
+  HomePage({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     final appState = Provider.of<AppState>(context, listen: false);
+    final String userName = appState.userProfile?['first_name'] ?? 'Používateľ';
     // Wrap the UI in a ChangeNotifierProvider so HomeLogic is available.
     return ChangeNotifierProvider<HomeLogic>(
       create: (context) => HomeLogic(appState: appState),
@@ -38,39 +37,52 @@ class HomePage extends StatelessWidget {
                         child: Padding(
                           padding: const EdgeInsets.only(
                               top: 70.0, left: 30, right: 10),
-                          child: FittedBox(
-                            child: Row(
-                              children: [
-                                Text(
-                                  'Ahoj $userName \u{1F44B}', // 👋
-                                  style: greetingTextStyle.copyWith(
-                                    fontSize:
-                                        MediaQuery.of(context).size.width *
-                                            greetingFontSizeFactor,
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            crossAxisAlignment: CrossAxisAlignment.end,
+                            children: [
+                              // Greeting
+                              Expanded(
+                                child: FittedBox(
+                                  fit: BoxFit.scaleDown,
+                                  alignment: Alignment.centerLeft,
+                                  child: Text(
+                                    'Ahoj $userName 👋',
+                                    style: greetingTextStyle.copyWith(
+                                      fontSize:
+                                          MediaQuery.of(context).size.width *
+                                              greetingFontSizeFactor,
+                                    ),
                                   ),
                                 ),
-                                const SizedBox(width: 30),
-                                // Profile icon leading to ProfilePage
-                                Padding(
-                                  padding: const EdgeInsets.only(top: 10),
-                                  child: IconButton(
-                                    icon: const Icon(
+                              ),
+
+                              // Profile Icon with dynamic size
+                              Builder(
+                                builder: (context) {
+                                  final dynamicFontSize =
+                                      MediaQuery.of(context).size.width *
+                                          greetingFontSizeFactor;
+
+                                  return IconButton(
+                                    icon: Icon(
                                       Icons.account_circle,
                                       color: Colors.white,
-                                      size: 60,
+                                      size: dynamicFontSize *
+                                          1.2, // Optional tweak factor
                                     ),
                                     onPressed: () {
                                       Navigator.push(
                                         context,
                                         MaterialPageRoute(
-                                          builder: (context) => ProfilePage(),
-                                        ),
+                                            builder: (context) =>
+                                                ProfilePage()),
                                       );
                                     },
-                                  ),
-                                ),
-                              ],
-                            ),
+                                  );
+                                },
+                              ),
+                            ],
                           ),
                         ),
                       ),
