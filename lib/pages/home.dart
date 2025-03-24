@@ -6,6 +6,7 @@ import 'package:flutter_application_1/pages/Profil.dart';
 import 'package:flutter_application_1/services/graph_calculation.dart';
 import 'package:flutter_application_1/state/AppState.dart';
 import 'package:flutter_application_1/styles/styles.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class HomePage extends StatelessWidget {
   HomePage({Key? key}) : super(key: key);
@@ -14,13 +15,12 @@ class HomePage extends StatelessWidget {
   Widget build(BuildContext context) {
     final appState = Provider.of<AppState>(context, listen: false);
     final String userName = appState.userProfile?['first_name'] ?? 'Používateľ';
-    // Wrap the UI in a ChangeNotifierProvider so HomeLogic is available.
+    final localizations = AppLocalizations.of(context)!;
+    // Provide HomeLogic to descendants.
     return ChangeNotifierProvider<HomeLogic>(
       create: (context) => HomeLogic(appState: appState),
       child: Consumer<HomeLogic>(
         builder: (context, homeLogic, _) {
-          //homeLogic.loadData();
-          // final dayData = homeLogic.dayData;
           final weeklyStickers = homeLogic.weeklyStickers;
 
           return Scaffold(
@@ -29,7 +29,7 @@ class HomePage extends StatelessWidget {
               children: [
                 Column(
                   children: [
-                    // GREETING SECTION
+                    // Greeting Section
                     Flexible(
                       flex: 20,
                       child: Container(
@@ -41,13 +41,13 @@ class HomePage extends StatelessWidget {
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             crossAxisAlignment: CrossAxisAlignment.end,
                             children: [
-                              // Greeting
                               Expanded(
                                 child: FittedBox(
                                   fit: BoxFit.scaleDown,
                                   alignment: Alignment.centerLeft,
                                   child: Text(
-                                    'Ahoj $userName 👋',
+                                    // Using the localized greeting with the user name as parameter
+                                    localizations.greeting(userName),
                                     style: greetingTextStyle.copyWith(
                                       fontSize:
                                           MediaQuery.of(context).size.width *
@@ -56,20 +56,16 @@ class HomePage extends StatelessWidget {
                                   ),
                                 ),
                               ),
-
-                              // Profile Icon with dynamic size
                               Builder(
                                 builder: (context) {
                                   final dynamicFontSize =
                                       MediaQuery.of(context).size.width *
                                           greetingFontSizeFactor;
-
                                   return IconButton(
                                     icon: Icon(
                                       Icons.account_circle,
                                       color: Colors.white,
-                                      size: dynamicFontSize *
-                                          1.2, // Optional tweak factor
+                                      size: dynamicFontSize * 1.2,
                                     ),
                                     onPressed: () {
                                       Navigator.push(
@@ -87,8 +83,7 @@ class HomePage extends StatelessWidget {
                         ),
                       ),
                     ),
-
-                    // COLOR DISPLAY CONTAINER
+                    // Color Display Container
                     Flexible(
                       flex: 40,
                       child: GestureDetector(
@@ -103,15 +98,12 @@ class HomePage extends StatelessWidget {
                             decoration: colorDisplayBoxDecoration,
                             child: Row(
                               children: [
-                                // Left half: expanded sticker box
                                 Expanded(
                                   child: Center(
                                     child: AspectRatio(
-                                      aspectRatio:
-                                          3.7 / 5, // Maintain aspect ratio
+                                      aspectRatio: 3.7 / 5,
                                       child: Stack(
                                         children: [
-                                          // Background sticker color
                                           Positioned.fill(
                                             child: Container(
                                               decoration: BoxDecoration(
@@ -126,13 +118,12 @@ class HomePage extends StatelessWidget {
                                               ),
                                             ),
                                           ),
-                                          // Baby Image Overlay (if enabled)
                                           if (homeLogic.dayData?['baby'] ??
                                               false)
                                             Positioned.fill(
                                               child: Container(
-                                                margin: const EdgeInsets.all(
-                                                    20.0), // Adjust margin as needed
+                                                margin:
+                                                    const EdgeInsets.all(20.0),
                                                 child: Image.asset(
                                                   'assets/images/baby_transparent.png',
                                                   fit: BoxFit.contain,
@@ -145,8 +136,6 @@ class HomePage extends StatelessWidget {
                                   ),
                                 ),
                                 const SizedBox(width: 20),
-
-                                // Right half: date and text
                                 Expanded(
                                   child: Column(
                                     crossAxisAlignment:
@@ -163,17 +152,17 @@ class HomePage extends StatelessWidget {
                                           color: Colors.grey, thickness: 1),
                                       const SizedBox(height: 10),
                                       Text(
-                                        'Popis:',
-                                        style: TextStyle(
+                                        localizations.description_label,
+                                        style: const TextStyle(
                                             fontSize: 18,
                                             fontWeight: FontWeight.bold,
                                             color: Colors.black87),
                                       ),
                                       Text(
-                                        '${homeLogic.dayData?['bleeding'] ?? 'No data'}, '
-                                        '${homeLogic.dayData?['mucus'] ?? 'No data'}, '
-                                        '${homeLogic.dayData?['fertility'] ?? 'No data'}',
-                                        style: TextStyle(
+                                        '${homeLogic.dayData?['bleeding'] ?? localizations.no_data}, '
+                                        '${homeLogic.dayData?['mucus'] ?? localizations.no_data}, '
+                                        '${homeLogic.dayData?['fertility'] ?? localizations.no_data}',
+                                        style: const TextStyle(
                                             fontSize: 18,
                                             color: Colors.black87),
                                       ),
@@ -186,8 +175,7 @@ class HomePage extends StatelessWidget {
                         ),
                       ),
                     ),
-
-                    // WEEKLY STICKERS ROW
+                    // Weekly Stickers Row
                     Flexible(
                       flex: 15,
                       child: Container(
@@ -202,13 +190,10 @@ class HomePage extends StatelessWidget {
                                       .subtract(Duration(days: 6 - index));
                                   final color =
                                       weeklyStickers[index].withOpacity(0.7);
-
                                   return Expanded(
                                     child: GestureDetector(
                                       onTap: () {
                                         appState.setPage(2, date: date);
-                                        // mainScreenKey.currentState
-                                        //     ?.onItemTapped(2, date: date);
                                       },
                                       child: Container(
                                         margin: stickerMargin,
@@ -247,15 +232,13 @@ class HomePage extends StatelessWidget {
                               ),
                       ),
                     ),
-
-                    // CIRCULAR PROGRESS INDICATOR SECTION
+                    // Circular Progress Indicator Section remains unchanged.
                     Flexible(
                       flex: 25,
                       child: Container(
                         alignment: Alignment.center,
                         child: Builder(
                           builder: (context) {
-                            // Retrieve cycle data from dayData; using default values if not available
                             final int currentDay =
                                 homeLogic.dayData?['day_order'] ?? 0;
                             final int displayTotal =

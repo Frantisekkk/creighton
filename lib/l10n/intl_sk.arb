@@ -1,0 +1,259 @@
+{
+  "@@locale": "sk",
+  "welcome": "Vitajte",
+  "@welcome": {
+    "description": "Pozdravná správa pre používateľov"
+  },
+  "start_new_cycle": "Začať nový cyklus",
+  "@start_new_cycle": {
+    "description": "Text pre tlačidlo, ktoré spustí nový cyklus"
+  },
+  "bleeding": "Krvácanie",
+  "@bleeding": {
+    "description": "Názov sekcie pre údaje o krvácaní"
+  },
+  "description_label": "Popis:",
+  "@description_label": {
+    "description": "Popisná značka pre sekciu s popisom údajov"
+  },
+  "fertility": "Plodnosť",
+  "@fertility": {
+    "description": "Názov sekcie pre údaje o plodnosti"
+  },
+  "abdominal_pain": "AP",
+  "@abdominal_pain": {
+    "description": "Skratka pre tlačidlo pre bolesť brucha (abdominal pain)"
+  },
+  "edit_profile": "Upraviť profil",
+  "@edit_profile": {
+    "description": "Názov stránky na úpravu profilu"
+  },
+  "first_name": "Krstné meno",
+  "@first_name": {
+    "description": "Označenie pre pole s krstným menom"
+  },
+  "last_name": "Priezvisko",
+  "@last_name": {
+    "description": "Označenie pre pole s priezviskom"
+  },
+  "phone": "Telefón",
+  "@phone": {
+    "description": "Označenie pre pole s telefónom"
+  },
+  "email": "Email",
+  "@email": {
+    "description": "Označenie pre pole s emailom"
+  },
+  "birth_number": "Rodné číslo",
+  "@birth_number": {
+    "description": "Označenie pre pole s rodným číslom"
+  },
+  "select_doctor": "Vyberte lekára",
+  "@select_doctor": {
+    "description": "Výzva na výber lekára"
+  },
+  "select_consultant": "Vyberte konzultanta",
+  "@select_consultant": {
+    "description": "Výzva na výber konzultanta"
+  },
+  "save_changes": "Uložiť zmeny",
+  "@save_changes": {
+    "description": "Text pre tlačidlo, ktoré uloží zmeny"
+  },
+  "fill_all_fields": "Prosím, vyplňte všetky polia",
+  "@fill_all_fields": {
+    "description": "Chybová správa, keď nie sú vyplnené všetky polia"
+  },
+  "profile_update_success": "Profil bol úspešne aktualizovaný!",
+  "@profile_update_success": {
+    "description": "Potvrdzovacia správa po úspešnej aktualizácii profilu"
+  },
+  "greeting": "Ahoj {userName} 👋",
+  "@greeting": {
+    "description": "Pozdrav s použitím zástupného mena pre používateľa"
+  },
+  "no_data": "Žiadne údaje",
+  "@no_data": {
+    "description": "Náhradný text, keď nie sú k dispozícii žiadne údaje"
+  },
+  "login": "Prihlásiť sa",
+  "@login": {
+    "description": "Názov stránky a text tlačidla pre prihlásenie"
+  },
+  "password": "Heslo",
+  "@password": {
+    "description": "Označenie pre pole s heslom"
+  },
+  "no_account": "Nemáte účet? Zaregistrujte sa tu",
+  "@no_account": {
+    "description": "Výzva pre používateľov, ktorí ešte nemajú účet"
+  },
+  "profile": "Profil",
+  "@profile": {
+    "description": "Názov stránky profilu"
+  },
+  "consultant_name": "Meno konzultanta",
+  "@consultant_name": {
+    "description": "Označenie pre meno konzultanta"
+  },
+  "doctor_name": "Meno lekára",
+  "@doctor_name": {
+    "description": "Označenie pre meno lekára"
+  },
+  "edit_profile_button": "Upraviť profil",
+  "@edit_profile_button": {
+    "description": "Text tlačidla pre úpravu profilu"
+  },
+  "logout": "Odhlásiť sa",
+  "@logout": {
+    "description": "Text tlačidla pre odhlásenie"
+  },
+  "sign_up_title": "Registrácia",
+  "@sign_up_title": {
+    "description": "Názov stránky registrácie"
+  },
+  "phone_number": "Telefónne číslo",
+  "@phone_number": {
+    "description": "Označenie pre pole s telefónnym číslom"
+  },
+  "age": "Vek",
+  "@age": {
+    "description": "Označenie pre pole s vekom"
+  },
+  "doctor_label": "Lekár:",
+  "@doctor_label": {
+    "description": "Označenie pre výber lekára"
+  },
+  "loading": "Načítava sa...",
+  "@loading": {
+    "description": "Text zobrazený počas načítavania dát"
+  },
+  "select_doctor_button": "Vybrať lekára",
+  "@select_doctor_button": {
+    "description": "Text tlačidla pre výber lekára"
+  },
+  "consultant_label": "Konzultant:",
+  "@consultant_label": {
+    "description": "Označenie pre výber konzultanta"
+  },
+  "select_consultant_button": "Vybrať konzultanta",
+  "@select_consultant_button": {
+    "description": "Text tlačidla pre výber konzultanta"
+  },
+  "registration_failed": "Registrácia zlyhala. Skúste to prosím znova.",
+  "@registration_failed": {
+    "description": "Chybová správa pri neúspešnej registrácii"
+  },
+  "already_have_account": "Už máte účet? Prihláste sa",
+  "@already_have_account": {
+    "description": "Výzva pre používateľov, ktorí už majú účet"
+  },
+  "sign_up_button": "Registrovať sa",
+  "@sign_up_button": {
+    "description": "Text tlačidla pre registráciu"
+  },
+  "cycle_table_display": "Zobrazenie cyklovej tabuľky",
+  "@cycle_table_display": {
+    "description": "Názov stránky pre zobrazenie tabuľky cyklov"
+  },
+  "mucus": "Hlien",
+  "@mucus": {
+    "description": "Názov sekcie pre údaje o hliene"
+  },
+  "edit_profile_page_title": "Upraviť profil",
+  "@edit_profile_page_title": {
+    "description": "Titulok stránky pre úpravu profilu"
+  },
+  "profile_page_title": "Profil",
+  "@profile_page_title": {
+    "description": "Titulok stránky profilu"
+  },
+  "day": "Deň",
+  "@day": {
+    "description": "Označenie pre deň v tabuľke cyklu"
+  },
+  "sticker": "Nálepka",
+  "@sticker": {
+    "description": "Označenie pre nálepku priradenú k dňu cyklu"
+  },
+  "date": "Dátum",
+  "@date": {
+    "description": "Označenie pre dátum záznamu cyklu"
+  },
+  "invalid_date": "Neplatný dátum",
+  "@invalid_date": {
+    "description": "Chybová správa pri neplatnom dátume"
+  },
+  "confirm_new_cycle_title": "Potvrdenie nového cyklu",
+  "@confirm_new_cycle_title": {
+    "description": "Titulok potvrdzovacieho dialógu pri vytváraní nového cyklu"
+  },
+  "confirm_new_cycle_content": "Ste si istý, že chcete vytvoriť nový cyklus na",
+  "@confirm_new_cycle_content": {
+    "description": "Obsah potvrdzovacieho dialógu pri vytváraní nového cyklu"
+  },
+  "cancel": "Zrušiť",
+  "@cancel": {
+    "description": "Text tlačidla pre zrušenie akcie"
+  },
+  "confirm": "Potvrdiť",
+  "@confirm": {
+    "description": "Text tlačidla pre potvrdenie akcie"
+  },
+  "delete_cycle_title": "Vymazať cyklus?",
+  "@delete_cycle_title": {
+    "description": "Titulok dialógu pre vymazanie cyklu"
+  },
+  "delete_cycle_content": "Ste si istý, že chcete vymazať tento cyklus? Všetky jeho dni budú zlúčené s predchádzajúcim cyklom.",
+  "@delete_cycle_content": {
+    "description": "Obsah výstrahy pred vymazaním cyklu"
+  },
+  "cycle_actions": "Akcie cyklu",
+  "@cycle_actions": {
+    "description": "Názov sekcie pre akcie spojené s cyklom"
+  },
+  "date_label": "Dátum:",
+  "@date_label": {
+    "description": "Označenie pre pole s dátumom"
+  },
+  "edit_day": "Upraviť tento deň",
+  "@edit_day": {
+    "description": "Tlačidlo alebo text pre úpravu konkrétneho dňa cyklu"
+  },
+  "delete_cycle": "Vymazať cyklus",
+  "@delete_cycle": {
+    "description": "Text tlačidla pre vymazanie cyklu"
+  },
+  "create_cycle": "Vytvoriť nový cyklus",
+  "@create_cycle": {
+    "description": "Text tlačidla na vytvorenie nového cyklu"
+  },
+  "delete": "Vymazať",
+  "@delete": {
+    "description": "Text tlačidla na potvrdenie Vymazania cyklu"
+  },
+  "sticker_picker_title": "Vyberte svoju nálepku",
+  "@sticker_picker_title": {
+    "description": "Titulok pre dialóg na výber nálepky"
+  },
+  "include_baby": "Zahrnúť bábätko:",
+  "@include_baby": {
+    "description": "Popis pre prepínač zahrnutia bábätka v dialógu výberu nálepky"
+  },
+  "select_temperature": "Vyberte teplotu",
+  "@select_temperature": {
+    "description": "Titulok pre dialóg na výber teploty"
+  },
+  "done": "Hotovo",
+  "@done": {
+    "description": "Text pre tlačidlo, ktoré potvrdí výber v dialógu"
+  },
+  "table": "Tabuľka",
+  "@table": {
+    "description": "Navigačné tlačidlo spodného baru"
+  },
+  "home": "Domov",
+  "@home": {
+    "description": "Navigačné tlačidlo spodného baru"
+  }
+}

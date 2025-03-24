@@ -1,8 +1,8 @@
 import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/styles/styles.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
-// Widget to display the current temperature and initiate the temperature picker dialog
 class TemperatureDisplay extends StatelessWidget {
   final double temperature;
   final Function(double) onSetTemperature;
@@ -43,7 +43,6 @@ class TemperatureDisplay extends StatelessWidget {
   }
 }
 
-// Dialog to pick a temperature
 class TemperaturePickerDialog extends StatefulWidget {
   final double initialTemperature;
 
@@ -66,6 +65,7 @@ class _TemperaturePickerDialogState extends State<TemperaturePickerDialog> {
 
   @override
   Widget build(BuildContext context) {
+    final localizations = AppLocalizations.of(context)!;
     return Dialog(
       backgroundColor: Colors.transparent,
       child: BackdropFilter(
@@ -79,7 +79,8 @@ class _TemperaturePickerDialogState extends State<TemperaturePickerDialog> {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              Text('Select Temperature', style: dialogTitleTextStyle),
+              Text(localizations.select_temperature,
+                  style: dialogTitleTextStyle),
               const SizedBox(height: 20),
               SizedBox(
                 height: 200,
@@ -116,7 +117,7 @@ class _TemperaturePickerDialogState extends State<TemperaturePickerDialog> {
                   foregroundColor: buttonTextColor,
                 ),
                 onPressed: () => Navigator.of(context).pop(currentTemperature),
-                child: const Text('Done'),
+                child: Text(localizations.done),
               ),
             ],
           ),

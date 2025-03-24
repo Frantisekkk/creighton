@@ -1,6 +1,6 @@
-// lib/widgets/consultant_picker_dialog.dart
 import 'dart:ui';
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class ConsultantPickerDialog extends StatefulWidget {
   final List<String> consultants;
@@ -26,6 +26,7 @@ class _ConsultantPickerDialogState extends State<ConsultantPickerDialog> {
 
   @override
   Widget build(BuildContext context) {
+    final localizations = AppLocalizations.of(context)!;
     return Dialog(
       backgroundColor: Colors.transparent,
       child: BackdropFilter(
@@ -37,8 +38,11 @@ class _ConsultantPickerDialogState extends State<ConsultantPickerDialog> {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              Text('Select Consultant',
-                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
+              Text(
+                localizations.select_consultant,
+                style:
+                    const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+              ),
               const SizedBox(height: 20),
               SizedBox(
                 height: 200,
@@ -74,7 +78,7 @@ class _ConsultantPickerDialogState extends State<ConsultantPickerDialog> {
               const SizedBox(height: 20),
               ElevatedButton(
                 onPressed: () => Navigator.of(context).pop(selectedConsultant),
-                child: const Text('Done'),
+                child: Text(localizations.done),
               ),
             ],
           ),

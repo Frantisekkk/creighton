@@ -7,6 +7,7 @@ import 'package:flutter_application_1/widgets/DayPage/ButtonSection.dart';
 import 'package:flutter_application_1/styles/styles.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_application_1/state/AppState.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class DayPage extends StatefulWidget {
   final DateTime selectedDate;
@@ -50,6 +51,7 @@ class _DayPageState extends State<DayPage> {
 
   @override
   Widget build(BuildContext context) {
+    final localizations = AppLocalizations.of(context)!;
     String dayName = DateFormat('EEEE').format(dayLogic.selectedDate);
     String date = DateFormat('d. M. y').format(dayLogic.selectedDate);
 
@@ -101,8 +103,7 @@ class _DayPageState extends State<DayPage> {
                           context: context,
                           builder: (context) => StickerPickerDialog(
                             initialColor: dayLogic.stickerColor,
-                            initialBabySelection:
-                                dayLogic.baby, // Ensure this state is tracked
+                            initialBabySelection: dayLogic.baby,
                           ),
                         );
                         if (result != null) {
@@ -117,7 +118,6 @@ class _DayPageState extends State<DayPage> {
                           child: Stack(
                             alignment: Alignment.center,
                             children: [
-                              // Background sticker color
                               Container(
                                 decoration: BoxDecoration(
                                   color: dayLogic.stickerColor,
@@ -126,12 +126,11 @@ class _DayPageState extends State<DayPage> {
                                       color: Colors.grey, width: 0.4),
                                 ),
                               ),
-                              // Baby Image Overlay (if enabled)
                               if (dayLogic.baby)
                                 Image.asset(
                                   'assets/images/baby_transparent.png',
                                   fit: BoxFit.contain,
-                                  width: 70, // Adjust size as needed
+                                  width: 70,
                                 ),
                             ],
                           ),
@@ -154,7 +153,7 @@ class _DayPageState extends State<DayPage> {
                           isActive: dayLogic.selectedAbdominalPain,
                           onTap: () => dayLogic.updateAbdominalPain(
                               !dayLogic.selectedAbdominalPain),
-                          label: 'AP',
+                          label: localizations.abdominal_pain,
                         ),
                       ],
                     ),
@@ -162,13 +161,11 @@ class _DayPageState extends State<DayPage> {
                 ],
               ),
             ),
-
-            // Add this inside the Column in your build method, before the Bleeding Section
-
+            // "Start New Cycle" Button
             Container(
               margin:
                   const EdgeInsets.symmetric(horizontal: 30.0, vertical: 10.0),
-              width: double.infinity, // Stretch full width
+              width: double.infinity,
               child: ElevatedButton(
                 onPressed: () async {
                   await dayLogic.startNewCycle();
@@ -180,19 +177,18 @@ class _DayPageState extends State<DayPage> {
                     borderRadius: BorderRadius.circular(30.0),
                   ),
                 ),
-                child: const Text(
-                  'Start New Cycle',
-                  style: TextStyle(
+                child: Text(
+                  localizations.start_new_cycle,
+                  style: const TextStyle(
                       fontSize: 18,
                       fontWeight: FontWeight.bold,
                       color: Colors.white),
                 ),
               ),
             ),
-
             // Bleeding Section
             ButtonSection(
-              title: '🩸 Bleeding',
+              title: localizations.bleeding,
               options: const [
                 ['B', 'VL', 'L', 'M', 'H']
               ],
@@ -203,7 +199,7 @@ class _DayPageState extends State<DayPage> {
             ),
             // Description Section
             ButtonSection(
-              title: 'Popis',
+              title: localizations.description_label,
               options: const [
                 ['0', '2', '2W', '4'],
                 ['6', '8', '10'],
@@ -216,7 +212,7 @@ class _DayPageState extends State<DayPage> {
             ),
             // Fertility Section
             ButtonSection(
-              title: 'Plodnosť',
+              title: localizations.fertility,
               options: const [
                 ['X1', 'X2', 'X3', 'AD']
               ],
@@ -225,35 +221,6 @@ class _DayPageState extends State<DayPage> {
                 await dayLogic.updateFertility(value);
               },
             ),
-            // Custom description Section
-            // Container(
-            //   margin: const EdgeInsets.all(20.0),
-            //   padding: const EdgeInsets.all(16.0),
-            //   decoration: BoxDecoration(
-            //     color: Colors.white,
-            //     borderRadius: BorderRadius.circular(10),
-            //   ),
-            //   child: const Column(
-            //     crossAxisAlignment: CrossAxisAlignment.start,
-            //     children: [
-            //       Text(
-            //         'Vlastný popis',
-            //         style: TextStyle(
-            //             fontSize: 18,
-            //             fontWeight: FontWeight.bold,
-            //             color: textColorDark),
-            //       ),
-            //       SizedBox(height: 10),
-            //       TextField(
-            //         maxLines: 4,
-            //         decoration: InputDecoration(
-            //           border: OutlineInputBorder(),
-            //           hintText: 'Enter text here...',
-            //         ),
-            //       ),
-            //     ],
-            //   ),
-            // ),
           ],
         ),
       ),

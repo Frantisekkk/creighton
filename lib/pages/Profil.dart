@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/controllers/ProfileLogic.dart';
 import 'package:flutter_application_1/pages/EditProflle.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class ProfilePage extends StatefulWidget {
   @override
@@ -24,10 +25,11 @@ class _ProfilePageState extends State<ProfilePage> {
 
   @override
   Widget build(BuildContext context) {
+    final localizations = AppLocalizations.of(context)!;
     return Scaffold(
-      appBar: AppBar(title: const Text("Profile")),
+      appBar: AppBar(title: Text(localizations.profile_page_title)),
       body: _controller.isLoading
-          ? const Center(child: CircularProgressIndicator()) // Show loading
+          ? const Center(child: CircularProgressIndicator())
           : Padding(
               padding: const EdgeInsets.all(16.0),
               child: Column(
@@ -35,22 +37,27 @@ class _ProfilePageState extends State<ProfilePage> {
                 children: [
                   CircleAvatar(
                     radius: 50,
-                    // backgroundImage: NetworkImage(_controller.profileImageUrl),
                     backgroundColor: Colors.blueGrey,
                   ),
                   const SizedBox(height: 20),
-                  Text("${_controller.firstName} ${_controller.lastName}",
-                      style: const TextStyle(
-                          fontSize: 24, fontWeight: FontWeight.bold)),
+                  Text(
+                    "${_controller.firstName} ${_controller.lastName}",
+                    style: const TextStyle(
+                        fontSize: 24, fontWeight: FontWeight.bold),
+                  ),
                   const SizedBox(height: 10),
-                  Text(_controller.email,
-                      style: const TextStyle(fontSize: 16, color: Colors.grey)),
+                  Text(
+                    _controller.email,
+                    style: const TextStyle(fontSize: 16, color: Colors.grey),
+                  ),
                   const SizedBox(height: 20),
-                  _buildProfileItem("Phone", _controller.phone),
-                  _buildProfileItem("Birth Number", _controller.birthNumber),
+                  _buildProfileItem(localizations.phone, _controller.phone),
                   _buildProfileItem(
-                      "Consultant Name", _controller.consultantName),
-                  _buildProfileItem("Doctor Name", _controller.doctorName),
+                      localizations.birth_number, _controller.birthNumber),
+                  _buildProfileItem(localizations.consultant_name,
+                      _controller.consultantName),
+                  _buildProfileItem(
+                      localizations.doctor_name, _controller.doctorName),
                   const SizedBox(height: 30),
                   ElevatedButton(
                     onPressed: () async {
@@ -62,19 +69,23 @@ class _ProfilePageState extends State<ProfilePage> {
                         ),
                       );
                       if (result == true) {
-                        _loadProfileData(); // Refresh profile data after editing
+                        _loadProfileData();
                       }
                     },
-                    child: const Text("Edit Profile",
-                        style: TextStyle(fontSize: 18)),
+                    child: Text(
+                      localizations.edit_profile_button,
+                      style: const TextStyle(fontSize: 18),
+                    ),
                   ),
                   const SizedBox(height: 20),
                   ElevatedButton(
                     onPressed: () => _controller.showLogoutConfirmationDialog(),
                     style:
                         ElevatedButton.styleFrom(backgroundColor: Colors.red),
-                    child: const Text("Logout",
-                        style: TextStyle(fontSize: 18, color: Colors.white)),
+                    child: Text(
+                      localizations.logout,
+                      style: const TextStyle(fontSize: 18, color: Colors.white),
+                    ),
                   ),
                 ],
               ),
@@ -88,11 +99,14 @@ class _ProfilePageState extends State<ProfilePage> {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Text(label,
-              style:
-                  const TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
-          Text(value,
-              style: TextStyle(fontSize: 16, color: Colors.grey.shade700)),
+          Text(
+            label,
+            style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+          ),
+          Text(
+            value,
+            style: TextStyle(fontSize: 16, color: Colors.grey.shade700),
+          ),
         ],
       ),
     );

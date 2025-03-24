@@ -1,5 +1,6 @@
 import 'dart:ui';
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart'; // adjust your import if needed
 
 class StickerPickerDialog extends StatefulWidget {
   final Color initialColor;
@@ -35,12 +36,12 @@ class _StickerPickerDialogState extends State<StickerPickerDialog> {
 
   @override
   Widget build(BuildContext context) {
+    final localizations = AppLocalizations.of(context)!;
     return Dialog(
       backgroundColor: Colors.transparent,
       child: LayoutBuilder(
         builder: (context, constraints) {
           double dialogWidth = MediaQuery.of(context).size.width * 0.8;
-
           return ConstrainedBox(
             constraints: BoxConstraints(maxWidth: dialogWidth),
             child: BackdropFilter(
@@ -54,24 +55,19 @@ class _StickerPickerDialogState extends State<StickerPickerDialog> {
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    const Text(
-                      'Select Your Sticker',
-                      style:
-                          TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                    Text(
+                      localizations.sticker_picker_title,
+                      style: const TextStyle(
+                          fontSize: 18, fontWeight: FontWeight.bold),
                     ),
                     const SizedBox(height: 10),
-
                     LayoutBuilder(
                       builder: (context, constraints) {
-                        // Calculate available width:
-                        // Here, we subtract a fixed horizontal margin for each container
-                        // For example, assume 8 pixels margin on each side for each container
                         double totalHorizontalMargin =
                             (availableColors.length + 1) * 8;
                         double containerWidth =
                             (constraints.maxWidth - totalHorizontalMargin) /
                                 availableColors.length;
-
                         return Row(
                           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                           children: availableColors.map((color) {
@@ -103,13 +99,13 @@ class _StickerPickerDialogState extends State<StickerPickerDialog> {
                       },
                     ),
                     const SizedBox(height: 15),
-
-                    // Baby Selection Toggle
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        const Text("Include Baby:",
-                            style: TextStyle(fontSize: 16)),
+                        Text(
+                          localizations.include_baby,
+                          style: const TextStyle(fontSize: 16),
+                        ),
                         const SizedBox(width: 10),
                         Switch(
                           value: showBaby,
@@ -122,8 +118,6 @@ class _StickerPickerDialogState extends State<StickerPickerDialog> {
                       ],
                     ),
                     const SizedBox(height: 15),
-
-                    // Display Selected Sticker with baby overlay if applicable
                     Stack(
                       alignment: Alignment.center,
                       children: [
@@ -142,8 +136,7 @@ class _StickerPickerDialogState extends State<StickerPickerDialog> {
                                       child: Align(
                                         alignment: Alignment.center,
                                         child: Container(
-                                          margin: const EdgeInsets.all(
-                                              20.0), // Adjust margin as needed
+                                          margin: const EdgeInsets.all(20.0),
                                           child: Image.asset(
                                             'assets/images/baby_transparent.png',
                                             fit: BoxFit.contain,
@@ -153,13 +146,11 @@ class _StickerPickerDialogState extends State<StickerPickerDialog> {
                                     ),
                                   ],
                                 )
-                              : null, // Keep container empty if `showBaby` is false
+                              : null,
                         ),
                       ],
                     ),
                     const SizedBox(height: 15),
-
-                    // Done Button
                     ElevatedButton(
                       style: ElevatedButton.styleFrom(
                         backgroundColor: Colors.blueAccent,
@@ -171,7 +162,7 @@ class _StickerPickerDialogState extends State<StickerPickerDialog> {
                           'showBaby': showBaby,
                         });
                       },
-                      child: const Text('Done'),
+                      child: Text(localizations.done),
                     ),
                   ],
                 ),

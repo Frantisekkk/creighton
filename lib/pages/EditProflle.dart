@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/controllers/ProfileLogic.dart';
 import 'package:flutter_application_1/api_services/ApiService.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class EditProfilePage extends StatefulWidget {
   final ProfileController controller;
@@ -16,7 +17,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
   late TextEditingController _lastNameController;
   late TextEditingController _phoneController;
   late TextEditingController _emailController;
-  late TextEditingController _birthNumberController; // New controller
+  late TextEditingController _birthNumberController;
 
   String? _selectedDoctor;
   String? _selectedConsultant;
@@ -38,8 +39,8 @@ class _EditProfilePageState extends State<EditProfilePage> {
         TextEditingController(text: widget.controller.lastName);
     _phoneController = TextEditingController(text: widget.controller.phone);
     _emailController = TextEditingController(text: widget.controller.email);
-    _birthNumberController = TextEditingController(
-        text: widget.controller.birthNumber); // Pre-fill birth number
+    _birthNumberController =
+        TextEditingController(text: widget.controller.birthNumber);
 
     _selectedDoctor = widget.controller.doctorName;
     _selectedConsultant = widget.controller.consultantName;
@@ -54,20 +55,20 @@ class _EditProfilePageState extends State<EditProfilePage> {
   }
 
   void _updateProfile() async {
+    final localizations = AppLocalizations.of(context)!;
     String firstName = _firstNameController.text;
     String lastName = _lastNameController.text;
     String phone = _phoneController.text;
-    String email = _emailController.text; // New field
-    String birthNumber = _birthNumberController.text; // New field
+    String email = _emailController.text;
+    String birthNumber = _birthNumberController.text;
 
     if (firstName.isEmpty ||
         lastName.isEmpty ||
         phone.isEmpty ||
         email.isEmpty ||
         birthNumber.isEmpty) {
-      // Validate new fields too
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text("Please fill all fields")),
+        SnackBar(content: Text(localizations.fill_all_fields)),
       );
       return;
     }
@@ -81,17 +82,17 @@ class _EditProfilePageState extends State<EditProfilePage> {
         firstName: firstName,
         lastName: lastName,
         phone: phone,
-        email: email, // Include email
-        birthNumber: birthNumber, // Include birth number
+        email: email,
+        birthNumber: birthNumber,
         doctor: _selectedDoctor!,
         consultant: _selectedConsultant!,
       );
 
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text("Profile updated successfully!")),
+        SnackBar(content: Text(localizations.profile_update_success)),
       );
 
-      Navigator.pop(context, true); // Return true to refresh ProfilePage
+      Navigator.pop(context, true);
     } catch (e) {
       print("Error updating profile: $e");
     }
@@ -99,32 +100,39 @@ class _EditProfilePageState extends State<EditProfilePage> {
 
   @override
   Widget build(BuildContext context) {
+    final localizations = AppLocalizations.of(context)!;
     return Scaffold(
-      appBar: AppBar(title: Text("Edit Profile")),
+      appBar: AppBar(title: Text(localizations.edit_profile_page_title)),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: SingleChildScrollView(
-          // Added to handle overflow
           child: Column(
             children: [
-              _buildTextField("First Name", _firstNameController),
-              _buildTextField("Last Name", _lastNameController),
-              _buildTextField("Phone", _phoneController),
-              _buildTextField("Email", _emailController), // Now editable
+              _buildTextField(localizations.first_name, _firstNameController),
+              _buildTextField(localizations.last_name, _lastNameController),
+              _buildTextField(localizations.phone, _phoneController),
+              _buildTextField(localizations.email, _emailController),
               _buildTextField(
-                  "Birth Number", _birthNumberController), // New field
-              _buildDropdownField("Select Doctor", _selectedDoctor, _doctors,
-                  (value) => setState(() => _selectedDoctor = value)),
+                  localizations.birth_number, _birthNumberController),
               _buildDropdownField(
-                  "Select Consultant",
-                  _selectedConsultant,
-                  _consultants,
-                  (value) => setState(() => _selectedConsultant = value)),
+                localizations.select_doctor,
+                _selectedDoctor,
+                _doctors,
+                (value) => setState(() => _selectedDoctor = value),
+              ),
+              _buildDropdownField(
+                localizations.select_consultant,
+                _selectedConsultant,
+                _consultants,
+                (value) => setState(() => _selectedConsultant = value),
+              ),
               const SizedBox(height: 20),
               ElevatedButton(
                 onPressed: _updateProfile,
-                child:
-                    const Text("Save Changes", style: TextStyle(fontSize: 18)),
+                child: Text(
+                  localizations.save_changes,
+                  style: const TextStyle(fontSize: 18),
+                ),
               ),
             ],
           ),

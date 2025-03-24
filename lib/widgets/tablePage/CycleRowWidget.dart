@@ -4,6 +4,7 @@ import 'package:intl/intl.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/styles/styles.dart';
 import 'package:provider/provider.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class CycleRowWidget extends StatelessWidget {
   final List<Map<String, dynamic>> cycleData;
@@ -19,7 +20,8 @@ class CycleRowWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // final tableLogic = Provider.of<TableLogic>(context, listen: false);
+    final localizations = AppLocalizations.of(context)!;
+    // Using context.read to get tableLogic (if needed)
     final tableLogic = context.read<TableLogic>();
     return SizedBox(
       height: rowHeight,
@@ -28,13 +30,13 @@ class CycleRowWidget extends StatelessWidget {
         children: [
           _buildRowHeader(
             context,
-            "Day",
-            (data) => data['day_order']?.toString() ?? 'N/A',
+            localizations.day, // localized "Day"
+            (data) => data['day_order']?.toString() ?? localizations.no_data,
             height: rowHeight * 0.1,
           ),
           _buildRowHeader(
             context,
-            "Sticker",
+            localizations.sticker, // localized "Sticker"
             (data) => '',
             height: rowHeight * 0.3,
             iconBuilder: (data) {
@@ -42,7 +44,6 @@ class CycleRowWidget extends StatelessWidget {
               final bool baby = data['baby'] ?? false;
               return InkWell(
                 onTap: () async {
-                  // Pass tableLogic to the dialog so it doesn't look it up later.
                   final selectedAction = await showDialog<String>(
                     context: context,
                     builder: (BuildContext context) {
@@ -59,22 +60,22 @@ class CycleRowWidget extends StatelessWidget {
                     DateTime parsedDate = DateTime.parse(data['date']);
                     tableLogic.navigateToEditDay(context, parsedDate);
                   } else if (selectedAction == 'create') {
-                    // Show confirmation dialog before creating a new cycle
+                    // Confirm new cycle creation
                     final confirmed = await showDialog<bool>(
                       context: context,
                       builder: (BuildContext context) {
                         return AlertDialog(
-                          title: Text('Confirm New Cycle'),
+                          title: Text(localizations.confirm_new_cycle_title),
                           content: Text(
-                              'Are you sure you want to create a new cycle on ${data['date']}?'),
+                              '${localizations.confirm_new_cycle_content} ${data['date']}?'),
                           actions: [
                             TextButton(
                               onPressed: () => Navigator.pop(context, false),
-                              child: Text('Cancel'),
+                              child: Text(localizations.cancel),
                             ),
                             TextButton(
                               onPressed: () => Navigator.pop(context, true),
-                              child: Text('Confirm'),
+                              child: Text(localizations.confirm),
                             ),
                           ],
                         );
@@ -87,22 +88,21 @@ class CycleRowWidget extends StatelessWidget {
                       print("Creating new cycle at date: ${data['date']}");
                     }
                   } else if (selectedAction == 'delete') {
-                    // Show confirmation before deleting the cycle
+                    // Confirm deletion of cycle
                     final confirmed = await showDialog<bool>(
                       context: context,
                       builder: (BuildContext context) {
                         return AlertDialog(
-                          title: Text('Delete Cycle?'),
-                          content: Text(
-                              'Are you sure you want to delete this cycle? All its days will be merged with the previous cycle.'),
+                          title: Text(localizations.delete_cycle_title),
+                          content: Text(localizations.delete_cycle_content),
                           actions: [
                             TextButton(
                               onPressed: () => Navigator.pop(context, false),
-                              child: Text('Cancel'),
+                              child: Text(localizations.cancel),
                             ),
                             TextButton(
                               onPressed: () => Navigator.pop(context, true),
-                              child: Text('Delete'),
+                              child: Text(localizations.delete),
                             ),
                           ],
                         );
@@ -137,35 +137,36 @@ class CycleRowWidget extends StatelessWidget {
           ),
           _buildRowHeader(
             context,
-            "Date",
+            localizations.date, // localized "Date"
             (data) {
               final rawDate = data['date']?.toString();
-              if (rawDate == null || rawDate.isEmpty) return 'N/A';
+              if (rawDate == null || rawDate.isEmpty)
+                return localizations.no_data;
               try {
                 final parsedDate = DateTime.parse(rawDate);
                 return DateFormat('d/M/yy').format(parsedDate);
               } catch (e) {
-                return 'Invalid Date';
+                return localizations.invalid_date;
               }
             },
             height: rowHeight * 0.1,
           ),
           _buildRowHeader(
             context,
-            "Bleeding",
-            (data) => data['bleeding'] ?? 'N/A',
+            localizations.bleeding, // localized "Bleeding"
+            (data) => data['bleeding'] ?? localizations.no_data,
             height: rowHeight * 0.2,
           ),
           _buildRowHeader(
             context,
-            "Mucus",
-            (data) => data['mucus'] ?? 'N/A',
+            localizations.mucus, // localized "Mucus"
+            (data) => data['mucus'] ?? localizations.no_data,
             height: rowHeight * 0.2,
           ),
           _buildRowHeader(
             context,
-            "Fertility",
-            (data) => data['fertility'] ?? 'N/A',
+            localizations.fertility, // localized "Fertility"
+            (data) => data['fertility'] ?? localizations.no_data,
             height: rowHeight * 0.1,
           ),
         ],
@@ -180,7 +181,6 @@ class CycleRowWidget extends StatelessWidget {
     required double height,
     Widget Function(Map<String, dynamic>)? iconBuilder,
   }) {
-    // Build each data cell (or a placeholder if there's no data).
     final dataCells = cycleData.isNotEmpty
         ? cycleData.map((data) {
             return Container(
@@ -211,7 +211,6 @@ class CycleRowWidget extends StatelessWidget {
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          // Header Cell
           Container(
             width: tableCellWidth,
             height: height,
@@ -222,7 +221,6 @@ class CycleRowWidget extends StatelessWidget {
               style: tableHeaderTextStyle,
             ),
           ),
-          // Data Cells (or placeholder if empty)
           Row(children: dataCells),
         ],
       ),

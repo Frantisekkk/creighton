@@ -7,6 +7,7 @@ import 'package:flutter_application_1/widgets/registerPage/ConsultantPickerDialo
 import 'package:flutter_application_1/widgets/registerPage/DoctorPickerDialog.dart';
 import 'package:flutter_application_1/pages/Login.dart';
 import 'package:flutter_application_1/styles/styles.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class SignUpPage extends StatefulWidget {
   @override
@@ -25,13 +26,14 @@ class _SignUpPageState extends State<SignUpPage> {
 
   @override
   Widget build(BuildContext context) {
+    final localizations = AppLocalizations.of(context)!;
     final appState = Provider.of<AppState>(context, listen: false);
     return ChangeNotifierProvider(
       create: (context) => SignUpLogic(appState),
       child: Consumer<SignUpLogic>(
         builder: (context, signUpLogic, child) {
           return Scaffold(
-            appBar: AppBar(title: Text("Sign Up")),
+            appBar: AppBar(title: Text(localizations.sign_up_title)),
             body: Padding(
               padding: defaultPagePadding,
               child: SingleChildScrollView(
@@ -41,41 +43,47 @@ class _SignUpPageState extends State<SignUpPage> {
                     // First Name & Last Name
                     TextField(
                       controller: firstNameController,
-                      decoration: defaultTextFieldDecoration('First Name'),
+                      decoration:
+                          defaultTextFieldDecoration(localizations.first_name),
                     ),
                     SizedBox(height: defaultVerticalSpacing),
                     TextField(
                       controller: lastNameController,
-                      decoration: defaultTextFieldDecoration('Last Name'),
+                      decoration:
+                          defaultTextFieldDecoration(localizations.last_name),
                     ),
                     SizedBox(height: defaultVerticalSpacing),
                     // Email & Password
                     TextField(
                       controller: emailController,
-                      decoration: defaultTextFieldDecoration('Email'),
+                      decoration:
+                          defaultTextFieldDecoration(localizations.email),
                     ),
                     SizedBox(height: defaultVerticalSpacing),
                     TextField(
                       controller: passwordController,
-                      decoration: defaultTextFieldDecoration('Password'),
+                      decoration:
+                          defaultTextFieldDecoration(localizations.password),
                       obscureText: true,
                     ),
                     SizedBox(height: defaultVerticalSpacing),
                     // Birth Number & Age
                     TextField(
                       controller: birthNumberController,
-                      decoration: defaultTextFieldDecoration('Birth Number'),
+                      decoration: defaultTextFieldDecoration(
+                          localizations.birth_number),
                     ),
                     SizedBox(height: defaultVerticalSpacing),
                     TextField(
                       controller: ageController,
-                      decoration: defaultTextFieldDecoration('Age'),
+                      decoration: defaultTextFieldDecoration(localizations.age),
                       keyboardType: TextInputType.number,
                     ),
                     SizedBox(height: defaultVerticalSpacing),
                     TextField(
                       controller: phoneController,
-                      decoration: defaultTextFieldDecoration('Phone Number'),
+                      decoration: defaultTextFieldDecoration(
+                          localizations.phone_number),
                       keyboardType: TextInputType.phone,
                     ),
                     SizedBox(height: defaultVerticalSpacing),
@@ -85,7 +93,8 @@ class _SignUpPageState extends State<SignUpPage> {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Text(
-                            "Doctor: ${signUpLogic.isLoadingDoctors ? 'Loading...' : signUpLogic.selectedDoctor}"),
+                          "${localizations.doctor_label} ${signUpLogic.isLoadingDoctors ? localizations.loading : signUpLogic.selectedDoctor}",
+                        ),
                         ElevatedButton(
                           onPressed: signUpLogic.doctorList.isEmpty
                               ? null
@@ -101,7 +110,7 @@ class _SignUpPageState extends State<SignUpPage> {
                                     signUpLogic.setDoctor(result);
                                   }
                                 },
-                          child: Text("Select Doctor"),
+                          child: Text(localizations.select_doctor_button),
                         ),
                       ],
                     ),
@@ -112,7 +121,8 @@ class _SignUpPageState extends State<SignUpPage> {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Text(
-                            "Consultant: ${signUpLogic.isLoadingConsultants ? 'Loading...' : signUpLogic.selectedConsultant}"),
+                          "${localizations.consultant_label} ${signUpLogic.isLoadingConsultants ? localizations.loading : signUpLogic.selectedConsultant}",
+                        ),
                         ElevatedButton(
                           onPressed: signUpLogic.consultantList.isEmpty
                               ? null
@@ -130,7 +140,7 @@ class _SignUpPageState extends State<SignUpPage> {
                                     signUpLogic.setConsultant(result);
                                   }
                                 },
-                          child: Text("Select Consultant"),
+                          child: Text(localizations.select_consultant_button),
                         ),
                       ],
                     ),
@@ -158,12 +168,12 @@ class _SignUpPageState extends State<SignUpPage> {
                         } else {
                           ScaffoldMessenger.of(context).showSnackBar(
                             SnackBar(
-                                content: Text(
-                                    'Registration failed. Please try again.')),
+                              content: Text(localizations.registration_failed),
+                            ),
                           );
                         }
                       },
-                      child: Text('Sign Up'),
+                      child: Text(localizations.sign_up_button),
                     ),
 
                     SizedBox(height: 10),
@@ -173,18 +183,20 @@ class _SignUpPageState extends State<SignUpPage> {
                         // Navigate to Login page if user already has an account
                         Navigator.of(context).pushAndRemoveUntil(
                           MaterialPageRoute(
-                              builder: (context) =>
-                                  LoginPage(onLoginSuccess: () {
-                                    Navigator.pushReplacement(
-                                      context,
-                                      MaterialPageRoute(
-                                          builder: (context) => AppWrapper()),
-                                    );
-                                  })),
+                            builder: (context) => LoginPage(
+                              onLoginSuccess: () {
+                                Navigator.pushReplacement(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => AppWrapper()),
+                                );
+                              },
+                            ),
+                          ),
                           (Route<dynamic> route) => false,
                         );
                       },
-                      child: Text("Already have an account? Login"),
+                      child: Text(localizations.already_have_account),
                     ),
                   ],
                 ),

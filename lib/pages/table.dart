@@ -3,6 +3,7 @@ import 'package:flutter_application_1/controllers/TableLogic.dart';
 import 'package:flutter_application_1/state/AppState.dart';
 import 'package:flutter_application_1/widgets/tablePage/CycleRowWidget.dart';
 import 'package:provider/provider.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart'; // Import localization
 
 class TablePage extends StatefulWidget {
   const TablePage({Key? key}) : super(key: key);
@@ -20,7 +21,7 @@ class _TablePageState extends State<TablePage> {
     super.didChangeDependencies();
     if (!_hasInitialized) {
       final appState = Provider.of<AppState>(context, listen: false);
-      tableLogic = TableLogic(appState: appState); // Create TableLogic instance
+      tableLogic = TableLogic(appState: appState);
       _hasInitialized = true;
     }
   }
@@ -33,12 +34,15 @@ class _TablePageState extends State<TablePage> {
 
   @override
   Widget build(BuildContext context) {
+    final localizations = AppLocalizations.of(context)!;
     return ChangeNotifierProvider<TableLogic>.value(
-      value: tableLogic, // Provide the TableLogic instance to descendants
+      value: tableLogic,
       child: Consumer<TableLogic>(
         builder: (context, tableLogic, _) {
           return Scaffold(
-            appBar: AppBar(title: const Text('Cycle Table Display')),
+            appBar: AppBar(
+              title: Text(localizations.cycle_table_display),
+            ),
             body: SingleChildScrollView(
               scrollDirection: Axis.vertical,
               child: Column(

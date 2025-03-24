@@ -1,11 +1,12 @@
 import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/controllers/TableLogic.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart'; // Import localization
 
 class CycleActionDialog extends StatelessWidget {
   final String formattedDate;
   final int dayOrder;
-  final TableLogic tableLogic; // Required instance
+  final TableLogic tableLogic;
 
   const CycleActionDialog({
     Key? key,
@@ -16,6 +17,7 @@ class CycleActionDialog extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final localizations = AppLocalizations.of(context)!;
     bool isFirstDay = dayOrder == 1;
     return Dialog(
       backgroundColor: Colors.transparent,
@@ -30,18 +32,19 @@ class CycleActionDialog extends StatelessWidget {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              const Text(
-                'Cycle Actions',
-                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+              Text(
+                localizations.cycle_actions, // localized "Cycle Actions"
+                style:
+                    const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
               ),
               const SizedBox(height: 10),
               Text(
-                'Date: $formattedDate',
+                '${localizations.date_label} $formattedDate',
                 style: const TextStyle(fontSize: 16),
               ),
               const SizedBox(height: 5),
               Text(
-                'Day: $dayOrder',
+                '${localizations.day} $dayOrder',
                 style: const TextStyle(fontSize: 16),
               ),
               const SizedBox(height: 15),
@@ -57,7 +60,7 @@ class CycleActionDialog extends StatelessWidget {
                     onPressed: () {
                       Navigator.of(context).pop('edit');
                     },
-                    child: const Text('Edit This Day'),
+                    child: Text(localizations.edit_day),
                   ),
                   const SizedBox(height: 10),
                   ElevatedButton(
@@ -72,8 +75,9 @@ class CycleActionDialog extends StatelessWidget {
                       Navigator.of(context)
                           .pop(isFirstDay ? 'delete' : 'create');
                     },
-                    child:
-                        Text(isFirstDay ? 'Delete Cycle' : 'Create New Cycle'),
+                    child: Text(isFirstDay
+                        ? localizations.delete_cycle
+                        : localizations.create_cycle),
                   ),
                 ],
               ),
