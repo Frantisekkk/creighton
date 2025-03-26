@@ -13,7 +13,7 @@ class HomePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final appState = Provider.of<AppState>(context, listen: false);
+    final appState = Provider.of<AppState>(context, listen: true);
     final String userName = appState.userProfile?['first_name'] ?? 'Používateľ';
     final localizations = AppLocalizations.of(context)!;
     // Provide HomeLogic to descendants.
@@ -22,7 +22,7 @@ class HomePage extends StatelessWidget {
       child: Consumer<HomeLogic>(
         builder: (context, homeLogic, _) {
           final weeklyStickers = homeLogic.weeklyStickers;
-
+          final int currentDay = homeLogic.getCurrentCycleDay();
           return Scaffold(
             backgroundColor: Colors.grey.shade50,
             body: Stack(
@@ -239,8 +239,6 @@ class HomePage extends StatelessWidget {
                         alignment: Alignment.center,
                         child: Builder(
                           builder: (context) {
-                            final int currentDay =
-                                homeLogic.dayData?['day_order'] ?? 0;
                             final int displayTotal =
                                 currentDay <= 28 ? 28 : currentDay + 5;
                             final double progressValue =

@@ -98,9 +98,9 @@ class AppState extends ChangeNotifier {
       _dayData = data.isEmpty
           ? {
               'stickerColor': Colors.grey,
-              'bleeding': 'No data',
-              'mucus': 'No data',
-              'fertility': 'No data',
+              'bleeding': '-',
+              'mucus': '-',
+              'fertility': '-',
               'ab': false,
             }
           : data;
@@ -272,7 +272,7 @@ class AppState extends ChangeNotifier {
       if (token == null) throw Exception("Token is null");
       // Pass the date parameter to the API call
       await _apiService.startNewCycle(token: token, date: date);
-      await fetchCycleData(); // Refresh UI after starting a new cycle
+      await refreshAllData();
     } catch (e) {
       print('Error starting new cycle: $e');
     } finally {
@@ -288,6 +288,7 @@ class AppState extends ChangeNotifier {
       final token = await _apiService.getToken();
       if (token == null) throw Exception("Token is null");
       await _apiService.undoCycle(token: token, startDate: startDate);
+      await refreshAllData();
     } catch (e) {
       print('Error undoing cycle: $e');
     } finally {

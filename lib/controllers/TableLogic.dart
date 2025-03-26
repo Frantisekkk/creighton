@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/state/AppState.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class TableLogic extends ChangeNotifier {
   final AppState appState;
@@ -8,13 +9,13 @@ class TableLogic extends ChangeNotifier {
   String errorMessage = '';
 
   TableLogic({required this.appState}) {
-    appState.addListener(_onAppStateChanged); // Listen to changes in AppState
+    appState.addListener(_onAppStateChanged);
     loadCycleData();
   }
 
   void _onAppStateChanged() {
     cycleData = appState.cycleData;
-    notifyListeners(); // Notify the UI to rebuild
+    notifyListeners();
   }
 
   void loadCycleData() {
@@ -32,7 +33,7 @@ class TableLogic extends ChangeNotifier {
   }
 
   Future<void> fetchCycleData() async {
-    if (appState.isLoading) return; // Prevent duplicate fetching
+    if (appState.isLoading) return;
 
     try {
       isLoading = true;
@@ -48,46 +49,44 @@ class TableLogic extends ChangeNotifier {
     }
   }
 
-  // Navigate to Edit Day screen
   void navigateToEditDay(BuildContext context, DateTime date) {
     appState.setPage(2, date: date);
   }
 
-  // Handle Creating a New Cycle
   Future<void> createNewCycle(BuildContext context, DateTime date) async {
+    final localizations = AppLocalizations.of(context)!;
     try {
       await appState.startNewCycle(date);
-      await fetchCycleData(); // Refresh table after creation
+      await fetchCycleData();
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('New cycle created successfully!')),
+        SnackBar(content: Text(localizations.new_cycle_success)),
       );
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Error creating cycle: $e')),
+        SnackBar(content: Text('${localizations.new_cycle_error}: $e')),
       );
     }
   }
 
-  // Handle Deleting a Cycle
   Future<void> deleteCycle(
       BuildContext context, DateTime cycleStartDate) async {
+    final localizations = AppLocalizations.of(context)!;
     try {
       await appState.undoCycle(cycleStartDate);
-      await fetchCycleData(); // Refresh table after deletion
+      await fetchCycleData();
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Cycle deleted successfully!')),
+        SnackBar(content: Text(localizations.cycle_deleted_success)),
       );
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Error deleting cycle: $e')),
+        SnackBar(content: Text('${localizations.cycle_delete_error}: $e')),
       );
     }
   }
 
   @override
   void dispose() {
-    appState
-        .removeListener(_onAppStateChanged); // Remove listener when destroyed
+    appState.removeListener(_onAppStateChanged);
     super.dispose();
   }
 }

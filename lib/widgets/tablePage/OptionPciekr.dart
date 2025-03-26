@@ -33,7 +33,7 @@ class CycleActionDialog extends StatelessWidget {
             mainAxisSize: MainAxisSize.min,
             children: [
               Text(
-                localizations.cycle_actions, // localized "Cycle Actions"
+                localizations.cycle_actions,
                 style:
                     const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
               ),
@@ -58,7 +58,7 @@ class CycleActionDialog extends StatelessWidget {
                           vertical: 12, horizontal: 20),
                     ),
                     onPressed: () {
-                      Navigator.of(context).pop('edit');
+                      Navigator.of(context).pop(localizations.edit);
                     },
                     child: Text(localizations.edit_day),
                   ),

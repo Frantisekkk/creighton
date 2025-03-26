@@ -67,7 +67,7 @@ class CycleRowWidget extends StatelessWidget {
                         return AlertDialog(
                           title: Text(localizations.confirm_new_cycle_title),
                           content: Text(
-                              '${localizations.confirm_new_cycle_content} ${data['date']}?'),
+                              '${localizations.confirm_new_cycle_content} ${DateFormat('E dd.MM').format(DateTime.parse(data['date']))}?'),
                           actions: [
                             TextButton(
                               onPressed: () => Navigator.pop(context, false),

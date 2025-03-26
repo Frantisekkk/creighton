@@ -72,7 +72,7 @@
   "@greeting": {
     "description": "Pozdrav s použitím zástupného mena pre používateľa"
   },
-  "no_data": "Žiadne údaje",
+  "no_data": "-",
   "@no_data": {
     "description": "Náhradný text, keď nie sú k dispozícii žiadne údaje"
   },
@@ -107,6 +107,14 @@
   "logout": "Odhlásiť sa",
   "@logout": {
     "description": "Text tlačidla pre odhlásenie"
+  },
+  "confirm_logout": "Potvrdenie odhlásenia",
+  "@confirm_logout": {
+    "description": "Hlavicka pre potvrdenie odhlásenie"
+  },
+  "confirm_text": "Naozaj sa chcete odhlásiť?",
+  "@confirm_text": {
+    "description": "Text pre potvrdenie odhlásenie"
   },
   "sign_up_title": "Registrácia",
   "@sign_up_title": {
@@ -255,5 +263,33 @@
   "home": "Domov",
   "@home": {
     "description": "Navigačné tlačidlo spodného baru"
+  },
+  "invalid_credidentals": "Nesprávne prihlasovacie údaje",
+  "@invalid_credidentals": {
+    "description": "Error log pri nesprávnych udajoch pre prihlasenie"
+  },
+  "empty_credidentals": "chýbajúce prihlasovacie údaje",
+  "@empty_credidentals": {
+    "description": "Error log pri chýbajúcich udajoch pre prihlasenie"
+  },
+  "new_cycle_success": "Nový cyklus bol úspešne vytvorený!",
+  "@new_cycle_success": {
+    "description": "Správa o úspešnom vytvorení nového cyklu"
+  },
+  "new_cycle_error": "Chyba pri vytváraní cyklu",
+  "@new_cycle_error": {
+    "description": "Chybová správa pri neúspešnom vytvorení cyklu"
+  },
+  "cycle_deleted_success": "Cyklus bol úspešne odstránený!",
+  "@cycle_deleted_success": {
+    "description": "Správa o úspešnom odstránení cyklu"
+  },
+  "cycle_delete_error": "Chyba pri odstraňovaní cyklu",
+  "@cycle_delete_error": {
+    "description": "Chybová správa pri neúspešnom odstraňovaní cyklu"
+  },
+  "edit": "upraviť",
+  "@edit": {
+    "description": "talcidlo pre navigaciu na upravenie"
   }
 }

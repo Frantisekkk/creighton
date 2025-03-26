@@ -33,9 +33,9 @@ class ApiService {
           // Handling empty response case
           return {
             'stickerColor': Colors.grey,
-            'bleeding': 'No data',
-            'mucus': 'No data',
-            'fertility': 'No data',
+            'bleeding': '-',
+            'mucus': '-',
+            'fertility': '-',
             'ab': false,
           };
         }
@@ -46,9 +46,9 @@ class ApiService {
         if (data == null || data.isEmpty) {
           return {
             'stickerColor': Colors.grey,
-            'bleeding': 'No data',
-            'mucus': 'No data',
-            'fertility': 'No data',
+            'bleeding': '-',
+            'mucus': '-',
+            'fertility': '-',
             'ab': false,
           };
         }

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_application_1/state/AppState.dart';
 
 class ProfileController extends ChangeNotifier {
@@ -42,18 +43,21 @@ class ProfileController extends ChangeNotifier {
   }
 
   void showLogoutConfirmationDialog() {
+    final localizations = AppLocalizations.of(context)!;
     showDialog(
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: const Text("Confirm Logout"),
-          content: const Text("Are you sure you want to log out?"),
+          title: Text(
+            localizations.confirm_logout,
+          ),
+          content: Text(localizations.confirm_text),
           actions: [
             TextButton(
               onPressed: () {
                 Navigator.of(context).pop();
               },
-              child: const Text("Cancel"),
+              child: Text(localizations.cancel),
             ),
             TextButton(
               onPressed: () {
@@ -61,7 +65,8 @@ class ProfileController extends ChangeNotifier {
                 Navigator.of(context).pop();
                 Navigator.of(context).pop();
               },
-              child: const Text("Logout", style: TextStyle(color: Colors.red)),
+              child: Text(localizations.logout,
+                  style: TextStyle(color: Colors.red)),
             ),
           ],
         );
