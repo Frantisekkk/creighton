@@ -41,7 +41,6 @@ class CycleRowWidget extends StatelessWidget {
             height: rowHeight * 0.3,
             iconBuilder: (data) {
               final Color stickerColor = getColor(data['sticker'] ?? 'unknown');
-              final bool baby = data['baby'] ?? false;
               return InkWell(
                 onTap: () async {
                   final selectedAction = await showDialog<String>(
@@ -122,15 +121,27 @@ class CycleRowWidget extends StatelessWidget {
                   decoration: BoxDecoration(
                     color: stickerColor,
                   ),
-                  child: baby
-                      ? Container(
+                  child: Stack(
+                    alignment: Alignment.center,
+                    children: [
+                      if (data['baby'])
+                        Container(
                           padding: const EdgeInsets.all(8.0),
                           child: Image.asset(
                             'assets/images/baby_transparent.png',
                             fit: BoxFit.contain,
                           ),
-                        )
-                      : null,
+                        ),
+                      Text(
+                        (data['peak'] ?? '').toString(),
+                        style: const TextStyle(
+                          fontSize: 60,
+                          color: Colors.black,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
               );
             },

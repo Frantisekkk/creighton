@@ -130,6 +130,20 @@ class HomePage extends StatelessWidget {
                                                 ),
                                               ),
                                             ),
+                                          Positioned.fill(
+                                            child: Center(
+                                              child: Text(
+                                                (homeLogic.dayData?['peak'] ??
+                                                        '')
+                                                    .toString(),
+                                                style: const TextStyle(
+                                                  fontSize: 80,
+                                                  color: Colors.black,
+                                                  fontWeight: FontWeight.bold,
+                                                ),
+                                              ),
+                                            ),
+                                          )
                                         ],
                                       ),
                                     ),

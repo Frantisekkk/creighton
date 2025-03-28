@@ -15,6 +15,7 @@ class DayLogic extends ChangeNotifier {
   String selectedBleeding;
   String selectedMucus;
   String selectedFertility;
+  String selectedPeak;
   bool isLoaded = false;
 
   DayLogic({required this.appState, DateTime? initialDate})
@@ -22,6 +23,7 @@ class DayLogic extends ChangeNotifier {
         stickerColor = Colors.grey,
         baby = false,
         selectedTemperature = 0,
+        selectedPeak = '',
         selectedAbdominalPain = false,
         selectedBleeding = '',
         selectedMucus = '',
@@ -56,6 +58,7 @@ class DayLogic extends ChangeNotifier {
         ? double.tryParse(data['temperature']) ?? 0.0
         : (data['temperature'] ?? 0.0);
     selectedAbdominalPain = data['ab'] ?? false;
+    selectedPeak = data['peak'] ?? '';
     isLoaded = true;
     safeNotifyListeners();
   }
@@ -80,6 +83,15 @@ class DayLogic extends ChangeNotifier {
   /// Starts a new cycle by calling the AppState method.
   Future<void> startNewCycle() async {
     await appState.startNewCycle(selectedDate);
+    await appState.refreshAllData();
+  }
+
+  /// Updates the peak value for the selected date.
+  Future<void> updatePeak(String value) async {
+    selectedPeak = value;
+    notifyListeners();
+    String dateStr = DateFormat('yyyy-MM-dd').format(selectedDate);
+    await appState.updatePeakForDate(dateStr, value);
     await appState.refreshAllData();
   }
 

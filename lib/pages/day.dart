@@ -104,12 +104,16 @@ class _DayPageState extends State<DayPage> {
                           builder: (context) => StickerPickerDialog(
                             initialColor: dayLogic.stickerColor,
                             initialBabySelection: dayLogic.baby,
+                            peak: dayLogic.selectedPeak,
                           ),
                         );
                         if (result != null) {
                           Color selectedColor = result['color'];
                           bool showBaby = result['showBaby'];
-                          dayLogic.updateStickerColor(selectedColor, showBaby);
+                          String peakLabel = result['label'] ?? '';
+                          await dayLogic.updateStickerColor(
+                              selectedColor, showBaby);
+                          await dayLogic.updatePeak(peakLabel);
                         }
                       },
                       child: Center(
@@ -132,6 +136,21 @@ class _DayPageState extends State<DayPage> {
                                   fit: BoxFit.contain,
                                   width: 70,
                                 ),
+                              Positioned.fill(
+                                child: Center(
+                                  child: Text(
+                                    dayLogic.selectedPeak != ''
+                                        ? dayLogic.selectedPeak
+                                        : "",
+                                    style: const TextStyle(
+                                      fontSize: 80, // adjust size as necessary
+                                      color: Colors
+                                          .black, // choose a color that contrasts well
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                ),
+                              ),
                             ],
                           ),
                         ),

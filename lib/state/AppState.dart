@@ -24,9 +24,9 @@ class AppState extends ChangeNotifier {
   // Data storage
   Map<String, dynamic> _dayData = {
     'stickerColor': Colors.grey,
-    'bleeding': 'No data',
-    'mucus': 'No data',
-    'fertility': 'No data',
+    'bleeding': '-',
+    'mucus': '-',
+    'fertility': '-',
     'ab': false,
   };
 
@@ -105,6 +105,7 @@ class AppState extends ChangeNotifier {
             }
           : data;
       notifyListeners();
+      print(_dayData);
       return _dayData;
     } catch (e) {
       print("Error fetching day data for $dateStr: $e");
@@ -320,29 +321,33 @@ class AppState extends ChangeNotifier {
   // Day Parameter Update Methods
   // ----------------------------------------------------
 
-  Future<void> updateStickerColorForDate(
-      String dateStr, Color newColor, bool baby) async {
+  Future<void> updatePeakForDate(String dateStr, String value) async {
     try {
-      // Update the local UI state first (update both sticker color and baby status)
-      _dayData['stickerColor'] = newColor;
-      _dayData['baby'] = baby;
-      notifyListeners();
-
-      // Fetch the token
       final token = await _apiService.getToken();
       if (token == null) {
         print("Error: Token is null");
         return;
       }
+      await _apiService.updatePeak(dateStr, value, token: token);
+    } catch (e) {
+      print("Error updating peak: $e");
+    }
+  }
 
-      // Convert Color to string before sending to API
+  Future<void> updateStickerColorForDate(
+      String dateStr, Color newColor, bool baby) async {
+    try {
+      _dayData['stickerColor'] = newColor;
+      _dayData['baby'] = baby;
+      notifyListeners();
+      final token = await _apiService.getToken();
+      if (token == null) {
+        print("Error: Token is null");
+        return;
+      }
       String colorName = getColorName(newColor);
-
-      // Call the API method, now including the baby flag
-      String responseMessage = await _apiService
-          .updateStickerColor(dateStr, colorName, baby, token: token);
-
-      print(responseMessage); // Log the response message
+      await _apiService.updateStickerColor(dateStr, colorName, baby,
+          token: token);
     } catch (e) {
       print("Error updating sticker color: $e");
     }

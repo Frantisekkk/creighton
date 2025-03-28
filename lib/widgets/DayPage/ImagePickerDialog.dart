@@ -1,15 +1,17 @@
 import 'dart:ui';
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart'; // adjust your import if needed
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class StickerPickerDialog extends StatefulWidget {
   final Color initialColor;
   final bool initialBabySelection;
+  final String peak;
 
   const StickerPickerDialog({
     Key? key,
     required this.initialColor,
     this.initialBabySelection = false,
+    this.peak = '',
   }) : super(key: key);
 
   @override
@@ -19,6 +21,9 @@ class StickerPickerDialog extends StatefulWidget {
 class _StickerPickerDialogState extends State<StickerPickerDialog> {
   late Color selectedColor;
   bool showBaby = false;
+  // Label options: index 0 represents null (displayed as a dash)
+  final List<String> labelOptions = ['', 'P', '1', '2', '3'];
+  String selectedLabel = '';
 
   final List<Color> availableColors = [
     Colors.red,
@@ -27,11 +32,34 @@ class _StickerPickerDialogState extends State<StickerPickerDialog> {
     Colors.white
   ];
 
+  // Make the controller nullable and lazily initialize it
+  FixedExtentScrollController? _controller;
+  FixedExtentScrollController get controller {
+    _controller ??=
+        FixedExtentScrollController(initialItem: getInitialIndex(widget.peak));
+    return _controller!;
+  }
+
+  /// Mapping: if peak is empty → 0, 'P' → 1, '1' → 2, '2' → 3, '3' → 4.
+  int getInitialIndex(String peak) {
+    if (peak.isEmpty) return 0;
+    int index = labelOptions.indexOf(peak);
+    return index != -1 ? index : 0;
+  }
+
   @override
   void initState() {
     super.initState();
     selectedColor = widget.initialColor;
     showBaby = widget.initialBabySelection;
+    selectedLabel = widget.peak.isEmpty ? '' : widget.peak;
+    // Do not initialize _controller here. It will be lazily created on first use.
+  }
+
+  @override
+  void dispose() {
+    _controller?.dispose();
+    super.dispose();
   }
 
   @override
@@ -117,6 +145,55 @@ class _StickerPickerDialogState extends State<StickerPickerDialog> {
                         ),
                       ],
                     ),
+                    const SizedBox(height: 10),
+                    SizedBox(
+                      height: 60,
+                      child: RotatedBox(
+                        quarterTurns: 1,
+                        child: ListWheelScrollView.useDelegate(
+                          controller: controller,
+                          physics: const FixedExtentScrollPhysics(),
+                          itemExtent: 60,
+                          diameterRatio: 2.5,
+                          perspective: 0.002,
+                          onSelectedItemChanged: (index) {
+                            setState(() {
+                              selectedLabel = labelOptions[index];
+                            });
+                          },
+                          childDelegate: ListWheelChildBuilderDelegate(
+                            builder: (context, index) {
+                              if (index < 0 || index >= labelOptions.length)
+                                return null;
+                              // Display a dash if the value is empty.
+                              String label = labelOptions[index].isEmpty
+                                  ? '—'
+                                  : labelOptions[index];
+                              bool isSelected =
+                                  selectedLabel == labelOptions[index];
+                              return RotatedBox(
+                                quarterTurns: -1,
+                                child: Center(
+                                  child: Text(
+                                    label,
+                                    style: TextStyle(
+                                      fontSize: 20,
+                                      fontWeight: isSelected
+                                          ? FontWeight.bold
+                                          : FontWeight.normal,
+                                      color: isSelected
+                                          ? Colors.blueAccent
+                                          : Colors.black,
+                                    ),
+                                  ),
+                                ),
+                              );
+                            },
+                            childCount: labelOptions.length,
+                          ),
+                        ),
+                      ),
+                    ),
                     const SizedBox(height: 15),
                     Stack(
                       alignment: Alignment.center,
@@ -148,6 +225,15 @@ class _StickerPickerDialogState extends State<StickerPickerDialog> {
                                 )
                               : null,
                         ),
+                        if (!showBaby)
+                          Text(
+                            selectedLabel.isEmpty ? '—' : selectedLabel,
+                            style: const TextStyle(
+                              fontSize: 24,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.black,
+                            ),
+                          ),
                       ],
                     ),
                     const SizedBox(height: 15),
@@ -160,6 +246,7 @@ class _StickerPickerDialogState extends State<StickerPickerDialog> {
                         Navigator.of(context).pop({
                           'color': selectedColor,
                           'showBaby': showBaby,
+                          'label': selectedLabel,
                         });
                       },
                       child: Text(localizations.done),

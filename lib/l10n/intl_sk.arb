@@ -291,5 +291,13 @@
   "edit": "upraviť",
   "@edit": {
     "description": "talcidlo pre navigaciu na upravenie"
+  },
+  "error": "chyba",
+  "@error": {
+    "description": "popisok pre chybu"
+  },
+  "sticker_label": "sticker_label",
+  "@sticker_label": {
+    "description": "sticker_label"
   }
 }

@@ -64,9 +64,9 @@ class ApiService {
         print('No data found for the given date $date.');
         return {
           'stickerColor': Colors.grey,
-          'bleeding': 'No data',
-          'mucus': 'No data',
-          'fertility': 'No data',
+          'bleeding': '-',
+          'mucus': '-',
+          'fertility': '-',
           'ab': false,
         };
       } else {
@@ -345,6 +345,26 @@ class ApiService {
       }
     } catch (error) {
       return 'Error updating sticker color: $error';
+    }
+  }
+
+  Future<void> updatePeak(String date, String peak,
+      {required String token}) async {
+    final url = Uri.parse('$baseUrl/day/peak');
+    try {
+      final response = await http.post(
+        url,
+        headers: {
+          "Authorization": "Bearer $token",
+          "Content-Type": "application/json"
+        },
+        body: json.encode({'date': date, 'peak': peak}),
+      );
+      if (response.statusCode != 200) {
+        throw Exception('Failed to update peak: ${response.body}');
+      }
+    } catch (error) {
+      throw Exception('Error updating peak: $error');
     }
   }
 
