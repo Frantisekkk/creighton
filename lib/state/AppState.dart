@@ -105,7 +105,6 @@ class AppState extends ChangeNotifier {
             }
           : data;
       notifyListeners();
-      print(_dayData);
       return _dayData;
     } catch (e) {
       print("Error fetching day data for $dateStr: $e");

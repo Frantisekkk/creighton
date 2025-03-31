@@ -9,6 +9,9 @@ const Color buttonTextColor = Colors.white;
 const Color buttBackgroundColor = Color.fromRGBO(241, 165, 173, 1);
 const Color activeButtonColor = Color.fromRGBO(172, 81, 128, 1);
 
+const Color buttonTextColor2 = Colors.black26;
+const Color buttBackgroundColor2 = Colors.white;
+const Color activeButtonColor2 = Color.fromRGBO(172, 81, 128, 1);
 // Text Styles
 const TextStyle headerTextStyle = TextStyle(
   fontSize: 25,

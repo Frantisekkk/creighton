@@ -143,9 +143,8 @@ class _DayPageState extends State<DayPage> {
                                         ? dayLogic.selectedPeak
                                         : "",
                                     style: const TextStyle(
-                                      fontSize: 80, // adjust size as necessary
-                                      color: Colors
-                                          .black, // choose a color that contrasts well
+                                      fontSize: 80,
+                                      color: Colors.black,
                                       fontWeight: FontWeight.bold,
                                     ),
                                   ),
@@ -217,17 +216,57 @@ class _DayPageState extends State<DayPage> {
               },
             ),
             // Description Section
-            ButtonSection(
-              title: localizations.description_label,
-              options: const [
-                ['0', '2', '2W', '4'],
-                ['6', '8', '10'],
-                ['10DL', '10SL', '10WL']
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                // Base description options
+                ButtonSection(
+                  title: localizations.description_label,
+                  options: const [
+                    ['0', '2', '2W', '4'],
+                    ['6', '8', '10'],
+                  ],
+                  selectedValue: dayLogic.baseMucus,
+                  onPressed: (value) async {
+                    // Update only the base portion.
+                    await dayLogic.updateMucus(value + "");
+                  },
+                ),
+                // Additional description options – shown if base is one of 6,8,10
+                if (['6', '8', '10'].contains(dayLogic.baseMucus))
+                  Container(
+                    decoration: BoxDecoration(
+                      color: headerContainerBackgroundColor.withOpacity(0.4),
+                      borderRadius: BorderRadius.circular(20),
+                    ),
+                    padding: const EdgeInsets.all(8),
+                    child: ButtonSection(
+                      title: '',
+                      options: const [
+                        ['B', 'C', 'C/K', 'G'],
+                        ['K', 'L', 'P', 'Y']
+                      ],
+                      selectedValue: dayLogic.additionalMucus,
+                      unselectedColor: buttonTextColor,
+                      textColor: textColorDark,
+                      onPressed: (value) async {
+                        // Combine the base mucus with the additional value.
+                        await dayLogic.updateMucus(dayLogic.baseMucus + value);
+                      },
+                    ),
+                  ),
+                // Optional third row if needed
+                ButtonSection(
+                  title: '',
+                  options: const [
+                    ['10DL', '10SL', '10WL']
+                  ],
+                  selectedValue: dayLogic.selectedMucus,
+                  onPressed: (value) async {
+                    await dayLogic.updateMucus(value);
+                  },
+                ),
               ],
-              selectedValue: dayLogic.selectedMucus,
-              onPressed: (value) async {
-                await dayLogic.updateMucus(value);
-              },
             ),
             // Fertility Section
             ButtonSection(

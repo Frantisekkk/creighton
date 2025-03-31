@@ -63,6 +63,41 @@ class DayLogic extends ChangeNotifier {
     safeNotifyListeners();
   }
 
+  // Computed getter for the base mucus part.
+  String get baseMucus {
+    if (selectedMucus.isEmpty) return '';
+    // For '6' or '8' cases, the base is the first character.
+    if (selectedMucus.startsWith('6') || selectedMucus.startsWith('8')) {
+      return selectedMucus.substring(0, 1);
+    }
+    // For '10', if additional characters exist (but not one of the special ones), the base is '10'
+    if (selectedMucus.startsWith('10')) {
+      // If the full code is one of the complete codes (e.g., '10DL', '10SL', '10WL'), use it entirely.
+      if (['10DL', '10SL', '10WL'].contains(selectedMucus)) {
+        return selectedMucus;
+      } else if (selectedMucus.length > 2) {
+        return '10';
+      }
+      return selectedMucus;
+    }
+    return selectedMucus;
+  }
+
+  // Computed getter for the additional mucus part.
+  String get additionalMucus {
+    if (selectedMucus.isEmpty) return '';
+    if ((selectedMucus.startsWith('6') || selectedMucus.startsWith('8')) &&
+        selectedMucus.length > 1) {
+      return selectedMucus.substring(1);
+    }
+    if (selectedMucus.startsWith('10') &&
+        selectedMucus.length > 2 &&
+        !['10DL', '10SL', '10WL'].contains(selectedMucus)) {
+      return selectedMucus.substring(2);
+    }
+    return '';
+  }
+
   /// Opens a date picker to select a new date and loads its data.
   Future<void> selectDate(BuildContext context) async {
     DateTime? pickedDate = await showDatePicker(

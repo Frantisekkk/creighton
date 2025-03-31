@@ -291,9 +291,6 @@ class ApiService {
         body: json.encode({'date': date, 'temperature': temperature}),
       );
 
-      print("Response Code: ${response.statusCode}");
-      print("Response Body: ${response.body}");
-
       if (response.statusCode != 200) {
         throw Exception('Failed to update temperature');
       }

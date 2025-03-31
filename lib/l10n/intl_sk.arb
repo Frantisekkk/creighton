@@ -12,7 +12,7 @@
   "@bleeding": {
     "description": "Názov sekcie pre údaje o krvácaní"
   },
-  "description_label": "Popis:",
+  "description_label": "Hlien",
   "@description_label": {
     "description": "Popisná značka pre sekciu s popisom údajov"
   },

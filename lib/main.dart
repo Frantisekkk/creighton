@@ -7,8 +7,10 @@ import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:flutter/rendering.dart';
 
 Future<void> main() async {
+  debugPaintSizeEnabled = false;
   WidgetsFlutterBinding.ensureInitialized();
 
   // Initialize date formatting for Slovak.
