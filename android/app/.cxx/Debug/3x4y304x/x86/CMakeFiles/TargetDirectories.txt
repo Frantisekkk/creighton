@@ -1,0 +1,2 @@
+C:/Users/Lenovo Legion Lipany/Documents/skola/creighton/creighton/android/app/.cxx/Debug/3x4y304x/x86/CMakeFiles/edit_cache.dir
+C:/Users/Lenovo Legion Lipany/Documents/skola/creighton/creighton/android/app/.cxx/Debug/3x4y304x/x86/CMakeFiles/rebuild_cache.dir
